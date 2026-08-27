@@ -1,5 +1,6 @@
 import React from "react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
     const productLinks = [
@@ -74,7 +75,7 @@ const Footer = () => {
 
                             {/* GitHub */}
                             <a
-                                href="#"
+                                href="https://github.com/devKartikeya"
                                 aria-label="GitHub"
                                 className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-800 text-gray-400 transition-all hover:border-gray-700 hover:bg-gray-900 hover:text-white"
                             >
@@ -111,12 +112,12 @@ const Footer = () => {
                         <ul className="mt-6 space-y-4">
                             {productLinks.map((link) => (
                                 <li key={link.name}>
-                                    <a
-                                        href={link.href}
+                                    <Link
+                                        to={link.href}
                                         className="text-sm text-gray-400 transition-colors hover:text-yellow-400"
                                     >
                                         {link.name}
-                                    </a>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
@@ -151,12 +152,12 @@ const Footer = () => {
                         <ul className="mt-6 space-y-4">
                             {companyLinks.map((link) => (
                                 <li key={link.name}>
-                                    <a
-                                        href={link.href}
+                                    <Link
+                                        to={link.href}
                                         className="text-sm text-gray-400 transition-colors hover:text-yellow-400"
                                     >
                                         {link.name}
-                                    </a>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
@@ -213,13 +214,13 @@ const Footer = () => {
 
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
                         {legalLinks.map((link) => (
-                            <a
+                            <Link
                                 key={link.name}
-                                href={link.href}
+                                to={link.href}
                                 className="text-xs text-gray-500 transition-colors hover:text-gray-300"
                             >
                                 {link.name}
-                            </a>
+                            </Link>
                         ))}
                     </div>
 

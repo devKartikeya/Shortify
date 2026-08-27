@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const navItems = [
     {
@@ -47,7 +48,6 @@ const Navbar = () => {
         );
 
         sections.forEach((section) => observer.observe(section));
-
         return () => {
             sections.forEach((section) => observer.unobserve(section));
         };
@@ -69,7 +69,6 @@ const Navbar = () => {
     return (
         <nav className="fixed left-0 top-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur-md">
             <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
-
                 {/* Logo */}
                 <button
                     onClick={() => handleNavClick("home")}
@@ -98,12 +97,11 @@ const Navbar = () => {
                 <div className="hidden items-center gap-8 md:flex">
                     {navItems.map((item) => {
                         const isActive = activeSection === item.id;
-
                         return (
                             <button
                                 key={item.id}
                                 onClick={() => handleNavClick(item.id)}
-                                className={`relative py-2 text-sm font-medium transition-colors ${
+                                className={`relative py-2 text-sm cursor-pointer font-medium transition-colors ${
                                     isActive
                                         ? "text-gray-950"
                                         : "text-gray-500 hover:text-gray-950"
@@ -126,20 +124,17 @@ const Navbar = () => {
 
                 {/* Actions */}
                 <div className="flex items-center gap-3">
-
-                    <a
-                        href="/login"
+                    <Link
+                        to="/login"
                         className="hidden px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:text-gray-950 sm:block"
                     >
                         Log in
-                    </a>
-
-                    <a
-                        href="/register"
+                    </Link>
+                    <Link
+                        to="/register"
                         className="group flex items-center gap-2 rounded-lg bg-gray-950 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gray-800"
                     >
                         Get started
-
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
@@ -152,7 +147,7 @@ const Navbar = () => {
                                 clipRule="evenodd"
                             />
                         </svg>
-                    </a>
+                    </Link>
 
                     {/* Mobile menu */}
                     <button
@@ -174,7 +169,6 @@ const Navbar = () => {
                             />
                         </svg>
                     </button>
-
                 </div>
             </div>
         </nav>
