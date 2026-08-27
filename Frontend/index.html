@@ -2,19 +2,123 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- Viewport -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <!-- Primary SEO -->
+    <title>Shoritfy — Fast & Simple URL Shortener</title>
+
+    <meta
+      name="description"
+      content="Shoritfy is a fast, simple and reliable URL shortener. Create short, shareable links in seconds."
+    />
+
+    <meta
+      name="keywords"
+      content="URL shortener, link shortener, short URL, Shoritfy, shorten links"
+    />
+
+    <meta name="author" content="Shoritfy" />
+
+    <!-- Search Engine -->
+    <meta name="robots" content="index, follow" />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#000000" />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Preconnect for Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Shoritfy — Fast & Simple URL Shortener" />
+    <meta
+      property="og:description"
+      content="Shorten your long URLs into clean, shareable links with Shoritfy."
+    />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:site_name" content="Shoritfy" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Shoritfy — Fast & Simple URL Shortener"
+    />
+    <meta
+      name="twitter:description"
+      content="Create short, clean and shareable URLs with Shoritfy."
+    />
+    <meta name="twitter:image" content="/og-image.png" />
+
+    <!-- Canonical URL
+         Replace with your deployed domain -->
+    <!-- <link rel="canonical" href="https://your-domain.com/" /> -->
+
+    <!-- Global Styles -->
     <style>
-      * {
-        font-family: "Poppins";
+      :root {
+        font-family: "Poppins", sans-serif;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      html {
         scroll-behavior: smooth;
       }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+        font-family: "Poppins", sans-serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
     </style>
-    <title>Mern-URL-Shortener-DevOps</title>
-  </head>
-  <body>
-    <div id="root"></div>
+
+    <!-- App -->
     <script type="module" src="/src/main.jsx"></script>
+  </head>
+
+  <body>
+    <noscript>
+      Shoritfy requires JavaScript to be enabled to work properly.
+    </noscript>
+
+    <div id="root"></div>
   </body>
 </html>

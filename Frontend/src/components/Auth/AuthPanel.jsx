@@ -16,24 +16,33 @@ const AuthPanel = ({ isOpen, onClose }) => {
         };
     }, [isOpen]);
 
-    if (!isOpen) return null;
-
     return (
-        <div className="fixed inset-0 z-[100]">
-
+        <div
+            className={`fixed inset-0 z-[100] transition-all duration-300 ${
+                isOpen
+                    ? "visible"
+                    : "invisible pointer-events-none"
+            }`}
+        >
             {/* Backdrop */}
             <div
                 onClick={onClose}
-                className="absolute inset-0 bg-gray-950/40 backdrop-blur-[2px]"
+                className={`absolute inset-0 bg-gray-950/40 backdrop-blur-[2px] transition-opacity duration-300 ${
+                    isOpen ? "opacity-100" : "opacity-0"
+                }`}
             />
 
-            {/* Panel */}
+            {/* Auth Drawer */}
             <aside
-                className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl"
+                className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
+                    isOpen
+                        ? "translate-x-0"
+                        : "translate-x-full"
+                }`}
             >
-
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
+                    {/* Logo */}
                     <div className="flex items-center gap-3">
                         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-yellow-400">
                             <svg
@@ -45,6 +54,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 className="h-4.5 w-4.5 text-gray-950"
                             >
                                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+
                                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                             </svg>
                         </div>
@@ -54,10 +64,11 @@ const AuthPanel = ({ isOpen, onClose }) => {
                         </span>
                     </div>
 
+                    {/* Close Button */}
                     <button
                         onClick={onClose}
                         aria-label="Close authentication panel"
-                        className="flex h-9 cursor-pointer w-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-950"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-950"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +93,9 @@ const AuthPanel = ({ isOpen, onClose }) => {
                     {/* Heading */}
                     <div className="mb-8">
                         <p className="text-sm font-semibold uppercase tracking-widest text-yellow-600">
-                            {mode === "login" ? "Welcome back" : "Get started"}
+                            {mode === "login"
+                                ? "Welcome back"
+                                : "Get started"}
                         </p>
 
                         <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-950">
@@ -98,7 +111,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
                         </p>
                     </div>
 
-                    {/* Login Form */}
+                    {/* ================= LOGIN ================= */}
                     {mode === "login" ? (
                         <form className="space-y-5">
 
@@ -131,7 +144,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
 
                                     <button
                                         type="button"
-                                        className="text-xs cursor-pointer font-semibold text-yellow-600 hover:text-yellow-700"
+                                        className="text-xs font-semibold text-yellow-600 transition-colors hover:text-yellow-700"
                                     >
                                         Forgot password?
                                     </button>
@@ -145,17 +158,16 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 />
                             </div>
 
-                            {/* Submit */}
+                            {/* Login Button */}
                             <button
                                 type="submit"
-                                className="w-full cursor-pointer rounded-lg bg-gray-950 py-3.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.99]"
+                                className="w-full rounded-lg bg-gray-950 py-3.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.99]"
                             >
                                 Sign in
                             </button>
-
                         </form>
                     ) : (
-                        /* Signup Form */
+                        /* ================= SIGNUP ================= */
                         <form className="space-y-5">
 
                             {/* Username */}
@@ -209,14 +221,15 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 />
                             </div>
 
-                            {/* Submit */}
+                            {/* Signup Button */}
                             <button
                                 type="submit"
-                                className="w-full cursor-pointer rounded-lg bg-gray-950 py-3.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.99]"
+                                className="w-full rounded-lg bg-gray-950 py-3.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.99]"
                             >
                                 Create account
                             </button>
 
+                            {/* Terms */}
                             <p className="text-center text-xs leading-5 text-gray-400">
                                 By creating an account, you agree to our{" "}
                                 <button
@@ -234,16 +247,16 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 </button>
                                 .
                             </p>
-
                         </form>
                     )}
 
-                    {/* Switch mode */}
+                    {/* Switch Login / Signup */}
                     <div className="mt-8 border-t border-gray-100 pt-7 text-center">
                         <p className="text-sm text-gray-500">
                             {mode === "login"
                                 ? "Don't have an account?"
                                 : "Already have an account?"}{" "}
+
                             <button
                                 type="button"
                                 onClick={() =>
@@ -253,7 +266,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                             : "login"
                                     )
                                 }
-                                className="font-semibold cursor-pointer text-gray-950 underline decoration-yellow-400 decoration-2 underline-offset-4 hover:text-yellow-600"
+                                className="font-semibold text-gray-950 underline decoration-yellow-400 decoration-2 underline-offset-4 transition-colors hover:text-yellow-600"
                             >
                                 {mode === "login"
                                     ? "Create one"
@@ -261,12 +274,12 @@ const AuthPanel = ({ isOpen, onClose }) => {
                             </button>
                         </p>
                     </div>
-
                 </div>
 
-                {/* Bottom security note */}
+                {/* Security Footer */}
                 <div className="border-t border-gray-100 bg-gray-50 px-6 py-4 sm:px-8">
                     <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -280,6 +293,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 strokeLinejoin="round"
                                 d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7l7-4Z"
                             />
+
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -290,7 +304,6 @@ const AuthPanel = ({ isOpen, onClose }) => {
                         Your information is securely protected.
                     </div>
                 </div>
-
             </aside>
         </div>
     );

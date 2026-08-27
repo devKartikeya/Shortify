@@ -1,5 +1,3 @@
-import React from "react";
-
 const stats = [
     {
         value: "10K+",

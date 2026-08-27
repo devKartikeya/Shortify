@@ -1,5 +1,3 @@
-import React from "react";
-
 const features = [
     {
         number: "01",
@@ -82,7 +80,7 @@ const Features = () => {
                 {/* Heading */}
                 <div className="max-w-2xl">
                     <p className="text-sm font-semibold uppercase tracking-widest text-yellow-600">
-                        Why LinkForge
+                        Why Shortify
                     </p>
 
                     <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
