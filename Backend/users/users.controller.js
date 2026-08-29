@@ -88,8 +88,15 @@ async function userLoginController(req, res) {
     }
 }
 
+function getCurrentUserController(req, res) {
+    res.status(200).json({
+        success: true,
+        user: req.user
+    });
+}
 
 module.exports = {
     userRegisterController,
-    userLoginController
+    userLoginController,
+    getCurrentUserController
 };

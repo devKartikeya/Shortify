@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:3000";
 
@@ -7,6 +8,8 @@ const AuthPanel = ({ isOpen, onClose }) => {
     const [mode, setMode] = useState("login");
     const [serverError, setServerError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+
+    const navigate = useNavigate()
 
     const {
         register,
@@ -72,6 +75,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
             );
 
             console.log("Login successful:", result);
+            navigate("/dashboard");
 
             // Close drawer after successful login
             setTimeout(() => {
@@ -126,6 +130,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
             setSuccessMessage(
                 "Account created successfully! You can now sign in."
             );
+            navigate("/dashboard");
 
             // Clear signup form
             reset();

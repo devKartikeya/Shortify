@@ -6,6 +6,7 @@ import {
 import Home from "./pages/Home";
 import DashboardLayout from "./dashboard/DashboardLayout";
 import Overview from "./dashboard/pages/Overview";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 const App = () => {
     return (
@@ -17,14 +18,16 @@ const App = () => {
                     element={<Home />}
                 />
                 {/* Dashboard */}
-                <Route
-                    path="/dashboard"
-                    element={<DashboardLayout />}
-                >
+                <Route element={<ProtectedRoute />}>
                     <Route
-                        index
-                        element={<Overview />}
-                    />
+                        path="/dashboard"
+                        element={<DashboardLayout />}
+                    >
+                        <Route
+                            index
+                            element={<Overview />}
+                        />
+                    </Route>
                 </Route>
             </Routes>
         </BrowserRouter>
