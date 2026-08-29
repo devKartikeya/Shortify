@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const userRouter = require("./users/users.route");
+const urlRouter = require("./urls/urls.route");
 
 app.use(
   cors({
@@ -20,6 +21,7 @@ app.use(cookieParser());
 connectDB();
 
 app.use("/users", userRouter);
+app.use("/urls", urlRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello from Express backend!');
