@@ -1,19 +1,23 @@
-const { createShortUrl } = require("./urls.service");
+const {
+    createShortUrl,
+    redirectToOriginalUrl
+} = require("./urls.service");
 
+
+// Create short URL
 async function createShortUrlController(req, res) {
     try {
         const { originalUrl } = req.body;
-
         if (!originalUrl) {
             return res.status(400).json({
                 success: false,
                 message: "URL is required"
             });
         }
-
-        // For now userId is null because this endpoint
-        // also supports guest users.
-        const url = await createShortUrl(originalUrl, null);
+        const url = await createShortUrl(
+            originalUrl,
+            null
+        );
 
         return res.status(201).json({
             success: true,
@@ -21,7 +25,8 @@ async function createShortUrlController(req, res) {
             data: {
                 originalUrl: url.originalUrl,
                 shortCode: url.shortCode,
-                shortUrl: `http://localhost:3000/${url.shortCode}`,
+                shortUrl:
+                    `http://localhost:3000/${url.shortCode}`,
                 clicks: url.clicks,
                 createdAt: url.createdAt
             }
@@ -35,6 +40,22 @@ async function createShortUrlController(req, res) {
     }
 }
 
+// Redirect short URL
+async function redirectUrlController(req, res) {
+    try {
+        const { shortCode } = req.params;
+        const originalUrl =
+            await redirectToOriginalUrl(shortCode);
+        return res.redirect(originalUrl);
+
+    } catch (error) {
+        return res.status(404).send(`
+            <h1>Short URL Not Found</h1>
+            <p>${error.message}</p>
+        `);
+    }
+}
 module.exports = {
-    createShortUrlController
+    createShortUrlController,
+    redirectUrlController
 };

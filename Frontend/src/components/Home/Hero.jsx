@@ -86,7 +86,7 @@ const Hero = () => {
                         </span>
                     </div>
 
-                    {/* Heading */}]
+                    {/* Heading */}
                     <h1 className="text-5xl font-bold leading-[1.08] tracking-tight text-gray-950 sm:text-6xl lg:text-7xl">
                         Turn long links into
                         <span className="relative mx-2 inline-block">

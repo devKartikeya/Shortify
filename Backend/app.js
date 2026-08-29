@@ -6,6 +6,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const userRouter = require("./users/users.route");
 const urlRouter = require("./urls/urls.route");
+const {
+    redirectUrlController
+} = require("./urls/urls.controller");
 
 app.use(
   cors({
@@ -22,6 +25,11 @@ connectDB();
 
 app.use("/users", userRouter);
 app.use("/urls", urlRouter);
+
+app.get(
+    "/:shortCode",
+    redirectUrlController
+);
 
 app.get('/', (req, res) => {
   res.send('Hello from Express backend!');
