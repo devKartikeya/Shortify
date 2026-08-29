@@ -1,5 +1,5 @@
+
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import AuthPanel from "./Auth/AuthPanel";
 
 const navItems = [
@@ -24,6 +24,11 @@ const navItems = [
 const Navbar = () => {
     const [activeSection, setActiveSection] = useState("home");
     const [isAuthOpen, setIsAuthOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    // =========================
+    // SECTION OBSERVER
+    // =========================
 
     useEffect(() => {
         const sections = navItems
@@ -36,11 +41,14 @@ const Navbar = () => {
                     .filter((entry) => entry.isIntersecting)
                     .sort(
                         (a, b) =>
-                            b.intersectionRatio - a.intersectionRatio
+                            b.intersectionRatio -
+                            a.intersectionRatio
                     );
 
                 if (visibleSections.length > 0) {
-                    setActiveSection(visibleSections[0].target.id);
+                    setActiveSection(
+                        visibleSections[0].target.id
+                    );
                 }
             },
             {
@@ -49,14 +57,42 @@ const Navbar = () => {
             }
         );
 
-        sections.forEach((section) => observer.observe(section));
+        sections.forEach((section) => {
+            observer.observe(section);
+        });
+
         return () => {
-            sections.forEach((section) => observer.unobserve(section));
+            sections.forEach((section) => {
+                observer.unobserve(section);
+            });
         };
     }, []);
 
+
+    // =========================
+    // MOBILE MENU
+    // =========================
+
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [isMobileMenuOpen]);
+
+
+    // =========================
+    // NAVIGATION
+    // =========================
+
     const handleNavClick = (id) => {
         setActiveSection(id);
+        setIsMobileMenuOpen(false);
 
         const section = document.getElementById(id);
 
@@ -68,16 +104,36 @@ const Navbar = () => {
         }
     };
 
+
+    // =========================
+    // AUTH
+    // =========================
+
+    const openAuth = () => {
+        setIsMobileMenuOpen(false);
+        setIsAuthOpen(true);
+    };
+
+
     return (
         <>
+            {/* ================= NAVBAR ================= */}
+
             <nav className="fixed left-0 top-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur-md">
+
                 <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
-                    {/* Logo */}
+
+                    {/* ================= LOGO ================= */}
+
                     <button
-                        onClick={() => handleNavClick("home")}
+                        onClick={() =>
+                            handleNavClick("home")
+                        }
                         className="flex items-center gap-3"
                     >
+
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-yellow-400">
+
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -87,55 +143,81 @@ const Navbar = () => {
                                 className="h-5 w-5 text-gray-950"
                             >
                                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+
                                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                             </svg>
+
                         </div>
 
                         <span className="text-xl font-bold tracking-tight text-gray-950">
                             Shortify
                         </span>
+
                     </button>
 
-                    {/* Navigation */}
+
+                    {/* ================= DESKTOP NAV ================= */}
+
                     <div className="hidden items-center gap-8 md:flex">
+
                         {navItems.map((item) => {
-                            const isActive = activeSection === item.id;
+
+                            const isActive =
+                                activeSection === item.id;
+
                             return (
                                 <button
                                     key={item.id}
-                                    onClick={() => handleNavClick(item.id)}
-                                    className={`relative py-2 text-sm cursor-pointer font-medium transition-colors ${isActive
-                                        ? "text-gray-950"
-                                        : "text-gray-500 hover:text-gray-950"
-                                        }`}
+                                    onClick={() =>
+                                        handleNavClick(
+                                            item.id
+                                        )
+                                    }
+                                    className={`relative cursor-pointer py-2 text-sm font-medium transition-colors ${
+                                        isActive
+                                            ? "text-gray-950"
+                                            : "text-gray-500 hover:text-gray-950"
+                                    }`}
                                 >
+
                                     {item.name}
 
                                     {/* Active underline */}
+
                                     <span
-                                        className={`absolute -bottom-[18px] left-0 h-0.5 bg-yellow-400 transition-all duration-300 ${isActive
-                                            ? "w-full"
-                                            : "w-0"
-                                            }`}
+                                        className={`absolute -bottom-[18px] left-0 h-0.5 bg-yellow-400 transition-all duration-300 ${
+                                            isActive
+                                                ? "w-full"
+                                                : "w-0"
+                                        }`}
                                     />
+
                                 </button>
                             );
                         })}
+
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex items-center gap-3">
+
+                    {/* ================= DESKTOP ACTIONS ================= */}
+
+                    <div className="hidden items-center gap-3 md:flex">
+
                         <button
-                            onClick={() => setIsAuthOpen(true)}
-                            className="hidden px-4 py-2 text-sm font-semibold cursor-pointer text-gray-700 transition-colors hover:text-gray-950 sm:block"
+                            onClick={openAuth}
+                            className="cursor-pointer px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:text-gray-950"
                         >
                             Log in
                         </button>
+
+
                         <button
-                            onClick={() => setIsAuthOpen(true)}
-                            className="group flex items-center gap-2 rounded-lg cursor-pointer bg-gray-950 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gray-800"
+                            onClick={openAuth}
+                            className="group flex cursor-pointer items-center gap-2 rounded-lg bg-gray-950 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gray-800"
                         >
+
                             Get started
+
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 20 20"
@@ -144,17 +226,54 @@ const Navbar = () => {
                             >
                                 <path
                                     fillRule="evenodd"
-                                    d="M3 10a.75.75 0 0 1 .75-.75h10.69l-3.22-3.22a.75.75 0 1 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06-1.06l3.22-3.22H3.75A.75.75 0 0 1 3 10Z"
+                                    d="M3 10a.75.75 0 0 1 .75-.75h10.69l-3.22-3.22a.75.75 0 1 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06-1.06l3.22-3.22H3.75A.75.75 0 0 1 3 10Z"
                                     clipRule="evenodd"
                                 />
                             </svg>
+
                         </button>
 
-                        {/* Mobile menu */}
-                        <button
-                            className="ml-1 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-700 md:hidden"
-                            aria-label="Open menu"
-                        >
+                    </div>
+
+
+                    {/* ================= MOBILE HAMBURGER ================= */}
+
+                    <button
+                        onClick={() =>
+                            setIsMobileMenuOpen(
+                                (prev) => !prev
+                            )
+                        }
+                        aria-label={
+                            isMobileMenuOpen
+                                ? "Close menu"
+                                : "Open menu"
+                        }
+                        aria-expanded={
+                            isMobileMenuOpen
+                        }
+                        className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-all hover:border-gray-300 hover:bg-gray-50 md:hidden"
+                    >
+
+                        {isMobileMenuOpen ? (
+
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                className="h-5 w-5"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M6 6l12 12M18 6L6 18"
+                                />
+                            </svg>
+
+                        ) : (
+
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -169,14 +288,108 @@ const Navbar = () => {
                                     d="M4 6h16M4 12h16M4 18h16"
                                 />
                             </svg>
-                        </button>
-                    </div>
+
+                        )}
+
+                    </button>
+
                 </div>
+
+
+                {/* ================= MOBILE MENU ================= */}
+
+                <div
+                    className={`overflow-hidden border-t border-gray-100 bg-white transition-all duration-300 md:hidden ${
+                        isMobileMenuOpen
+                            ? "max-h-[500px] opacity-100"
+                            : "max-h-0 opacity-0"
+                    }`}
+                >
+
+                    <div className="px-6 pb-6 pt-4">
+
+                        {/* Mobile Navigation */}
+
+                        <div className="space-y-1">
+
+                            {navItems.map((item) => {
+
+                                const isActive =
+                                    activeSection ===
+                                    item.id;
+
+                                return (
+                                    <button
+                                        key={item.id}
+                                        onClick={() =>
+                                            handleNavClick(
+                                                item.id
+                                            )
+                                        }
+                                        className={`flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3.5 text-left text-sm font-medium transition-all ${
+                                            isActive
+                                                ? "bg-yellow-50 text-gray-950"
+                                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-950"
+                                        }`}
+                                    >
+
+                                        <span>
+                                            {item.name}
+                                        </span>
+
+                                        {isActive && (
+                                            <span className="h-1.5 w-1.5 rounded-full bg-yellow-400" />
+                                        )}
+
+                                    </button>
+                                );
+                            })}
+
+                        </div>
+
+
+                        {/* Divider */}
+
+                        <div className="my-5 h-px bg-gray-100" />
+
+
+                        {/* Mobile Auth Buttons */}
+
+                        <div className="grid grid-cols-2 gap-3">
+
+                            <button
+                                onClick={openAuth}
+                                className="cursor-pointer rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-800 transition-colors hover:bg-gray-50"
+                            >
+                                Log in
+                            </button>
+
+
+                            <button
+                                onClick={openAuth}
+                                className="cursor-pointer rounded-lg bg-gray-950 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+                            >
+                                Get started
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </nav>
+
+
+            {/* ================= AUTH PANEL ================= */}
+
             <AuthPanel
                 isOpen={isAuthOpen}
-                onClose={() => setIsAuthOpen(false)}
+                onClose={() =>
+                    setIsAuthOpen(false)
+                }
             />
+
         </>
     );
 };

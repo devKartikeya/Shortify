@@ -76,6 +76,7 @@ const Footer = () => {
                             <a
                                 href="https://github.com/devKartikeya"
                                 aria-label="GitHub"
+                                target="_blank"
                                 className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-800 text-gray-400 transition-all hover:border-gray-700 hover:bg-gray-900 hover:text-white"
                             >
                                 <FaGithub size={20}/>
@@ -85,6 +86,7 @@ const Footer = () => {
                             <a
                                 href="#"
                                 aria-label="LinkedIn"
+                                target="_blank"
                                 className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-800 text-gray-400 transition-all hover:border-gray-700 hover:bg-gray-900 hover:text-white"
                             >
                                 <FaLinkedin size={20} className="hover:text-blue-400"/>
@@ -94,6 +96,7 @@ const Footer = () => {
                             <a
                                 href="#"
                                 aria-label="X"
+                                target="_blank"
                                 className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-800 text-gray-400 transition-all hover:border-gray-700 hover:bg-gray-900 hover:text-white"
                             >
                                 <FaTwitter size={20} className="hover:text-black"/>

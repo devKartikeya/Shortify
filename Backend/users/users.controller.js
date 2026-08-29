@@ -3,9 +3,15 @@ const {
     userLoginService
 } = require("./users.service");
 
+
 async function userRegisterController(req, res) {
     try {
-        const { username, email, password } = req.body;
+        const {
+            username,
+            email,
+            password
+        } = req.body;
+
         if (!username || !email || !password) {
             return res.status(400).json({
                 success: false,
@@ -19,11 +25,20 @@ async function userRegisterController(req, res) {
             password
         );
 
+         // Store JWT in HTTP-only cookie
+        res.cookie("token", user.token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
         return res.status(201).json({
             success: true,
             message: "Account created successfully",
             user
         });
+
     } catch (error) {
         return res.status(400).json({
             success: false,
@@ -32,12 +47,13 @@ async function userRegisterController(req, res) {
     }
 }
 
-
 async function userLoginController(req, res) {
     try {
-        const { email, password } = req.body;
+        const {
+            email,
+            password
+        } = req.body;
 
-        // Basic validation
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
@@ -49,10 +65,18 @@ async function userLoginController(req, res) {
             email,
             password
         );
+
+        // Store JWT in HTTP-only cookie
+        res.cookie("token", result.token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
         return res.status(200).json({
             success: true,
             message: "Login successful",
-            token: result.token,
             user: result.user
         });
 
@@ -63,6 +87,7 @@ async function userLoginController(req, res) {
         });
     }
 }
+
 
 module.exports = {
     userRegisterController,
