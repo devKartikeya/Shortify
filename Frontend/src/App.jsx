@@ -4,6 +4,7 @@ import DashboardLayout from "./dashboard/DashboardLayout";
 import Overview from "./dashboard/pages/Overview";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import MyLinks from "./dashboard/pages/MyLinks";
+import QRCodes from "./dashboard/pages/QRCodes";
 
 const App = () => {
     return (
@@ -25,6 +26,10 @@ const App = () => {
                             element={<Overview />}
                         />
                         <Route path="my-links" element={<MyLinks />} />
+                        <Route
+                            path="qr-codes"
+                            element={<QRCodes />}
+                        />
                     </Route>
                 </Route>
             </Routes>
