@@ -6,7 +6,7 @@ const Footer = () => {
         { name: "URL Shortener", href: "#hero" },
         { name: "Dashboard", href: "/dashboard" },
         { name: "Analytics", href: "#" },
-        { name: "Link Management", href: "#" },
+        { name: "Link Management", href: "/dashboard/my-links" },
     ];
 
     const resourceLinks = [

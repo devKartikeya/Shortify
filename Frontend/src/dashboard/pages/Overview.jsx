@@ -1,10 +1,11 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import CreateLinkModal from "../components/CreateLinkModal";
 import EmptyLinks from "../components/EmptyLinks";
 import LinkCard from "../components/LinkCard";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 const Overview = () => {
     const { user } = useOutletContext();
+    const navigate = useNavigate();
 
     const [links, setLinks] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -162,6 +163,17 @@ const Overview = () => {
         ]);
     };
 
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) {
+            return "Good morning";
+        }
+        if (hour < 17) {
+            return "Good afternoon";
+        }
+        return "Good evening";
+    };
+
     return (
         <>
             <div className="mx-auto max-w-[1600px] space-y-8">
@@ -173,7 +185,7 @@ const Overview = () => {
                             Welcome back
                         </p>
                         <h1 className="text-2xl font-bold tracking-tight text-gray-950 sm:text-3xl">
-                            Good evening, {user.username} 👋
+                            {getGreeting()}, {user.username} 👋
                         </h1>
                         <p className="mt-1.5 text-sm text-gray-500">
                             Here's an overview of everything happening with your
@@ -384,7 +396,7 @@ const Overview = () => {
                             <button
                                 className="w-fit text-sm font-semibold
                 text-gray-500 transition-colors
-                hover:text-gray-950"
+                hover:text-gray-950" onClick={() => navigate("/dashboard/my-links")}
                             >
                                 View all →
                             </button>
