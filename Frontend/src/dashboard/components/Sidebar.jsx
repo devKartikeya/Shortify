@@ -109,7 +109,7 @@ const secondaryNavigation = [
     }
 ];
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, user }) => {
 
     const renderLink = (item) => (
         <NavLink
@@ -132,7 +132,6 @@ const Sidebar = ({ isOpen, onClose }) => {
         </NavLink>
     );
 
-
     return (
         <>
             {/* Mobile overlay */}
@@ -142,8 +141,6 @@ const Sidebar = ({ isOpen, onClose }) => {
                     className="fixed inset-0 z-40 bg-gray-950/30 backdrop-blur-sm lg:hidden"
                 />
             )}
-
-
             <aside
                 className={`
                     fixed left-0 top-0 z-50 flex h-screen w-[270px]
@@ -153,19 +150,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                     ${isOpen ? "translate-x-0" : "-translate-x-full"}
                 `}
             >
-
                 {/* Brand */}
-
                 <div className="flex h-20 items-center justify-between border-b border-gray-100 px-6">
-
                     <NavLink
                         to="/dashboard"
                         onClick={onClose}
                         className="flex items-center gap-3"
                     >
-
                         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-yellow-400">
-
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -177,18 +169,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                             </svg>
-
                         </div>
 
                         <span className="text-lg font-bold tracking-tight text-gray-950">
                             Shortify
                         </span>
-
                     </NavLink>
 
-
                     {/* Mobile close */}
-
                     <button
                         onClick={onClose}
                         className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-950 lg:hidden"
@@ -206,59 +194,39 @@ const Sidebar = ({ isOpen, onClose }) => {
                             />
                         </svg>
                     </button>
-
                 </div>
 
-
                 {/* Navigation */}
-
                 <div className="flex-1 overflow-y-auto px-4 py-6">
-
                     <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
                         Workspace
                     </p>
-
                     <nav className="space-y-1">
                         {navigation.map(renderLink)}
                     </nav>
-
-
                     <div className="my-7 border-t border-gray-100" />
-
-
                     <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
                         Account
                     </p>
-
                     <nav className="space-y-1">
                         {secondaryNavigation.map(renderLink)}
                     </nav>
-
                 </div>
 
-
                 {/* Bottom User Card */}
-
                 <div className="border-t border-gray-100 p-4">
-
-                    <button className="flex w-full items-center gap-3 rounded-xl p-2.5 text-left transition-colors hover:bg-gray-50">
-
+                    <button className="flex w-full items-center gap-3 rounded-xl p-2.5 text-left transition-colors hover:bg-gray-50 cursor-pointer">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-950 text-xs font-bold text-white">
-                            KM
+                            {user.username.charAt(0).toUpperCase()}
                         </div>
-
                         <div className="min-w-0 flex-1">
-
                             <p className="truncate text-sm font-semibold text-gray-950">
-                                Kartikeya
+                                {user.username}
                             </p>
-
                             <p className="text-xs text-gray-400">
                                 Free plan
                             </p>
-
                         </div>
-
                         <svg
                             viewBox="0 0 20 20"
                             fill="currentColor"
@@ -270,11 +238,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 clipRule="evenodd"
                             />
                         </svg>
-
                     </button>
-
                 </div>
-
             </aside>
         </>
     );

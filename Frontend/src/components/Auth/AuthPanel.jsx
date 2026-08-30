@@ -45,12 +45,10 @@ const AuthPanel = ({ isOpen, onClose }) => {
     // =========================
     // LOGIN
     // =========================
-
     const onLogin = async (data) => {
         try {
             setServerError("");
             setSuccessMessage("");
-
             const response = await fetch(
                 `${API_URL}/users/login`,
                 {
@@ -62,9 +60,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
                     credentials: "include"
                 }
             );
-
             const result = await response.json();
-
             if (!response.ok) {
                 throw new Error(
                     result.message || "Login failed"
@@ -73,8 +69,6 @@ const AuthPanel = ({ isOpen, onClose }) => {
             setSuccessMessage(
                 "Login successful! Welcome back."
             );
-
-            console.log("Login successful:", result);
             navigate("/dashboard");
 
             // Close drawer after successful login
@@ -83,8 +77,6 @@ const AuthPanel = ({ isOpen, onClose }) => {
             }, 800);
 
         } catch (error) {
-            console.error("Login error:", error);
-
             setServerError(
                 error.message ||
                 "Something went wrong. Please try again."
@@ -96,12 +88,10 @@ const AuthPanel = ({ isOpen, onClose }) => {
     // =========================
     // SIGNUP
     // =========================
-
     const onSignup = async (data) => {
         try {
             setServerError("");
             setSuccessMessage("");
-
             const response = await fetch(
                 `${API_URL}/users/register`,
                 {
@@ -115,23 +105,15 @@ const AuthPanel = ({ isOpen, onClose }) => {
             );
 
             const result = await response.json();
-
             if (!response.ok) {
                 throw new Error(
                     result.message || "Registration failed"
                 );
             }
-
-            console.log(
-                "Registration successful:",
-                result
-            );
-
             setSuccessMessage(
                 "Account created successfully! You can now sign in."
             );
             navigate("/dashboard");
-
             // Clear signup form
             reset();
 
@@ -141,11 +123,6 @@ const AuthPanel = ({ isOpen, onClose }) => {
             }, 1000);
 
         } catch (error) {
-            console.error(
-                "Registration error:",
-                error
-            );
-
             setServerError(
                 error.message ||
                 "Something went wrong. Please try again."
@@ -162,8 +139,6 @@ const AuthPanel = ({ isOpen, onClose }) => {
                 : "login"
         );
     };
-
-
     return (
         <div
             className={`fixed inset-0 z-[100] transition-all duration-300 ${isOpen
@@ -202,16 +177,12 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 className="h-4.5 w-4.5 text-gray-950"
                             >
                                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-
                                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                             </svg>
-
                         </div>
-
                         <span className="text-lg font-bold tracking-tight text-gray-950">
                             Shortify
                         </span>
-
                     </div>
                     {/* Close */}
                     <button
@@ -259,7 +230,6 @@ const AuthPanel = ({ isOpen, onClose }) => {
                     </div>
 
                     {/* ================= SERVER ERROR ================= */}
-
                     {serverError && (
                         <div className="mb-5 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
                             <svg
@@ -275,16 +245,13 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                     cy="12"
                                     r="9"
                                 />
-
                                 <path d="M12 8v4" />
                                 <path d="M12 16h.01" />
                             </svg>
-
                             <p className="text-sm font-medium text-red-600">
                                 {serverError}
                             </p>
                         </div>
-
                     )}
 
                     {/* ================= SUCCESS ================= */}
@@ -304,12 +271,10 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                     d="m5 12 4 4L19 6"
                                 />
                             </svg>
-
                             <p className="text-sm font-medium text-green-600">
                                 {successMessage}
                             </p>
                         </div>
-
                     )}
 
 
@@ -327,7 +292,6 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 >
                                     Email address
                                 </label>
-
                                 <input
                                     id="login-email"
                                     type="email"
@@ -349,7 +313,6 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                             : "border-gray-200 focus:border-yellow-400"
                                         }`}
                                 />
-
                                 {errors.email && (
                                     <p className="mt-1.5 text-xs font-medium text-red-500">
                                         {errors.email.message}
@@ -410,7 +373,6 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 disabled={isSubmitting}
                                 className="w-full rounded-lg bg-gray-950 py-3.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                             >
-
                                 {isSubmitting
                                     ? "Signing in..."
                                     : "Sign in"}

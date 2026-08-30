@@ -1,32 +1,25 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 
 const DashboardLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const openSidebar = () => {
-        setSidebarOpen(true);
-    };
-    const closeSidebar = () => {
-        setSidebarOpen(false);
-    };
+    const { user } = useOutletContext();
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* ================= SIDEBAR ================= */}
             <Sidebar
                 isOpen={sidebarOpen}
-                onClose={closeSidebar}
+                onClose={() => setSidebarOpen(false)}
+                user={user}
             />
-            {/* ================= MAIN AREA ================= */}
             <div className="min-h-screen lg:pl-[270px]">
-                {/* Top navigation */}
                 <Topbar
-                    onMenuClick={openSidebar}
+                    onMenuClick={() => setSidebarOpen(true)}
+                    user={user}
                 />
-                {/* Page content */}
                 <main className="min-h-[calc(100vh-80px)] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-                    <Outlet />
+                    <Outlet context={{ user }} />
                 </main>
             </div>
         </div>

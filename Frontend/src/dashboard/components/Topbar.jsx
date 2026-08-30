@@ -1,10 +1,7 @@
 const Topbar = ({ onMenuClick }) => {
-
     return (
         <header className="sticky top-0 z-30 flex h-20 items-center border-b border-gray-200 bg-white/90 px-4 backdrop-blur-md sm:px-6 lg:px-8">
-
             {/* Mobile menu */}
-
             <button
                 onClick={onMenuClick}
                 className="mr-3 flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 lg:hidden"
@@ -23,13 +20,9 @@ const Topbar = ({ onMenuClick }) => {
                 </svg>
             </button>
 
-
             {/* Search */}
-
             <div className="hidden max-w-md flex-1 sm:block">
-
                 <div className="relative">
-
                     <svg
                         viewBox="0 0 24 24"
                         fill="none"
@@ -43,7 +36,6 @@ const Topbar = ({ onMenuClick }) => {
                             d="m20 20-4-4"
                         />
                     </svg>
-
                     <input
                         type="text"
                         placeholder="Search links..."
@@ -53,20 +45,13 @@ const Topbar = ({ onMenuClick }) => {
                     <span className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md border border-gray-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-gray-400 md:block">
                         ⌘ K
                     </span>
-
                 </div>
-
             </div>
 
-
             {/* Right actions */}
-
             <div className="ml-auto flex items-center gap-2">
-
                 {/* Mobile search */}
-
                 <button className="flex h-10 w-10 items-center justify-center rounded-xl text-gray-500 hover:bg-gray-100 hover:text-gray-950 sm:hidden">
-
                     <svg
                         viewBox="0 0 24 24"
                         fill="none"
@@ -80,14 +65,10 @@ const Topbar = ({ onMenuClick }) => {
                             d="m20 20-4-4"
                         />
                     </svg>
-
                 </button>
 
-
                 {/* Notification */}
-
-                <button className="relative flex h-10 w-10 items-center justify-center rounded-xl text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-950">
-
+                <button className="relative cursor-pointer flex h-10 w-10 items-center justify-center rounded-xl text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-950">
                     <svg
                         viewBox="0 0 24 24"
                         fill="none"
@@ -105,35 +86,23 @@ const Topbar = ({ onMenuClick }) => {
                             d="M10 21h4"
                         />
                     </svg>
-
                     <span className="absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full bg-yellow-400 ring-2 ring-white" />
-
                 </button>
 
-
                 <div className="mx-1 h-7 w-px bg-gray-200" />
-
-
                 {/* User */}
-
                 <button className="flex items-center gap-2 rounded-xl p-1.5 pr-2 transition-colors hover:bg-gray-50">
-
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-950 text-[11px] font-bold text-white">
                         KM
                     </div>
-
                     <div className="hidden text-left md:block">
-
                         <p className="text-xs font-semibold text-gray-950">
                             Kartikeya
                         </p>
-
                         <p className="text-[10px] text-gray-400">
                             Free plan
                         </p>
-
                     </div>
-
                     <svg
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -145,11 +114,8 @@ const Topbar = ({ onMenuClick }) => {
                             clipRule="evenodd"
                         />
                     </svg>
-
                 </button>
-
             </div>
-
         </header>
     );
 };

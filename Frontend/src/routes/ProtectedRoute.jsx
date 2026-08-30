@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
     const [loading, setLoading] = useState(true);
-    const [authenticated, setAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
     useEffect(() => {
         const checkAuthentication = async () => {
             try {
@@ -14,25 +14,24 @@ const ProtectedRoute = () => {
                         credentials: "include"
                     }
                 );
-                if (response.ok) {
-                    setAuthenticated(true);
-                } else {
-                    setAuthenticated(false);
+                if (!response.ok) {
+                    setUser(null);
+                    return;
                 }
+                const result = await response.json();
+                setUser(result.user);
             } catch (error) {
                 console.error(
                     "Authentication check failed:",
                     error
                 );
-                setAuthenticated(false);
+                setUser(null);
             } finally {
                 setLoading(false);
             }
         };
         checkAuthentication();
-
     }, []);
-
     if (loading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -45,11 +44,12 @@ const ProtectedRoute = () => {
             </div>
         );
     }
-    if (!authenticated) {
+    if (!user) {
         return <Navigate to="/" replace />;
     }
-    return <Outlet />;
+    return (
+        <Outlet context={{ user }} />
+    );
 };
-
 
 export default ProtectedRoute;

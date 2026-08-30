@@ -10,13 +10,20 @@ function generateShortCode(length = 6) {
 }
 
 // Create shortened URL
-async function createShortUrl(originalUrl, userId = null) {
+async function createShortUrl(
+    originalUrl,
+    userId = null
+) {
     let parsedUrl;
     try {
-        parsedUrl = new globalThis.URL(originalUrl);
+        parsedUrl =
+            new globalThis.URL(originalUrl);
     } catch (error) {
-        throw new Error("Please provide a valid URL");
+        throw new Error(
+            "Please provide a valid URL"
+        );
     }
+
     if (
         parsedUrl.protocol !== "http:" &&
         parsedUrl.protocol !== "https:"
@@ -25,9 +32,9 @@ async function createShortUrl(originalUrl, userId = null) {
             "Only HTTP and HTTPS URLs are allowed"
         );
     }
+
     let shortCode;
     let existingUrl;
-
     do {
         shortCode = generateShortCode();
         existingUrl = await URLModel.findOne({
@@ -35,12 +42,24 @@ async function createShortUrl(originalUrl, userId = null) {
         });
     } while (existingUrl);
     const url = await URLModel.create({
-        originalUrl: parsedUrl.toString(),
+        originalUrl:
+            parsedUrl.toString(),
         shortCode,
         user: userId
     });
     return url;
 }
+
+// Get logged-in user's URLs
+async function getMyLinks(userId) {
+    const urls = await URLModel.find({
+        user: userId
+    }).sort({
+        createdAt: -1
+    });
+    return urls;
+}
+
 // Redirect short URL
 async function redirectToOriginalUrl(shortCode) {
     const url = await URLModel.findOne({
@@ -48,14 +67,19 @@ async function redirectToOriginalUrl(shortCode) {
     });
 
     if (!url) {
-        throw new Error("Short URL not found");
+        throw new Error(
+            "Short URL not found"
+        );
     }
     // Increment click count
     url.clicks += 1;
     await url.save();
     return url.originalUrl;
+
 }
+
 module.exports = {
     createShortUrl,
+    getMyLinks,
     redirectToOriginalUrl
 };

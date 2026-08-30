@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
     const productLinks = [
-        { name: "URL Shortener", href: "#" },
-        { name: "Dashboard", href: "#" },
+        { name: "URL Shortener", href: "#hero" },
+        { name: "Dashboard", href: "/dashboard" },
         { name: "Analytics", href: "#" },
         { name: "Link Management", href: "#" },
     ];
@@ -84,7 +84,7 @@ const Footer = () => {
 
                             {/* LinkedIn */}
                             <a
-                                href="#"
+                                href="https://www.linkedin.com/in/kartikeya-mishra-8199973a9"
                                 aria-label="LinkedIn"
                                 target="_blank"
                                 className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-800 text-gray-400 transition-all hover:border-gray-700 hover:bg-gray-900 hover:text-white"
@@ -114,12 +114,12 @@ const Footer = () => {
                         <ul className="mt-6 space-y-4">
                             {productLinks.map((link) => (
                                 <li key={link.name}>
-                                    <Link
-                                        to={link.href}
+                                    <a
+                                        href={link.href}
                                         className="text-sm text-gray-400 transition-colors hover:text-yellow-400"
                                     >
                                         {link.name}
-                                    </Link>
+                                    </a>
                                 </li>
                             ))}
                         </ul>
