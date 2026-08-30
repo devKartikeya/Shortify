@@ -1,17 +1,14 @@
 const EmptyLinks = ({ onCreate }) => {
-
     return (
         <div
             className="flex min-h-[250px] flex-col
             items-center justify-center px-6 text-center"
         >
-
             <div
                 className="flex h-14 w-14 items-center
                 justify-center rounded-2xl bg-yellow-50
                 text-yellow-600"
             >
-
                 <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -24,28 +21,20 @@ const EmptyLinks = ({ onCreate }) => {
                         strokeLinejoin="round"
                         d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
                     />
-
                     <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
                     />
                 </svg>
-
             </div>
-
-
             <h3 className="mt-4 text-sm font-semibold text-gray-950">
                 No links created yet
             </h3>
-
-
             <p className="mt-1 max-w-sm text-xs leading-5 text-gray-400">
                 Create your first short link and start tracking
                 clicks from your dashboard.
             </p>
-
-
             <button
                 onClick={onCreate}
                 className="mt-5 flex items-center gap-2
@@ -54,7 +43,6 @@ const EmptyLinks = ({ onCreate }) => {
                 transition-all hover:bg-gray-800
                 active:scale-[0.98]"
             >
-
                 <svg
                     viewBox="0 0 20 20"
                     fill="currentColor"
@@ -66,11 +54,8 @@ const EmptyLinks = ({ onCreate }) => {
                         clipRule="evenodd"
                     />
                 </svg>
-
                 Create your first link
-
             </button>
-
         </div>
     );
 };
