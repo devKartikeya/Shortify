@@ -102,7 +102,7 @@ const Footer = () => {
     const companyLinks = [
         {
             name: "About",
-            href: "#"
+            href: "/about"
         },
         {
             name: "Contact",
@@ -283,12 +283,12 @@ const Footer = () => {
                             <ul className="mt-6 space-y-4">
                                 {companyLinks.map((link) => (
                                     <li key={link.name}>
-                                        <Link
-                                            to={link.href}
+                                        <a
+                                            href={link.href}
                                             className="text-sm text-gray-400 transition-colors hover:text-yellow-400"
                                         >
                                             {link.name}
-                                        </Link>
+                                        </a>
                                     </li>
                                 ))}
                             </ul>

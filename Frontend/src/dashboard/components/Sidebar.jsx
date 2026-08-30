@@ -32,29 +32,6 @@ const navigation = [
         )
     },
     {
-        label: "Analytics",
-        path: "/dashboard/analytics",
-        icon: (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 19V5"
-                />
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 19h16"
-                />
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m7 15 3-4 3 2 5-7"
-                />
-            </svg>
-        )
-    },
-    {
         label: "QR Codes",
         path: "/dashboard/qr-codes",
         icon: (

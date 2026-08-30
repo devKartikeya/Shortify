@@ -5,6 +5,7 @@ import Overview from "./dashboard/pages/Overview";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import MyLinks from "./dashboard/pages/MyLinks";
 import QRCodes from "./dashboard/pages/QRCodes";
+import About from "./pages/About";
 
 const App = () => {
     return (
@@ -15,6 +16,7 @@ const App = () => {
                     path="/"
                     element={<Home />}
                 />
+                <Route path="/about" element={<About />} />
                 {/* Dashboard */}
                 <Route element={<ProtectedRoute />}>
                     <Route
