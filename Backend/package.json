@@ -1,5 +1,5 @@
 {
-  "name": "mern-url-shortener-devops",
+  "name": "shortify",
   "version": "1.0.0",
   "description": "It is a URL-Shortener built on MERN with best DevOps practises.",
   "license": "ISC",
