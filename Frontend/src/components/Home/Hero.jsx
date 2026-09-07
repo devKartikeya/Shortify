@@ -27,7 +27,7 @@ const Hero = () => {
         const checkAuth = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:3000/users/me",
+                    `${import.meta.env.VITE_API_URL}/users/me`,
                     {
                         method: "GET",
                         credentials: "include"
@@ -91,7 +91,7 @@ const Hero = () => {
 
         try {
             const response = await fetch(
-                "http://localhost:3000/urls/shorten",
+                `${import.meta.env.VITE_API_URL}/urls/shorten`,
                 {
                     method: "POST",
                     headers: {

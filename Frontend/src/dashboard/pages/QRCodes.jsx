@@ -17,7 +17,7 @@ const QRCodes = () => {
             setLoading(true);
             setError("");
             const response = await fetch(
-                "http://localhost:3000/urls/my-links",
+                `${import.meta.env.VITE_API_URL}/urls/my-links`,
                 {
                     method: "GET",
                     credentials: "include"
@@ -64,7 +64,7 @@ const QRCodes = () => {
     }, [links, search]);
 
     const getShortUrl = (link) => {
-        return `http://localhost:3000/${link.shortCode}`;
+        return `${import.meta.env.VITE_API_URL}/${link.shortCode}`;
     };
 
     const copyShortUrl = async () => {

@@ -44,7 +44,7 @@ const LinkCard = ({ link }) => {
 
     const shortUrl =
         link.shortUrl ||
-        `http://localhost:3000/${link.shortCode}`;
+        `${import.meta.env.VITE_API_URL}/${link.shortCode}`;
 
     return (
         <div

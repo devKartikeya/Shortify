@@ -75,7 +75,7 @@ const CreateLinkModal = ({
         setCopied(false);
         try {
             const response = await fetch(
-                "http://localhost:3000/urls/shorten/authenticated",
+                `${import.meta.env.VITE_API_URL}/urls/shorten/authenticated`,
                 {
                     method: "POST",
                     headers: {

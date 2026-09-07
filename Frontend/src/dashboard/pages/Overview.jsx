@@ -20,7 +20,7 @@ const Overview = () => {
                 setLoading(true);
                 setFetchError("");
                 const response = await fetch(
-                    "http://localhost:3000/urls/my-links",
+                    `${import.meta.env.VITE_API_URL}/urls/my-links`,
                     {
                         method: "GET",
                         credentials: "include"
