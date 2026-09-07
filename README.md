@@ -18,6 +18,11 @@ The application currently supports both **public URL shortening** and **authenti
 * Validates URLs before creating short links
 * Prevents short-code collisions
 
+### 🔗 QR-Code Generation
+
+* Generate QR-codes directly from links 
+* Analyze and track your qrs 
+
 ### 👤 User Accounts
 
 Authenticated users can create and manage their own shortened URLs.
@@ -503,6 +508,7 @@ The project is actively evolving.
 * [x] Dedicated My Links page
 * [x] Link search/filtering
 * [x] Professional dashboard UI
+* [x] QR-Code Generation
 
 ### Planned
 
@@ -511,8 +517,6 @@ The project is actively evolving.
 * [ ] Custom short aliases
 * [ ] Click history
 * [ ] Daily/weekly/monthly analytics
-* [ ] Click trends
-* [ ] QR code generation
 * [ ] Production deployment
 * [ ] More advanced analytics
 
