@@ -1,0 +1,14 @@
+services:
+
+  backend:
+    build: ./Backend
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: ./Frontend
+      args:
+        VITE_API_URL: http://localhost:3000
+    ports:
+      - "8080:80"
