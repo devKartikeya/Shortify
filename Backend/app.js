@@ -45,13 +45,4 @@ app.get('/', (req, res) => {
   res.send('Hello from Express backend!');
 });
 
-app.get("/redis-test", async (req, res) => {
-  await redisClient.set("name", "Kartikeya");
-  const name = await redisClient.get("name");
-  res.json({
-    message: "Redis is working!",
-    name
-  });
-});
-
 module.exports = app;
