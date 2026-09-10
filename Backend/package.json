@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "app.js",
   "scripts": {
-    "start": "node --env-file=.env server.js",
+    "start": "node --env-file=.env --watch server.js",
     "test": "jest"
   },
   "dependencies": {

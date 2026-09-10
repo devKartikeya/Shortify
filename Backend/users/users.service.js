@@ -5,25 +5,20 @@ const User = require("./users.model");
 
 async function userRegisterService(username, email, password) {
     const existingUsername = await User.findOne({ username });
-
     if (existingUsername) {
         throw new Error("Username already exists");
     }
 
     const existingEmail = await User.findOne({ email });
-
     if (existingEmail) {
         throw new Error("Email already registered");
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = await User.create({
         username,
         email,
         password: hashedPassword
     });
-
     const token = jwt.sign(
         {
             id: user._id,
@@ -35,7 +30,6 @@ async function userRegisterService(username, email, password) {
             expiresIn: "7d"
         }
     );
-
     return {
         token,
         user: {
