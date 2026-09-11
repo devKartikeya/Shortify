@@ -1,7 +1,7 @@
 const app = require("./app");
 const connectDB = require("./configurations/database");
 const redisClient = require("./configurations/redis");
-const syncClicksCount = require("./urls/urls.service").syncClicksCount;
+const { syncAllClickCounts } = require("./clicks-counters/syncAllClickCounts");
 
 const PORT = process.env.PORT || 3000;
 
@@ -14,8 +14,8 @@ async function startServer() {
   });
 
   setInterval(() => {
-    syncClicksCount("R2D3xs");
-  }, 60 * 1000);
+    syncAllClickCounts();
+  }, 20 * 1000);
 }
 
 startServer();

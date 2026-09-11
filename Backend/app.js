@@ -9,8 +9,6 @@ const userRouter = require("./users/users.route");
 const urlRouter = require("./urls/urls.route");
 
 const { redirectUrlController } = require("./urls/urls.controller");
-const { syncClicksCount } = require('./urls/urls.service');
-
 
 app.use(
   cors({
