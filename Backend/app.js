@@ -9,6 +9,7 @@ const userRouter = require("./users/users.route");
 const urlRouter = require("./urls/urls.route");
 
 const { redirectUrlController } = require("./urls/urls.controller");
+const { syncClicksCount } = require('./urls/urls.service');
 
 
 app.use(
@@ -22,6 +23,10 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+
+app.get("/inc", function(req ,res){
+  syncClicksCount(req, res, "R2D3xs");
+});
 
 app.get("/redis-test", async (req, res) => {
   await redisClient.set("name", "Kartikeya");
@@ -45,5 +50,6 @@ app.get(
 app.get('/', (req, res) => {
   res.send('Hello from Express backend!');
 });
+
 
 module.exports = app;
