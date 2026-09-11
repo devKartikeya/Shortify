@@ -2,7 +2,7 @@ const app = require("./app");
 const connectDB = require("./configurations/database");
 const redisClient = require("./configurations/redis");
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 async function startServer() {
   await connectDB();

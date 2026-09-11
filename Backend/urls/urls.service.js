@@ -16,6 +16,7 @@ async function createShortUrl(
     userId = null
 ) {
     let parsedUrl;
+
     try {
         parsedUrl =
             new globalThis.URL(originalUrl);
@@ -34,20 +35,34 @@ async function createShortUrl(
         );
     }
 
+    const normalizedUrl = parsedUrl.toString();
+
+    // Check if URL already exists
+    const existingUrl = await URLModel.findOne({
+        originalUrl: normalizedUrl
+    });
+
+    if (existingUrl) {
+        return existingUrl;
+    }
+
+    // Generate a unique short code
     let shortCode;
-    let existingUrl;
+    let existingShortCode;
+
     do {
         shortCode = generateShortCode();
-        existingUrl = await URLModel.findOne({
+        existingShortCode = await URLModel.findOne({
             shortCode
         });
-    } while (existingUrl);
+    } while (existingShortCode);
+
     const url = await URLModel.create({
-        originalUrl:
-            parsedUrl.toString(),
+        originalUrl: normalizedUrl,
         shortCode,
         user: userId
     });
+
     return url;
 }
 
@@ -66,7 +81,7 @@ async function redirectToOriginalUrl(shortCode) {
     const cacheKey = `shortify:url:${shortCode}`;
     const cachedUrl = await redisClient.get(cacheKey);
     if (cachedUrl) {
-         await URLModel.updateOne(
+        await URLModel.updateOne(
             { shortCode },
             { $inc: { clicks: 1 } }
         );
