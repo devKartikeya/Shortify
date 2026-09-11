@@ -79,13 +79,10 @@ async function getMyLinks(userId) {
 // Redirect short URL
 async function redirectToOriginalUrl(shortCode) {
     const cacheKey = `shortify:url:${shortCode}`;
+    const clickKey = `shortify:clicks:${shortCode}`;
     const cachedUrl = await redisClient.get(cacheKey);
     if (cachedUrl) {
-        await URLModel.updateOne(
-            { shortCode },
-            { $inc: { clicks: 1 } }
-        );
-
+        await redisClient.incr(clickKey);
         return cachedUrl;
     }
 
@@ -97,9 +94,6 @@ async function redirectToOriginalUrl(shortCode) {
             "Short URL not found"
         );
     }
-    // Increment click count
-    url.clicks += 1;
-    await url.save();
     await redisClient.set(
         cacheKey,
         url.originalUrl
