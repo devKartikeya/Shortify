@@ -24,10 +24,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-app.get("/inc", function(req ,res){
-  syncClicksCount(req, res, "R2D3xs");
-});
-
 app.get("/redis-test", async (req, res) => {
   await redisClient.set("name", "Kartikeya");
 

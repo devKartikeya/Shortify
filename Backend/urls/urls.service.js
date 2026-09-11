@@ -102,7 +102,7 @@ async function redirectToOriginalUrl(shortCode) {
     return url.originalUrl;
 }
 
-async function syncClicksCount(req, res, shortCode) {
+async function syncClicksCount(shortCode) {
     const clickKey = `shortify:clicks:${shortCode}`;
     // Atomically get the current count and reset it to 0
     const pendingClicks = await redisClient.getSet(
@@ -125,9 +125,6 @@ async function syncClicksCount(req, res, shortCode) {
                 clicks
             }
         }
-    );
-    return res.json(
-        "Ok"
     );
 }
 
