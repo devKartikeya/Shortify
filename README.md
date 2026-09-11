@@ -4,9 +4,9 @@
 
 Shortify is a full-stack URL shortening application that allows users to convert long URLs into compact, shareable links.
 
-The project supports both **public URL shortening** and **authenticated, user-specific link management**, with a professional dashboard for managing links and tracking their click activity.
+The project supports both **public URL shortening** and **authenticated, user-specific link management**, with a professional dashboard for managing links and tracking link performance.
 
-Shortify is also being progressively developed as an engineering-focused project rather than just a basic CRUD application, with emphasis on **clean architecture, caching, testing, containerization, CI automation, and scalable system design**.
+Shortify is being progressively developed as an engineering-focused project rather than just a basic CRUD application, with emphasis on **clean architecture, caching, rate limiting, performance optimization, testing, containerization, CI automation, and practical system design**.
 
 ---
 
@@ -20,6 +20,8 @@ Shortify is also being progressively developed as an engineering-focused project
 * Validates URLs before creating short links
 * Prevents short-code collisions
 * Public URL shortening
+* Detects duplicate original URLs
+* Reuses the existing short code when the same URL is shortened again
 
 ### 🔗 QR-Code Generation
 
@@ -61,10 +63,12 @@ The analytics are calculated from actual link data available in the application 
 Every time a short URL is visited:
 
 1. The short code is resolved
-2. The click counter is incremented
-3. The visitor is redirected to the original URL
+2. The URL is retrieved from Redis when cached
+3. The click counter is incremented in Redis
+4. The visitor is redirected to the original URL
+5. Redis click counts are periodically synchronized with MongoDB
 
-This allows authenticated users to monitor the current performance of their links.
+This allows frequent redirects to avoid a MongoDB read and avoids performing a MongoDB write for every individual click.
 
 ### 🗂️ Link Management
 
@@ -82,39 +86,37 @@ The interface provides:
 
 ---
 
-## 🏗️ Architecture
+# 🏗️ Architecture
 
 Shortify follows a modular backend architecture where responsibilities are separated across different layers.
 
 ```text
 Client
-   │
-   ▼
+  │
+  ▼
 Route
-   │
-   ▼
+  │
+  ▼
 Authentication Middleware
-   │
-   ▼
+  │
+  ▼
 Controller
-   │
-   ▼
+  │
+  ▼
 Service
-   │
-   ▼
+  │
+  ▼
 Model
-   │
-   ▼
+  │
+  ▼
 MongoDB
 ```
 
-The backend follows a:
+The backend follows:
 
 ```text
 Route → Controller → Service → Model
 ```
-
-separation.
 
 ### Routes
 
@@ -136,129 +138,408 @@ This separation keeps individual components focused and makes the application ea
 
 ---
 
-## ⚡ Redis
+# ⚡ Redis
 
-Shortify includes **Redis** as a separate in-memory data service.
+Shortify uses **Redis** as a high-speed in-memory data layer alongside MongoDB.
 
-Redis is being introduced as a performance-oriented layer alongside MongoDB.
-
-The intended architecture is:
-
-```text
-                ┌─────────────┐
-                │   Client    │
-                └──────┬──────┘
-                       │
-                       ▼
-                ┌─────────────┐
-                │   Backend   │
-                └──────┬──────┘
-                       │
-                 ┌─────┴─────┐
-                 │           │
-                 ▼           ▼
-             ┌───────┐   ┌─────────┐
-             │ Redis │   │ MongoDB │
-             └───────┘   └─────────┘
-```
-
-Redis is currently integrated with the Node.js backend and is being explored for use cases such as:
+Redis is used for multiple performance-oriented responsibilities:
 
 * URL caching
-* Faster repeated lookups
+* Faster repeated URL lookups
+* Click counters
+* Periodic click synchronization
 * Rate limiting
-* Atomic counters
-* Performance-oriented data access
+* Atomic operations
 
-MongoDB remains the primary persistent data store, while Redis is treated as a fast, derived/cache layer.
+MongoDB remains the **primary persistent source of truth**, while Redis stores fast, derived, or temporary state.
 
-### Planned URL Caching Flow
+```text
+                 ┌─────────────┐
+                 │   Client    │
+                 └──────┬──────┘
+                        │
+                        ▼
+                 ┌─────────────┐
+                 │   Backend   │
+                 └──────┬──────┘
+                        │
+                 ┌──────┴──────┐
+                 │             │
+                 ▼             ▼
+             ┌───────┐    ┌─────────┐
+             │ Redis │    │ MongoDB │
+             └───────┘    └─────────┘
+```
+
+---
+
+## 🚀 Redis URL Caching
+
+Shortify caches resolved original URLs in Redis.
+
+### Cache Key
+
+```text
+shortify:url:<shortCode>
+```
+
+For example:
+
+```text
+shortify:url:aB72xQ
+→ https://example.com/some/long/url
+```
+
+### Request Flow
 
 ```text
 GET /aB72xQ
       │
       ▼
-Check Redis
+  Check Redis
       │
-   ┌──┴───┐
-   │      │
- HIT     MISS
-   │      │
-   │      ▼
-   │   MongoDB
-   │      │
-   │      ▼
-   │   Store in Redis
-   │      │
-   └──┬───┘
-      ▼
-Original URL
-      │
-      ▼
+   ┌──┴────┐
+   │       │
+  HIT     MISS
+   │       │
+   │       ▼
+   │    MongoDB
+   │       │
+   │       ▼
+   │    Redis SET
+   │       │
+   └───┬───┘
+       ▼
+ Original URL
+       │
+       ▼
    Redirect
 ```
 
-This allows the system to reduce repeated database lookups for frequently accessed URLs.
+On a cache hit, the application can resolve the URL without performing a MongoDB read.
+
+MongoDB remains the persistent source of truth.
 
 ---
 
-## 🧠 System Design
+# 📊 Redis Click Counter
 
-Shortify is being developed with practical system-design principles rather than treating system design as a separate theoretical topic.
+Click counting has been optimized using Redis atomic counters.
 
-Some of the concepts being applied include:
+Instead of updating MongoDB on every redirect:
 
-* Separation of responsibilities
-* API layer separation
-* Database as the source of truth
-* Redis as a caching layer
-* Stateless authentication using JWT
-* Horizontal scalability considerations
-* Performance optimization through caching
-* Failure and fallback considerations
-* Modular service architecture
-* Containerized services
+```text
+Every request
+     ↓
+MongoDB $inc
+```
 
-The architecture can evolve as traffic and feature requirements increase.
+Shortify now uses:
+
+```text
+Every request
+     ↓
+Redis INCR
+```
+
+The click counter uses keys such as:
+
+```text
+shortify:clicks:<shortCode>
+```
 
 For example:
 
 ```text
-Current
-
-Client
-  │
-  ▼
-Backend
-  │
-  ├── Redis
-  │
-  └── MongoDB
+shortify:clicks:aB72xQ
+→ 137
 ```
 
-can later evolve toward:
-
-```text
-                    ┌─────────────┐
-                    │ Load Balancer│
-                    └──────┬──────┘
-                           │
-              ┌────────────┼────────────┐
-              ▼            ▼            ▼
-          Backend 1    Backend 2    Backend 3
-              │            │            │
-              └────────────┼────────────┘
-                           │
-                    ┌──────┴──────┐
-                    │             │
-                  Redis        MongoDB
-```
-
-The goal is to introduce complexity only when the underlying requirements justify it.
+Redis's atomic `INCR` operation allows multiple requests to safely increment the same counter.
 
 ---
 
-## 🧪 Testing
+## 🔄 Click Counter Synchronization
+
+Redis provides the high-speed counter while MongoDB provides durable persistence.
+
+```text
+                 User Clicks
+                      │
+                      ▼
+                 Redis INCR
+                      │
+                      ▼
+             Redis Click Counter
+                      │
+                      │
+               Periodic Sync
+                      │
+                      ▼
+                 MongoDB $inc
+```
+
+Example:
+
+```text
+MongoDB
+clicks = 500
+
+Redis
+pending clicks = 37
+```
+
+During synchronization:
+
+```text
+Redis
+37
+ │
+ ├── atomically claimed
+ ▼
+0
+```
+
+Then:
+
+```text
+MongoDB
+500 + 37
+   ↓
+537
+```
+
+If new clicks arrive during or after synchronization, they accumulate separately in Redis and are persisted during the next synchronization cycle.
+
+This design significantly reduces MongoDB write pressure for frequently accessed URLs.
+
+### Why not write directly to MongoDB?
+
+The simpler design would be:
+
+```text
+Request
+  ↓
+MongoDB $inc
+  ↓
+Redirect
+```
+
+But a highly accessed short URL could generate a MongoDB write for every click.
+
+The Redis-based design changes this to:
+
+```text
+Request
+  ↓
+Redis INCR
+  ↓
+Redirect
+
+Periodic batch
+  ↓
+MongoDB
+```
+
+This introduces a deliberate trade-off:
+
+> **Higher write performance in exchange for temporarily delayed persistence of click counts.**
+
+This is one of the practical system-design trade-offs currently explored in Shortify.
+
+---
+
+# 🛡️ Rate Limiting
+
+Shortify also uses **Redis-backed rate limiting** to control excessive requests.
+
+Redis provides a fast shared state store for tracking request activity.
+
+Conceptually:
+
+```text
+Client
+  │
+  ▼
+Request
+  │
+  ▼
+Rate Limiter
+  │
+  ▼
+Redis
+  │
+  ├── Within limit → Allow
+  │
+  └── Limit exceeded → Reject
+```
+
+Using Redis for rate limiting allows request counters to be shared across backend instances rather than keeping the state only inside one Node.js process.
+
+This also makes the rate-limiting layer more suitable for a horizontally scalable backend architecture.
+
+---
+
+# 🧠 System Design
+
+Shortify is being developed with practical system-design principles rather than treating system design as a separate theoretical topic.
+
+The architecture has evolved by identifying actual problems and introducing components to solve them.
+
+### Example: URL Resolution
+
+Initially:
+
+```text
+Request
+   ↓
+MongoDB
+   ↓
+Original URL
+   ↓
+Redirect
+```
+
+Problem:
+
+> Frequently accessed URLs repeatedly hit MongoDB.
+
+Solution:
+
+```text
+Redis Cache
+```
+
+---
+
+### Example: Click Counting
+
+After caching, another problem appeared.
+
+A cache hit avoided the MongoDB read, but click tracking still required a MongoDB write.
+
+```text
+Redis HIT
+   ↓
+MongoDB $inc
+   ↓
+Redirect
+```
+
+Problem:
+
+> High traffic could still generate a MongoDB write for every click.
+
+Solution:
+
+```text
+Redis INCR
+   ↓
+Periodic synchronization
+   ↓
+MongoDB $inc
+```
+
+But this introduced another trade-off:
+
+```text
+More performance
+      ↕
+Delayed persistence
+```
+
+This is the type of engineering reasoning Shortify is designed to explore.
+
+---
+
+## Core System-Design Principles
+
+Shortify currently applies:
+
+* Separation of responsibilities
+* API layer separation
+* Database as the persistent source of truth
+* Redis as a fast derived/cache layer
+* Redis caching
+* Redis atomic counters
+* Redis-based rate limiting
+* Periodic data synchronization
+* Stateless authentication using JWT
+* Horizontal scalability considerations
+* Performance optimization
+* Failure and fallback considerations
+* Modular service architecture
+* Containerized services
+* Automated testing
+
+The goal is not to introduce complexity for its own sake.
+
+> **A component should exist because there is a problem worth solving.**
+
+---
+
+## 📐 Current Architecture
+
+```text
+                         ┌─────────────┐
+                         │   Client    │
+                         └──────┬──────┘
+                                │
+                                ▼
+                         ┌─────────────┐
+                         │   Backend   │
+                         └──────┬──────┘
+                                │
+                    ┌───────────┼───────────┐
+                    │           │           │
+                    ▼           ▼           ▼
+                 Redis      MongoDB     Rate Limiter
+                    │           │
+                    │           │
+          ┌─────────┼──────┐    │
+          │         │      │    │
+          ▼         ▼      ▼    │
+       URL Cache  Clicks  Rate   │
+                          Limit  │
+          │         │            │
+          │         ▼            │
+          │    Periodic Sync ────┘
+          │
+          ▼
+       Fast Reads
+```
+
+---
+
+## 📈 Future Scalability
+
+The current architecture can evolve as traffic increases.
+
+```text
+                         ┌───────────────┐
+                         │ Load Balancer │
+                         └───────┬───────┘
+                                 │
+                ┌────────────────┼────────────────┐
+                │                │                │
+                ▼                ▼                ▼
+            Backend 1        Backend 2        Backend 3
+                │                │                │
+                └────────────────┼────────────────┘
+                                 │
+                         ┌───────┴───────┐
+                         │               │
+                         ▼               ▼
+                      Redis          MongoDB
+```
+
+Because Redis provides shared cache, counters, and rate-limiting state, multiple backend instances can work with the same Redis layer.
+
+The architecture can therefore move toward horizontal scaling when actual traffic requirements justify it.
+
+---
+
+# 🧪 Testing
 
 Shortify uses **Jest** and **Supertest** for backend testing.
 
@@ -291,24 +572,24 @@ Response
 Assertions
 ```
 
-The Express application is separated from the server bootstrap so that tests can run without starting the production server or unnecessarily establishing database connections.
+The Express application is separated from the server bootstrap so tests can run without starting the production server or unnecessarily establishing database connections.
 
 ---
 
-## 🐳 Docker
+# 🐳 Docker
 
 Shortify is containerized using Docker.
 
-The project uses separate containers for its application services.
+The application uses separate containers for its application services.
 
 ```text
 Docker
-│
-├── Frontend Container
-│   └── Nginx
-│
-└── Backend Container
-    └── Node.js
+ │
+ ├── Frontend Container
+ │      └── Nginx
+ │
+ └── Backend Container
+        └── Node.js
 ```
 
 Docker provides:
@@ -327,6 +608,7 @@ The frontend uses a **multi-stage Docker build**:
 Node.js
    │
    ├── Install dependencies
+   │
    ├── Build React application
    │
    ▼
@@ -343,7 +625,7 @@ The backend runs inside a Node.js container.
 
 ---
 
-## 🧩 Docker Compose
+# 🧩 Docker Compose
 
 Docker Compose is used to coordinate the application services.
 
@@ -367,7 +649,7 @@ MongoDB can remain externally hosted, such as through MongoDB Atlas, while appli
 
 ---
 
-## 🔄 CI with GitHub Actions
+# 🔄 CI with GitHub Actions
 
 Shortify uses **GitHub Actions** for Continuous Integration.
 
@@ -407,9 +689,9 @@ The CI pipeline helps ensure that changes can be tested and that the application
 
 ---
 
-## 🔌 API
+# 🔌 API
 
-### Public URL Shortening
+## Public URL Shortening
 
 ```http
 POST /urls/shorten
@@ -423,25 +705,33 @@ Request:
 }
 ```
 
-Response:
+The service validates the URL and checks whether the same normalized URL already exists.
 
-```json
-{
-  "success": true,
-  "message": "URL shortened successfully",
-  "data": {
-    "originalUrl": "https://example.com/some/long/url",
-    "shortCode": "aB72xQ",
-    "shortUrl": "http://localhost:3000/aB72xQ",
-    "clicks": 0,
-    "createdAt": "..."
-  }
-}
+If it exists:
+
+```text
+Existing URL
+     ↓
+Existing shortCode
+     ↓
+Return existing link
+```
+
+Otherwise:
+
+```text
+New URL
+   ↓
+Generate shortCode
+   ↓
+Check short-code collision
+   ↓
+Save
 ```
 
 ---
 
-### Authenticated URL Shortening
+## Authenticated URL Shortening
 
 ```http
 POST /urls/shorten/authenticated
@@ -451,9 +741,11 @@ Requires authentication.
 
 The generated URL is associated with the authenticated user and subsequently appears in their dashboard.
 
+If the original URL already exists according to the application's deduplication rules, the existing short link can be reused rather than creating another duplicate record.
+
 ---
 
-### Get My Links
+## Get My Links
 
 ```http
 GET /urls/my-links
@@ -465,7 +757,7 @@ Returns the shortened URLs belonging to the currently authenticated user.
 
 ---
 
-### Redirect Short URL
+## Redirect Short URL
 
 ```http
 GET /:shortCode
@@ -473,13 +765,36 @@ GET /:shortCode
 
 When a valid short code is requested:
 
-1. The short code is resolved
-2. The click count is incremented
-3. The user is redirected to the original URL
+```text
+Request
+  ↓
+Check Redis URL cache
+  ↓
+HIT ───────────────┐
+  │                │
+  │              MISS
+  │                │
+  │                ▼
+  │             MongoDB
+  │                │
+  │                ▼
+  │            Redis SET
+  │                │
+  └───────┬────────┘
+          ▼
+    Original URL
+          │
+          ├── Redis INCR
+          │
+          ▼
+       Redirect
+```
+
+The click count is maintained in Redis and periodically synchronized with MongoDB.
 
 ---
 
-## 🔐 Authentication
+# 🔐 Authentication
 
 Shortify uses cookie-based authentication with JWT.
 
@@ -506,7 +821,7 @@ Authentication is handled independently from the application's business logic th
 
 ---
 
-## 🔐 URL Validation
+# 🔐 URL Validation
 
 Shortify validates URLs before storing them.
 
@@ -519,28 +834,38 @@ https://
 
 Invalid URLs are rejected before a database record is created.
 
+The URL is normalized before duplicate detection so that equivalent normalized values can be handled consistently.
+
 ---
 
-## 📊 Current Analytics Model
+# 📊 Current Analytics Model
 
-Shortify intentionally keeps its current analytics model simple and accurate.
-
-The current URL model stores an aggregate click count:
+Shortify currently maintains an aggregate click count for each link.
 
 ```text
 Link
  └── clicks: 42
 ```
 
+The important distinction is that the counter is now updated through Redis during normal redirect traffic and periodically persisted to MongoDB.
+
+MongoDB ultimately stores the durable aggregate count.
+
 Therefore, the application can reliably calculate:
 
 ```text
 Total Links
+
 Total Clicks
+
 Average Clicks / Link
+
 Links With Clicks
+
 Unused Links
+
 Best Performing Link
+
 Best Link's Click Share
 ```
 
@@ -564,7 +889,9 @@ Links with clicks = 7
 Unused links = 3
 ```
 
-### Why no fake time-series analytics?
+---
+
+## Why no fake time-series analytics?
 
 The current model does not store individual click events.
 
@@ -584,7 +911,7 @@ This keeps the current dashboard transparent and based on actual available data.
 
 ---
 
-## 📁 Project Structure
+# 📁 Project Structure
 
 ```text
 Shortify/
@@ -634,23 +961,23 @@ Shortify/
 
 ---
 
-## 🚀 Getting Started
+# 🚀 Getting Started
 
-### 1. Clone the repository
+## 1. Clone the repository
 
 ```bash
 git clone https://github.com/devKartikeya/Shortify.git
 cd Shortify
 ```
 
-### 2. Install backend dependencies
+## 2. Install backend dependencies
 
 ```bash
 cd Backend
 npm install
 ```
 
-### 3. Configure environment variables
+## 3. Configure environment variables
 
 Create a `.env` file inside the `Backend` directory.
 
@@ -664,7 +991,7 @@ JWT_SECRET=your_secret
 
 Use the actual environment variables required by the current backend configuration.
 
-### 4. Start Redis
+## 4. Start Redis
 
 Make sure Redis is running locally.
 
@@ -674,13 +1001,13 @@ The default Redis connection is:
 redis://localhost:6379
 ```
 
-### 5. Start the backend
+## 5. Start the backend
 
 ```bash
 npm start
 ```
 
-### 6. Start the frontend
+## 6. Start the frontend
 
 Open another terminal:
 
@@ -694,9 +1021,7 @@ The frontend will then be available through the Vite development server.
 
 ---
 
-## 🐳 Running with Docker Compose
-
-The application can also be built using Docker Compose.
+# 🐳 Running with Docker Compose
 
 From the project root:
 
@@ -708,7 +1033,7 @@ This builds the application containers according to their respective Dockerfiles
 
 ---
 
-## 🧪 Running Tests
+# 🧪 Running Tests
 
 From the backend directory:
 
@@ -720,7 +1045,7 @@ The backend test suite uses Jest and Supertest.
 
 ---
 
-## 📌 Example
+# 📌 Example
 
 Suppose the original URL is:
 
@@ -740,13 +1065,22 @@ When someone opens:
 /aB72xQ
 ```
 
-Shortify resolves the short code, increments the click counter, and redirects the visitor to the original URL.
+Shortify:
 
-The authenticated owner can then see the link and its current click count from the dashboard.
+```text
+1. Checks Redis for the original URL
+2. Falls back to MongoDB on a cache miss
+3. Caches the URL in Redis
+4. Increments the Redis click counter
+5. Redirects the visitor
+6. Periodically persists accumulated clicks to MongoDB
+```
+
+The authenticated owner can then see the link and its persisted click count from the dashboard.
 
 ---
 
-## 🎯 Project Goals
+# 🎯 Project Goals
 
 Shortify is being developed with a focus on:
 
@@ -757,30 +1091,40 @@ Shortify is being developed with a focus on:
 * Maintainable React components
 * REST API design
 * Accurate analytics
-* Redis and caching
+* Redis caching
+* Redis atomic counters
+* Redis-based rate limiting
 * Automated testing
 * Docker containerization
+* Docker Compose
 * CI automation
 * Practical system design
-* Performance and scalability considerations
+* Performance optimization
+* Scalability considerations
 * Professional UI/UX
 
 The goal is not simply to create another URL shortener.
 
-The project is being progressively evolved into a **production-style engineering project** where new technologies and architectural decisions are introduced when they solve an actual problem.
+The project is being progressively evolved into a **production-style engineering project** where architectural decisions are introduced when they solve actual problems.
+
+The focus is on understanding:
+
+> **Why a component exists, what problem it solves, what trade-offs it introduces, and how it interacts with the rest of the system.**
 
 ---
 
-## 🛣️ Roadmap
+# 🛣️ Roadmap
 
 The project is actively evolving.
 
-### Completed
+## Completed
 
 * [x] URL shortening
 * [x] Unique short-code generation
 * [x] URL validation
 * [x] URL redirection
+* [x] Duplicate URL detection
+* [x] Existing short-code reuse
 * [x] Click counting
 * [x] User authentication
 * [x] Cookie-based JWT authentication
@@ -795,29 +1139,33 @@ The project is actively evolving.
 * [x] Modular backend architecture
 * [x] Jest/Supertest backend testing
 * [x] Redis integration
+* [x] Redis URL caching
+* [x] Redis atomic click counters
+* [x] Periodic Redis → MongoDB click synchronization
+* [x] Redis-based rate limiting
 * [x] Docker containerization
 * [x] Docker Compose
 * [x] GitHub Actions CI
 
-### Planned
+## Planned
 
-* [ ] Redis URL caching
-* [ ] Redis-based rate limiting
-* [ ] Redis-backed click counter optimization
 * [ ] Link deletion
 * [ ] Link editing
 * [ ] Custom short aliases
 * [ ] Click history
 * [ ] Daily/weekly/monthly analytics
 * [ ] Advanced analytics
+* [ ] Improved cache invalidation strategies
+* [ ] Redis failure/fallback handling
 * [ ] Production deployment
 * [ ] Continuous Deployment
+* [ ] Further scalability improvements
 
-> The roadmap is intentionally incremental. Features will be added as the underlying requirements, data model, and architecture support them properly.
+> The roadmap is intentionally incremental. Features are added as the underlying requirements, data model, and architecture support them properly.
 
 ---
 
-## 🔮 Future Analytics
+# 🔮 Future Analytics
 
 Once individual click events are stored, the analytics system can evolve from simple aggregate statistics into actual historical analytics.
 
@@ -844,11 +1192,17 @@ This would make features such as:
 
 ```text
 Today
+
 Last 7 Days
+
 Last 30 Days
+
 Click Trends
+
 Peak Activity
+
 Traffic Sources
+
 Device Breakdown
 ```
 
@@ -856,7 +1210,7 @@ possible without fabricating data.
 
 ---
 
-## 🤝 Contributing
+# 🤝 Contributing
 
 This project is primarily being developed as a learning and portfolio project.
 
@@ -866,9 +1220,13 @@ If you'd like to contribute:
 
 ```bash
 git fork
+
 git clone
+
 git checkout -b feature/your-feature
+
 git commit -m "Add your feature"
+
 git push
 ```
 
@@ -876,7 +1234,7 @@ Then open a pull request.
 
 ---
 
-## 📄 License
+# 📄 License
 
 This project is currently intended for educational and portfolio purposes.
 
@@ -884,7 +1242,7 @@ A formal license can be added as the project moves toward public production use.
 
 ---
 
-## ⭐ About
+# ⭐ About
 
 **Shortify** is a full-stack URL shortening project built to explore and apply real-world engineering concepts:
 
@@ -896,10 +1254,16 @@ REST APIs
 Authentication
    ↓
 MongoDB
-   ↓
+   ↕
 Redis
    ↓
 Caching
+   ↓
+Atomic Counters
+   ↓
+Rate Limiting
+   ↓
+Periodic Synchronization
    ↓
 Testing
    ↓
@@ -914,7 +1278,11 @@ System Design
 
 The project is intentionally evolving from a simple MERN application into a more complete **full-stack + DevOps + system-design engineering project**.
 
-The focus is not on adding technologies for the sake of a tech stack, but on understanding **why each component exists, what problem it solves, and how the components work together as a system.**
+The focus is not on adding technologies for the sake of a tech stack.
+
+The focus is on understanding:
+
+> **the problem, the solution, the trade-off, and the reason behind every architectural decision.**
 
 ---
 
