@@ -15,7 +15,7 @@ async function startServer() {
 
   setInterval(() => {
     syncAllClickCounts();
-  }, 20 * 1000);
+  }, 60 * 1000);
 }
 
 startServer();

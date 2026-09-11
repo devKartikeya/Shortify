@@ -1,14 +1,23 @@
 const express = require('express');
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const { rateLimit } = require("express-rate-limit");
 const redisClient = require("./configurations/redis");
+const { redirectUrlController } = require("./urls/urls.controller");
 
 const app = express();
 
 const userRouter = require("./users/users.route");
 const urlRouter = require("./urls/urls.route");
 
-const { redirectUrlController } = require("./urls/urls.controller");
+const rateLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: "Too many requests, try later on !",
+  statusCode: 429
+});
 
 app.use(
   cors({
@@ -17,6 +26,8 @@ app.use(
     credentials: true
   })
 );
+
+app.use(rateLimiter);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
