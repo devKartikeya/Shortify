@@ -1,0 +1,17 @@
+{
+  "name": "shortify-loadbalancer",
+  "version": "1.0.0",
+  "description": "It is the load balancer to distribute load on the distributed servers of shortify",
+  "license": "ISC",
+  "author": "KM",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "http-proxy": "^1.18.1"
+  }
+}
