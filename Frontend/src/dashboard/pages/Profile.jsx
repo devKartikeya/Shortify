@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 const Profile = () => {
     const { user } = useOutletContext();
-
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deletingAccount, setDeletingAccount] = useState(false);
     const [links, setLinks] = useState([]);
     const [loadingStats, setLoadingStats] = useState(true);
 
@@ -21,11 +22,28 @@ const Profile = () => {
 
                 const data = await response.json();
 
-                if (response.ok) {
-                    setLinks(data.data || data || []);
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Failed to fetch profile stats"
+                    );
                 }
+
+                // Handles:
+                // { data: [...] }
+                // { links: [...] }
+                // or directly [...]
+                const fetchedLinks = Array.isArray(data)
+                    ? data
+                    : Array.isArray(data.data)
+                        ? data.data
+                        : Array.isArray(data.links)
+                            ? data.links
+                            : [];
+
+                setLinks(fetchedLinks);
             } catch (error) {
                 console.error("Failed to fetch profile stats:", error);
+                setLinks([]);
             } finally {
                 setLoadingStats(false);
             }
@@ -42,20 +60,15 @@ const Profile = () => {
             0
         );
 
-        const activeLinks = links.filter(
-            (link) => link.isActive !== false
-        ).length;
-
-        const clickRate =
+        const averageClicks =
             totalLinks > 0
-                ? ((totalClicks / totalLinks) * 100).toFixed(1)
+                ? (totalClicks / totalLinks).toFixed(1)
                 : "0.0";
 
         return {
             totalLinks,
             totalClicks,
-            activeLinks,
-            clickRate,
+            averageClicks,
         };
     }, [links]);
 
@@ -71,6 +84,30 @@ const Profile = () => {
         })
         : "Not available";
 
+    const deleteAccount = async () => {
+        try {
+            setDeletingAccount(true);
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/users/delete`,
+                {
+                    method: "DELETE",
+                    credentials: "include",
+                }
+            );
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Failed to delete account"
+                );
+            }
+
+            window.location.href = "/";
+        } catch (error) {
+            console.error("Failed to delete account:", error);
+            setDeletingAccount(false);
+        }
+    };
+
     return (
         <div className="space-y-6 pb-8">
             {/* Header */}
@@ -78,6 +115,7 @@ const Profile = () => {
                 <h1 className="text-2xl font-semibold text-gray-900">
                     Profile
                 </h1>
+
                 <p className="mt-1 text-sm text-gray-500">
                     Manage your account and view your Shortify activity.
                 </p>
@@ -123,7 +161,7 @@ const Profile = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
                 <StatCard
                     label="Total Links"
                     value={stats.totalLinks}
@@ -137,18 +175,8 @@ const Profile = () => {
                 />
 
                 <StatCard
-                    label="Active Links"
-                    value={stats.activeLinks}
-                    loading={loadingStats}
-                />
-
-                <StatCard
                     label="Avg. Clicks / Link"
-                    value={
-                        stats.totalLinks
-                            ? (stats.totalClicks / stats.totalLinks).toFixed(1)
-                            : "0.0"
-                    }
+                    value={stats.averageClicks}
                     loading={loadingStats}
                 />
             </div>
@@ -206,22 +234,29 @@ const Profile = () => {
                     <div className="space-y-4">
                         <ActivityRow
                             label="Links created"
-                            value={loadingStats ? "..." : stats.totalLinks}
+                            value={
+                                loadingStats
+                                    ? "..."
+                                    : stats.totalLinks
+                            }
                         />
 
                         <ActivityRow
                             label="Total clicks"
-                            value={loadingStats ? "..." : stats.totalClicks}
+                            value={
+                                loadingStats
+                                    ? "..."
+                                    : stats.totalClicks
+                            }
                         />
 
                         <ActivityRow
-                            label="Active links"
-                            value={loadingStats ? "..." : stats.activeLinks}
-                        />
-
-                        <ActivityRow
-                            label="Click rate"
-                            value={loadingStats ? "..." : `${stats.clickRate}%`}
+                            label="Avg. clicks / link"
+                            value={
+                                loadingStats
+                                    ? "..."
+                                    : stats.averageClicks
+                            }
                         />
                     </div>
                 </div>
@@ -246,7 +281,8 @@ const Profile = () => {
                         </p>
 
                         <p className="mt-1 text-xs text-gray-500">
-                            Update your password regularly to keep your account protected.
+                            Update your password regularly to keep your
+                            account protected.
                         </p>
                     </div>
 
@@ -278,18 +314,88 @@ const Profile = () => {
                         </p>
 
                         <p className="mt-1 text-xs text-gray-500">
-                            Permanently delete your account and associated data.
+                            Permanently delete your account and associated
+                            data.
                         </p>
                     </div>
 
                     <button
                         type="button"
+                        onClick={() => setShowDeleteModal(true)}
                         className="w-fit rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
                     >
                         Delete Account
                     </button>
                 </div>
             </div>
+            {/* Delete Account Modal */}
+            {
+                showDeleteModal && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm"
+                        onClick={() => {
+                            if (!deletingAccount) {
+                                setShowDeleteModal(false);
+                            }
+                        }}
+                    >
+                        <div
+                            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Icon */}
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50">
+                                <svg
+                                    className="h-6 w-6 text-red-600"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 9v4m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"
+                                    />
+                                </svg>
+                            </div>
+
+                            {/* Content */}
+                            <div className="mt-5">
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    Delete your account?
+                                </h2>
+
+                                <p className="mt-2 text-sm leading-6 text-gray-500">
+                                    This action cannot be undone. Your account and
+                                    associated data will be permanently deleted.
+                                </p>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="mt-6 flex justify-end gap-3">
+                                <button
+                                    type="button"
+                                    disabled={deletingAccount}
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="button"
+                                    disabled={deletingAccount}
+                                    onClick={deleteAccount}
+                                    className="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
+                                >
+                                    {deletingAccount ? "Deleting..." : "Delete Account"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
         </div>
     );
 };

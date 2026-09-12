@@ -79,8 +79,13 @@ async function userLoginService(email, password) {
     };
 }
 
+function deleteUserService(userId) {
+    return User.findByIdAndDelete(userId);
+}
+
 
 module.exports = {
     userRegisterService,
-    userLoginService
+    userLoginService,
+    deleteUserService
 };

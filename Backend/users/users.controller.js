@@ -1,8 +1,8 @@
 const {
     userRegisterService,
-    userLoginService
+    userLoginService,
+    deleteUserService
 } = require("./users.service");
-
 
 async function userRegisterController(req, res) {
     try {
@@ -95,8 +95,29 @@ function getCurrentUserController(req, res) {
     });
 }
 
+function deleteUserController(req, res) {
+    // Here you can implement the logic to delete the user from the database
+    // For now, we'll just return a success message
+    deleteUserService(req.user.id)
+        .then(() => {
+            res.status(200).json({
+                success: true,
+                message: "User deleted successfully"
+            });
+        })
+        .catch((error) => {
+            res.status(500).json({
+                success: false,
+                message: "Failed to delete user",
+                error: error.message
+            });
+        });
+
+}
+
 module.exports = {
     userRegisterController,
     userLoginController,
-    getCurrentUserController
+    getCurrentUserController,
+    deleteUserController
 };

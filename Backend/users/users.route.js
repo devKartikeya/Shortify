@@ -3,7 +3,8 @@ const express = require("express");
 const {
     userRegisterController,
     userLoginController,
-    getCurrentUserController
+    getCurrentUserController,
+    deleteUserController
 } = require("./users.controller");
 
 const authMiddleware = require("../middleware/authentication.middleware");
@@ -16,5 +17,6 @@ router.post("/login", userLoginController);
 
 router.get("/me", authMiddleware, getCurrentUserController);
 
+router.delete("/delete", authMiddleware, deleteUserController);
 
 module.exports = router;
