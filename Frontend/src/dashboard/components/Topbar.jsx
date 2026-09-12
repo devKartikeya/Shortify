@@ -1,4 +1,12 @@
+import { useNavigate } from "react-router-dom";
+
 const Topbar = ({ onMenuClick }) => {
+    const navigate = useNavigate();
+
+    const goToProfile = () => {
+        // Navigate to the profile page with the username as a parameter
+        navigate(`/dashboard/profile/${"Kartikeya"}`); // Replace "Kartikeya" with the actual username
+    };
     return (
         <header className="sticky top-0 z-30 flex h-20 items-center border-b border-gray-200 bg-white/90 px-4 backdrop-blur-md sm:px-6 lg:px-8">
             {/* Mobile menu */}
@@ -91,7 +99,7 @@ const Topbar = ({ onMenuClick }) => {
 
                 <div className="mx-1 h-7 w-px bg-gray-200" />
                 {/* User */}
-                <button className="flex items-center gap-2 rounded-xl p-1.5 pr-2 transition-colors hover:bg-gray-50">
+                <button onClick={goToProfile} className="cursor-pointer flex items-center gap-2 rounded-xl p-1.5 pr-2 transition-colors hover:bg-gray-50">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-950 text-[11px] font-bold text-white">
                         KM
                     </div>

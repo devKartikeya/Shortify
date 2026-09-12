@@ -1,7 +1,8 @@
 const {
     userRegisterService,
     userLoginService,
-    deleteUserService
+    deleteUserService,
+    changePasswordService
 } = require("./users.service");
 
 async function userRegisterController(req, res) {
@@ -115,9 +116,33 @@ function deleteUserController(req, res) {
 
 }
 
+function changePasswordController(req, res) {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({
+            success: false,
+            message: "New passwords do not match"
+        });
+    }
+    changePasswordService(req.user.id, oldPassword, newPassword)
+        .then(() => {
+            res.status(200).json({
+                success: true,
+                message: "Password changed successfully"
+            });
+        })
+        .catch((error) => {
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        });
+};
+
 module.exports = {
     userRegisterController,
     userLoginController,
     getCurrentUserController,
-    deleteUserController
+    deleteUserController,
+    changePasswordController
 };

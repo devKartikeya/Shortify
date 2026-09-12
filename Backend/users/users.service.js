@@ -83,9 +83,28 @@ function deleteUserService(userId) {
     return User.findByIdAndDelete(userId);
 }
 
+function changePasswordService(userId, oldPassword, newPassword) {
+    return User.findById(userId)
+        .then(async (user) => {
+            if (!user) {
+                throw new Error("User not found");
+            }
+            const isOldPasswordCorrect = await bcrypt.compare(
+                oldPassword,
+                user.password
+            );
+            if (!isOldPasswordCorrect) {
+                throw new Error("Current password is incorrect");
+            }
+            const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+            user.password = hashedNewPassword;
+            return user.save();
+        });
+}
 
 module.exports = {
     userRegisterService,
     userLoginService,
-    deleteUserService
+    deleteUserService,
+    changePasswordService
 };
