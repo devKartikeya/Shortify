@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const navigation = [
     {
@@ -87,6 +87,11 @@ const secondaryNavigation = [
 ];
 
 const Sidebar = ({ isOpen, onClose, user }) => {
+    const navigate = useNavigate();
+
+    const goToProfile = () => {
+        navigate(`/dashboard/profile/${user.username}`)
+    }
 
     const renderLink = (item) => (
         <NavLink
@@ -192,7 +197,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
 
                 {/* Bottom User Card */}
                 <div className="border-t border-gray-100 p-4">
-                    <button className="flex w-full items-center gap-3 rounded-xl p-2.5 text-left transition-colors hover:bg-gray-50 cursor-pointer">
+                    <button onClick={goToProfile} className="flex w-full items-center gap-3 rounded-xl p-2.5 text-left transition-colors hover:bg-gray-50 cursor-pointer">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-950 text-xs font-bold text-white">
                             {user.username.charAt(0).toUpperCase()}
                         </div>
