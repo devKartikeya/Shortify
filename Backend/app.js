@@ -8,21 +8,24 @@ const { redirectUrlController } = require("./urls/urls.controller");
 
 const app = express();
 
-app.use(corsOptions);
-app.use(rateLimiter);
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
+app.use(corsOptions); /* Apply CORS configuration to all routes */
+app.use(rateLimiter); /* Apply rate limiting to all routes */
+app.use(express.urlencoded({ extended: true })); /* Parse incoming URL-encoded requests */
+app.use(express.json()); /* Parse incoming JSON requests */
+app.use(cookieParser()); /* Parse cookies from incoming requests */
 
+/* Health Check Endpoint */
 app.get("/health", (req, res) => {
   res.status(200).json({
     "status": "UP"
   })
 });
 
+/* Mount Routers */
 app.use("/users", userRouter);
 app.use("/urls", urlRouter);
 
+/* Redirect Endpoint */
 app.get("/:shortCode", redirectUrlController);
 
 app.get('/', (req, res) => {
