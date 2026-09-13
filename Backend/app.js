@@ -29,7 +29,7 @@ app.use("/urls", urlRouter);
 app.get("/:shortCode", redirectUrlController);
 
 app.get('/', (req, res) => {
-  res.send('Hello from Express backend 2!');
+  res.send('Hello from Express backend!');
 });
 
 module.exports = app;

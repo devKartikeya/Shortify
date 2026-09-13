@@ -4,6 +4,7 @@ import { useOutletContext } from "react-router-dom";
 const Profile = () => {
     const { user } = useOutletContext();
 
+    const [loggingOut, setLoggingOut] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deletingAccount, setDeletingAccount] = useState(false);
 
@@ -30,6 +31,31 @@ const Profile = () => {
         type: "",
         text: "",
     });
+
+    const handleLogout = async () => {
+        try {
+            setLoggingOut(true);
+
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/users/logout`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to logout");
+            }
+
+            window.location.href = "/";
+        } catch (error) {
+            console.error("Failed to logout:", error);
+            setLoggingOut(false);
+        }
+    };
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -554,11 +580,10 @@ const Profile = () => {
                             <div className="min-h-5">
                                 {passwordMessage.text && (
                                     <div
-                                        className={`flex items-center gap-2 text-sm ${
-                                            passwordMessage.type === "success"
-                                                ? "text-green-600"
-                                                : "text-red-600"
-                                        }`}
+                                        className={`flex items-center gap-2 text-sm ${passwordMessage.type === "success"
+                                            ? "text-green-600"
+                                            : "text-red-600"
+                                            }`}
                                     >
                                         {passwordMessage.type === "success" ? (
                                             <SuccessIcon />
@@ -602,6 +627,51 @@ const Profile = () => {
                         </div>
                     </form>
                 )}
+            </div>
+
+            {/* Account Actions */}
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+                <div className="mb-5">
+                    <h2 className="text-lg font-semibold text-gray-900">
+                        Account Actions
+                    </h2>
+
+                    <p className="mt-1 text-sm text-gray-500">
+                        Manage your current account session.
+                    </p>
+                </div>
+
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p className="text-sm font-medium text-gray-900">
+                            Log out
+                        </p>
+
+                        <p className="mt-1 text-xs text-gray-500">
+                            Sign out of your Shortify account on this device.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={handleLogout}
+                        disabled={loggingOut}
+                        className="inline-flex w-fit items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        {loggingOut ? (
+                            <>
+                                <Spinner />
+                                Logging out...
+                            </>
+                        ) : (
+                            <>
+                                <LogoutIcon />
+                                Log out
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
 
             {/* Danger Zone */}
@@ -950,6 +1020,37 @@ const ErrorIcon = () => {
                 d="M12 16h.01"
                 strokeWidth="2"
                 strokeLinecap="round"
+            />
+        </svg>
+    );
+};
+
+const LogoutIcon = () => {
+    return (
+        <svg
+            className="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+        >
+            <path
+                d="M10 17l5-5-5-5"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+
+            <path
+                d="M15 12H3"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+            />
+
+            <path
+                d="M21 19V5a2 2 0 00-2-2h-5"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );
