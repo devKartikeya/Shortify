@@ -1,9 +1,11 @@
 /* Load Balancer (Round-Robin)*/
 const express = require("express");
 const httpProxy = require("http-proxy");
+const rateLimiter = require("./configurations/rate-limiter");
 const serverConfigurations = require("./configurations/servers");
 
 const app = express();
+app.use(rateLimiter);
 const proxy = httpProxy.createProxyServer();
 
 const servers = serverConfigurations();

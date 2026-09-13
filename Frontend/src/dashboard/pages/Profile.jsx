@@ -32,7 +32,7 @@ const Profile = () => {
         text: "",
     });
 
-    const handleLogout = async () => {3
+    const handleLogout = async () => {
         try {
             setLoggingOut(true);
 

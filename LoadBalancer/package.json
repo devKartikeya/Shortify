@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "http-proxy": "^1.18.1"
   }
 }

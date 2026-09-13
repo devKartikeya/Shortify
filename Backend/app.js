@@ -9,7 +9,7 @@ const { redirectUrlController } = require("./urls/urls.controller");
 const app = express();
 
 app.use(corsOptions); /* Apply CORS configuration to all routes */
-app.use(rateLimiter); /* Apply rate limiting to all routes */
+// app.use(rateLimiter); /* Apply rate limiting to all routes */
 app.use(express.urlencoded({ extended: true })); /* Parse incoming URL-encoded requests */
 app.use(express.json()); /* Parse incoming JSON requests */
 app.use(cookieParser()); /* Parse cookies from incoming requests */

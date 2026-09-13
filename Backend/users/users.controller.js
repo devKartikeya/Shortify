@@ -26,7 +26,7 @@ async function userRegisterController(req, res) {
             password
         );
 
-         // Store JWT in HTTP-only cookie
+        // Store JWT in HTTP-only cookie
         res.cookie("token", user.token, {
             httpOnly: true,
             secure: false,
@@ -97,10 +97,13 @@ function getCurrentUserController(req, res) {
 }
 
 function deleteUserController(req, res) {
-    // Here you can implement the logic to delete the user from the database
-    // For now, we'll just return a success message
     deleteUserService(req.user.id)
         .then(() => {
+            res.clearCookie("token", {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax"
+            });
             res.status(200).json({
                 success: true,
                 message: "User deleted successfully"
