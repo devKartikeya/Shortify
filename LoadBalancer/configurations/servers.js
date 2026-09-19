@@ -2,11 +2,11 @@
 function serverConfigurations() {
     return [
         {
-            url: "http://localhost:3000",
+            url: "http://host.docker.internal:3000",
             healthy: true
         },
         {
-            url: "http://localhost:3001",
+            url: "http://host.docker.internal:3001",
             healthy: true
         }
     ];
