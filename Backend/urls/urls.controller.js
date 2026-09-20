@@ -3,8 +3,8 @@ const {
     redirectToOriginalUrl,
     getMyLinks
 } = require("./urls.service");
+const redisClient = require("../configurations/redis");
 
-// Hello world is a test if a test ansd i can also personal project
 
 // Create short URL
 async function createShortUrlController(req, res) {
@@ -81,8 +81,15 @@ async function redirectUrlController(req, res) {
     }
 }
 
+async function clearRedisController(req, res){
+    await redisClient.flushAll();
+    console.log("Perfect , All cleared !");
+    res.json("Ok");
+}
+
 module.exports = {
     createShortUrlController,
     getMyLinksController,
-    redirectUrlController
+    redirectUrlController,
+    clearRedisController
 };

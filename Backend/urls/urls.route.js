@@ -2,7 +2,8 @@ const express = require("express");
 const {
     createShortUrlController,
     redirectUrlController,
-    getMyLinksController
+    getMyLinksController,
+    clearRedisController
 } = require("./urls.controller");
 
 const authMiddleware = require("../middleware/authentication.middleware");
@@ -27,5 +28,7 @@ router.get(
     authMiddleware,
     getMyLinksController
 );
+
+router.get("/clear-redis", clearRedisController)
 
 module.exports = router;

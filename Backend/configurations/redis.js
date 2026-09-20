@@ -1,6 +1,7 @@
 const { createClient } = require("redis");
 
 const redisClient = createClient({
+    // url: "redis://host.docker.internal:6379"
     url: "redis://localhost:6379"
 });
 
