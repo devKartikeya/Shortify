@@ -8,6 +8,7 @@ import QRCodes from "./dashboard/pages/QRCodes";
 import About from "./pages/About";
 import Profile from "./dashboard/pages/Profile";
 import Contact from "./pages/Contact";
+import HelpSupport from "./pages/HelpSupport";
 
 const App = () => {
     return (
@@ -20,6 +21,7 @@ const App = () => {
                 />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact/>} />
+                <Route path="/help" element={<HelpSupport/>}/>
                 {/* Dashboard */}
                 <Route element={<ProtectedRoute />}>
                     <Route
