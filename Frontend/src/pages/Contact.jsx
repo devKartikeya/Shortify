@@ -5,8 +5,9 @@ import {
     Clock3,
     ArrowUpRight,
     Send,
-    MapPin,
+    MapPin
 } from "lucide-react";
+import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 const Contact = () => {
     return (
@@ -155,6 +156,72 @@ const Contact = () => {
                                 short URL or describe what happened. It'll
                                 help us understand the issue faster.
                             </p>
+                        </div>
+
+                        {/* ================= SOCIAL LINKS ================= */}
+                        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+
+                            <div>
+                                <p className="text-sm font-semibold uppercase tracking-widest text-yellow-500">
+                                    Connect with us
+                                </p>
+
+                                <h3 className="mt-2 text-lg font-semibold text-slate-800">
+                                    Follow Shortify
+                                </h3>
+
+                                <p className="mt-2 text-sm leading-6 text-slate-500">
+                                    Stay connected for updates, new features, and everything we're
+                                    building around Shortify.
+                                </p>
+                            </div>
+
+                            <div className="mt-5 flex flex-wrap gap-3">
+
+                                {/* GitHub */}
+                                <a
+                                    href="https://github.com/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Shortify on GitHub"
+                                    className="group flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:bg-slate-900 hover:text-white hover:shadow-md"
+                                >
+                                    <FaGithub
+                                        size={19}
+                                        className="transition-transform duration-300 group-hover:scale-110"
+                                    />
+                                </a>
+
+                                {/* LinkedIn */}
+                                <a
+                                    href="https://www.linkedin.com/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Shortify on LinkedIn"
+                                    className="group flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:bg-blue-600 hover:text-white hover:shadow-md"
+                                >
+                                    <FaLinkedin
+                                        size={19}
+                                        className="transition-transform duration-300 group-hover:scale-110"
+                                    />
+                                </a>
+
+                                {/* Twitter / X */}
+                                <a
+                                    href="https://twitter.com/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Shortify on X"
+                                    className="group flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:bg-black hover:text-white hover:shadow-md"
+                                >
+                                    <FaTwitter
+                                        size={18}
+                                        className="transition-transform duration-300 group-hover:scale-110"
+                                    />
+                                </a>
+
+                            </div>
+
                         </div>
 
                     </div>

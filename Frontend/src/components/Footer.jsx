@@ -106,7 +106,7 @@ const Footer = () => {
         },
         {
             name: "Contact",
-            href: "#"
+            href: "/contact"
         },
         {
             name: "GitHub",
