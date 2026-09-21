@@ -3,9 +3,11 @@ const express = require("express");
 const httpProxy = require("http-proxy");
 const rateLimiter = require("./configurations/rate-limiter");
 const serverConfigurations = require("./configurations/servers");
+const corsOptions = require("./configurations/cors")
 
 const app = express();
 app.use(rateLimiter);
+app.use(corsOptions);
 const proxy = httpProxy.createProxyServer();
 
 const servers = serverConfigurations();
