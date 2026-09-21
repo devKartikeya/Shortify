@@ -7,6 +7,7 @@ import MyLinks from "./dashboard/pages/MyLinks";
 import QRCodes from "./dashboard/pages/QRCodes";
 import About from "./pages/About";
 import Profile from "./dashboard/pages/Profile";
+import Contact from "./pages/Contact";
 
 const App = () => {
     return (
@@ -18,6 +19,7 @@ const App = () => {
                     element={<Home />}
                 />
                 <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact/>} />
                 {/* Dashboard */}
                 <Route element={<ProtectedRoute />}>
                     <Route
