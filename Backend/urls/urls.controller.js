@@ -1,7 +1,8 @@
 const {
     createShortUrl,
     redirectToOriginalUrl,
-    getMyLinks
+    getMyLinks,
+    deleteUrl
 } = require("./urls.service");
 const redisClient = require("../configurations/redis");
 
@@ -87,9 +88,33 @@ async function clearRedisController(req, res){
     res.json("Ok");
 }
 
+async function deleteUrlController(req, res) {
+    const { shortCode } = req.params;
+    try {
+        const deletedUrl = await deleteUrl(shortCode);
+        if (!deletedUrl) {
+            return res.status(404).json({
+                success: false,
+                message: "Short URL not found"
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Short URL deleted successfully",
+            data: deletedUrl
+        });
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
 module.exports = {
     createShortUrlController,
     getMyLinksController,
     redirectUrlController,
-    clearRedisController
+    clearRedisController,
+    deleteUrlController
 };

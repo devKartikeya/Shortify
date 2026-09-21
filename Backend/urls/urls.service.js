@@ -102,8 +102,16 @@ async function redirectToOriginalUrl(shortCode) {
     return url.originalUrl;
 }
 
+async function deleteUrl(shortCode) {
+    const url = await URLModel.findOneAndDelete({
+        shortCode
+    });
+    return url;
+}
+
 module.exports = {
     createShortUrl,
     getMyLinks,
-    redirectToOriginalUrl
+    redirectToOriginalUrl,
+    deleteUrl
 };

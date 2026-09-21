@@ -3,7 +3,8 @@ const {
     createShortUrlController,
     redirectUrlController,
     getMyLinksController,
-    clearRedisController
+    clearRedisController,
+    deleteUrlController
 } = require("./urls.controller");
 
 const authMiddleware = require("../middleware/authentication.middleware");
@@ -28,6 +29,8 @@ router.get(
     authMiddleware,
     getMyLinksController
 );
+
+router.get("/delete/:shortCode", deleteUrlController);
 
 router.get("/clear-redis", clearRedisController)
 
