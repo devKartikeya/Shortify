@@ -100,15 +100,9 @@ const Topbar = ({ onMenuClick }) => {
                 <div className="mx-1 h-7 w-px bg-gray-200" />
                 {/* User */}
                 <button onClick={goToProfile} className="cursor-pointer flex items-center gap-2 rounded-xl p-1.5 pr-2 transition-colors hover:bg-gray-50">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-950 text-[11px] font-bold text-white">
-                        KM
-                    </div>
                     <div className="hidden text-left md:block">
                         <p className="text-xs font-semibold text-gray-950">
-                            Kartikeya
-                        </p>
-                        <p className="text-[10px] text-gray-400">
-                            Free plan
+                            My Profile
                         </p>
                     </div>
                     <svg

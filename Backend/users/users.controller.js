@@ -2,7 +2,8 @@ const {
     userRegisterService,
     userLoginService,
     deleteUserService,
-    changePasswordService
+    changePasswordService,
+    updateProfileService
 } = require("./users.service");
 
 async function userRegisterController(req, res) {
@@ -154,11 +155,40 @@ function logoutUserController(req, res) {
     });
 }
 
+async function updateProfileController(req, res) {
+    try {
+        const { username, email } = req.body;
+
+        const user = await updateProfileService(
+            req.user.id,
+            {
+                username,
+                email
+            }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            data: user
+        });
+
+    } catch (error) {
+        console.error("Update profile error:", error);
+
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
 module.exports = {
     userRegisterController,
     userLoginController,
     getCurrentUserController,
     deleteUserController,
     changePasswordController,
-    logoutUserController
+    logoutUserController,
+    updateProfileController
 };

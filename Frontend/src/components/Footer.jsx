@@ -113,8 +113,8 @@ const Footer = () => {
             href: "#"
         },
         {
-            name: "Status",
-            href: "#"
+            name: "Help & Support",
+            href: "/help"
         }
     ];
 

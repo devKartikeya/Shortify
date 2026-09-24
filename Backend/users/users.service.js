@@ -102,9 +102,51 @@ function changePasswordService(userId, oldPassword, newPassword) {
         });
 }
 
+async function updateProfileService(userId, { username, email }) {
+
+    if (!username || !username.trim()) {
+        throw new Error("Username is required");
+    }
+
+    if (!email || !email.trim()) {
+        throw new Error("Email is required");
+    }
+
+    const normalizedUsername = username.trim();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const existingUser = await User.findOne({
+        email: normalizedEmail,
+        _id: { $ne: userId }
+    });
+
+    if (existingUser) {
+        throw new Error("Email is already in use");
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+            username: normalizedUsername,
+            email: normalizedEmail
+        },
+        {
+            new: true,
+            runValidators: true
+        }
+    ).select("-password");
+
+    if (!updatedUser) {
+        throw new Error("User not found");
+    }
+
+    return updatedUser;
+}
+
 module.exports = {
     userRegisterService,
     userLoginService,
     deleteUserService,
-    changePasswordService
+    changePasswordService,
+    updateProfileService
 };

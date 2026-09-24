@@ -14,6 +14,11 @@ const Profile = () => {
     // Change Password
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [changingPassword, setChangingPassword] = useState(false);
+    const [showEditProfile, setShowEditProfile] = useState(false);
+    const [editUsername, setEditUsername] = useState("");
+    const [editEmail, setEditEmail] = useState("");
+    const [savingProfile, setSavingProfile] = useState(false);
+    const [profileMessage, setProfileMessage] = useState("");
 
     const [passwordData, setPasswordData] = useState({
         oldPassword: "",
@@ -306,6 +311,54 @@ const Profile = () => {
         }
     };
 
+    const handleUpdateProfile = async () => {
+        if (!editUsername.trim() || !editEmail.trim()) {
+            setProfileMessage("Username and email are required.");
+            return;
+        }
+
+        try {
+            setSavingProfile(true);
+            setProfileMessage("");
+
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/users/profile`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        username: editUsername.trim(),
+                        email: editEmail.trim(),
+                    }),
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Failed to update profile"
+                );
+            }
+
+            // Important:
+            // update the user available to the dashboard/layout
+            setShowEditProfile(false);
+
+            // If user comes from Outlet context and is managed
+            // by parent, refresh /me there.
+            window.location.reload();
+
+        } catch (error) {
+            setProfileMessage(error.message);
+        } finally {
+            setSavingProfile(false);
+        }
+    };
+
     return (
         <div className="space-y-6 pb-8">
 
@@ -352,6 +405,12 @@ const Profile = () => {
 
                         <button
                             type="button"
+                            onClick={() => {
+                                setEditUsername(user?.username || "");
+                                setEditEmail(user?.email || "");
+                                setProfileMessage("");
+                                setShowEditProfile(true);
+                            }}
                             className="w-fit rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
                         >
                             Edit Profile
@@ -774,6 +833,128 @@ const Profile = () => {
                                     : "Delete Account"}
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {showEditProfile && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm"
+                    onClick={() => {
+                        if (!savingProfile) {
+                            setShowEditProfile(false);
+                        }
+                    }}
+                >
+                    <div
+                        className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+
+                        {/* Header */}
+                        <div className="flex items-start justify-between">
+
+                            <div>
+                                <h2 className="text-xl font-semibold text-gray-900">
+                                    Edit Profile
+                                </h2>
+
+                                <p className="mt-1 text-sm text-gray-500">
+                                    Update your account information.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                disabled={savingProfile}
+                                onClick={() => setShowEditProfile(false)}
+                                className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+                            >
+                                ✕
+                            </button>
+
+                        </div>
+
+
+                        {/* Form */}
+                        <div className="mt-7 space-y-5">
+
+                            {/* Username */}
+                            <div>
+                                <label
+                                    htmlFor="edit-username"
+                                    className="mb-2 block text-sm font-medium text-gray-700"
+                                >
+                                    Username
+                                </label>
+
+                                <input
+                                    id="edit-username"
+                                    type="text"
+                                    value={editUsername}
+                                    onChange={(e) =>
+                                        setEditUsername(e.target.value)
+                                    }
+                                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-yellow-400 focus:bg-white focus:ring-4 focus:ring-yellow-100"
+                                />
+                            </div>
+
+
+                            {/* Email */}
+                            <div>
+                                <label
+                                    htmlFor="edit-email"
+                                    className="mb-2 block text-sm font-medium text-gray-700"
+                                >
+                                    Email address
+                                </label>
+
+                                <input
+                                    id="edit-email"
+                                    type="email"
+                                    value={editEmail}
+                                    onChange={(e) =>
+                                        setEditEmail(e.target.value)
+                                    }
+                                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-yellow-400 focus:bg-white focus:ring-4 focus:ring-yellow-100"
+                                />
+                            </div>
+
+
+                            {/* Error */}
+                            {profileMessage && (
+                                <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+                                    {profileMessage}
+                                </div>
+                            )}
+
+                        </div>
+
+
+                        {/* Actions */}
+                        <div className="mt-7 flex justify-end gap-3">
+
+                            <button
+                                type="button"
+                                disabled={savingProfile}
+                                onClick={() => setShowEditProfile(false)}
+                                className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="button"
+                                disabled={savingProfile}
+                                onClick={handleUpdateProfile}
+                                className="rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-yellow-500 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {savingProfile
+                                    ? "Saving..."
+                                    : "Save changes"}
+                            </button>
+
+                        </div>
+
                     </div>
                 </div>
             )}
