@@ -1,5 +1,4 @@
-import React from "react";
-import {
+import React, { useState } from "react"; import {
     Mail,
     MessageCircle,
     Clock3,
@@ -10,6 +9,80 @@ import {
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 const Contact = () => {
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+    });
+
+    const [sending, setSending] = useState(false);
+    const [status, setStatus] = useState({
+        type: "",
+        message: ""
+    });
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        setSending(true);
+        setStatus({
+            type: "",
+            message: ""
+        });
+
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/email/contact`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Failed to send message"
+                );
+            }
+
+            setStatus({
+                type: "success",
+                message: data.message
+            });
+
+            setFormData({
+                name: "",
+                email: "",
+                subject: "",
+                message: ""
+            });
+
+        } catch (error) {
+
+            console.error("Contact form error:", error);
+
+            setStatus({
+                type: "error",
+                message: error.message || "Something went wrong"
+            });
+
+        } finally {
+            setSending(false);
+        }
+    };
     return (
         <main className="min-h-screen bg-white text-slate-900">
 
@@ -246,7 +319,7 @@ const Contact = () => {
                             </div>
 
 
-                            <form className="space-y-6">
+                            <form className="space-y-6" onSubmit={handleSubmit}>
 
                                 {/* Name + Email */}
                                 <div className="grid gap-5 sm:grid-cols-2">
@@ -261,7 +334,10 @@ const Contact = () => {
 
                                         <input
                                             id="name"
+                                            name="name"
                                             type="text"
+                                            value={formData.name}
+                                            onChange={handleChange}
                                             placeholder="John Doe"
                                             className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-yellow-400 focus:bg-white focus:ring-4 focus:ring-yellow-100"
                                         />
@@ -278,7 +354,10 @@ const Contact = () => {
 
                                         <input
                                             id="email"
+                                            name="email"
                                             type="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
                                             placeholder="john@example.com"
                                             className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-yellow-400 focus:bg-white focus:ring-4 focus:ring-yellow-100"
                                         />
@@ -298,7 +377,10 @@ const Contact = () => {
 
                                     <input
                                         id="subject"
+                                        name="subject"
                                         type="text"
+                                        value={formData.subject}
+                                        onChange={handleChange}
                                         placeholder="How can we help?"
                                         className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-yellow-400 focus:bg-white focus:ring-4 focus:ring-yellow-100"
                                     />
@@ -316,24 +398,40 @@ const Contact = () => {
 
                                     <textarea
                                         id="message"
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleChange}
                                         rows="6"
                                         placeholder="Tell us what's on your mind..."
                                         className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-yellow-400 focus:bg-white focus:ring-4 focus:ring-yellow-100"
                                     />
                                 </div>
 
+                                {status.message && (
+                                    <div
+                                        className={`rounded-xl px-4 py-3 text-sm ${status.type === "success"
+                                                ? "border border-green-200 bg-green-50 text-green-700"
+                                                : "border border-red-200 bg-red-50 text-red-700"
+                                            }`}
+                                    >
+                                        {status.message}
+                                    </div>
+                                )}
 
                                 {/* Submit */}
                                 <button
                                     type="submit"
-                                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-yellow-500 hover:shadow-lg hover:shadow-yellow-200"
+                                    disabled={sending}
+                                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-yellow-500 hover:shadow-lg hover:shadow-yellow-200 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
-                                    Send message
+                                    {sending ? "Sending..." : "Send message"}
 
-                                    <Send
-                                        size={17}
-                                        className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-                                    />
+                                    {!sending && (
+                                        <Send
+                                            size={17}
+                                            className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                                        />
+                                    )}
                                 </button>
 
 
