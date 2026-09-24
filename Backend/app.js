@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require("cookie-parser");
 const urlRouter = require("./urls/urls.route");
 const userRouter = require("./users/users.route");
+const emailRouter = require("./email/email.route");
 const corsOptions = require("./configurations/cors");
 const rateLimiter = require("./configurations/rate-limiter");
 const { redirectUrlController } = require("./urls/urls.controller");
@@ -24,6 +25,7 @@ app.get("/health", (req, res) => {
 /* Mount Routers */
 app.use("/users", userRouter);
 app.use("/urls", urlRouter);
+app.use("/email", emailRouter);
 
 /* Redirect Endpoint */
 app.get("/:shortCode", redirectUrlController);

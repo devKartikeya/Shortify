@@ -123,7 +123,6 @@ const Contact = () => {
 
                             </div>
 
-
                             {/* Location */}
                             <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
 
