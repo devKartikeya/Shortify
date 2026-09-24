@@ -411,7 +411,7 @@ const Profile = () => {
                                 setProfileMessage("");
                                 setShowEditProfile(true);
                             }}
-                            className="w-fit rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+                            className="w-fit rounded-lg cursor-pointer bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
                         >
                             Edit Profile
                         </button>
@@ -838,7 +838,7 @@ const Profile = () => {
             )}
             {showEditProfile && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-gray-950/45 px-4 backdrop-blur-[3px]"
                     onClick={() => {
                         if (!savingProfile) {
                             setShowEditProfile(false);
@@ -846,98 +846,237 @@ const Profile = () => {
                     }}
                 >
                     <div
-                        className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl"
+                        className="w-full max-w-lg overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
-
                         {/* Header */}
-                        <div className="flex items-start justify-between">
+                        <div className="border-b border-gray-100 px-6 py-4 sm:px-7">
+                            <div className="flex items-start justify-between gap-4">
+                                <div className="flex items-center gap-3.5">
+                                    {/* Avatar */}
+                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gray-900 text-sm font-semibold text-white shadow-sm">
+                                        {editUsername
+                                            ? editUsername.slice(0, 2).toUpperCase()
+                                            : "US"}
+                                    </div>
 
-                            <div>
-                                <h2 className="text-xl font-semibold text-gray-900">
-                                    Edit Profile
-                                </h2>
+                                    <div>
+                                        <h2 className="text-base font-semibold text-gray-900">
+                                            Edit profile
+                                        </h2>
 
-                                <p className="mt-1 text-sm text-gray-500">
-                                    Update your account information.
-                                </p>
+                                        <p className="mt-0.5 text-sm text-gray-500">
+                                            Update your personal account details.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Close */}
+                                <button
+                                    type="button"
+                                    disabled={savingProfile}
+                                    onClick={() => setShowEditProfile(false)}
+                                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                    aria-label="Close edit profile"
+                                >
+                                    <svg
+                                        className="h-4 w-4"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            d="M6 6l12 12M18 6L6 18"
+                                            strokeWidth="1.8"
+                                            strokeLinecap="round"
+                                        />
+                                    </svg>
+                                </button>
                             </div>
-
-                            <button
-                                type="button"
-                                disabled={savingProfile}
-                                onClick={() => setShowEditProfile(false)}
-                                className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
-                            >
-                                ✕
-                            </button>
-
                         </div>
 
+                        {/* Profile Preview */}
+                        <div className="px-6 pt-6 sm:px-7">
+                            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div className="flex min-w-0 items-center gap-3">
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-yellow-100 text-sm font-semibold text-yellow-700">
+                                            {editUsername
+                                                ? editUsername.slice(0, 2).toUpperCase()
+                                                : "US"}
+                                        </div>
+
+                                        <div className="min-w-0">
+                                            <p className="truncate text-sm font-semibold text-gray-900">
+                                                {editUsername || "Your username"}
+                                            </p>
+
+                                            <p className="truncate text-xs text-gray-500">
+                                                {editEmail || "Your email address"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <span className="shrink-0 rounded-full bg-green-50 px-2.5 py-1 text-[11px] font-medium text-green-600">
+                                        Active
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
 
                         {/* Form */}
-                        <div className="mt-7 space-y-5">
-
-                            {/* Username */}
-                            <div>
-                                <label
-                                    htmlFor="edit-username"
-                                    className="mb-2 block text-sm font-medium text-gray-700"
-                                >
-                                    Username
-                                </label>
-
-                                <input
-                                    id="edit-username"
-                                    type="text"
-                                    value={editUsername}
-                                    onChange={(e) =>
-                                        setEditUsername(e.target.value)
-                                    }
-                                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-yellow-400 focus:bg-white focus:ring-4 focus:ring-yellow-100"
-                                />
+                        <div className="px-6 py-6 sm:px-7">
+                            <div className="mb-5">
+                                <h3 className="text-sm font-semibold text-gray-900">
+                                    Profile information
+                                </h3>
                             </div>
 
+                            <div className="space-y-5">
+                                {/* Username */}
+                                <div>
+                                    <label
+                                        htmlFor="edit-username"
+                                        className="mb-2 block text-sm font-medium text-gray-700"
+                                    >
+                                        Username
+                                    </label>
 
-                            {/* Email */}
-                            <div>
-                                <label
-                                    htmlFor="edit-email"
-                                    className="mb-2 block text-sm font-medium text-gray-700"
-                                >
-                                    Email address
-                                </label>
+                                    <div className="relative">
+                                        <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                                            <svg
+                                                className="h-4 w-4"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    d="M20 21a8 8 0 00-16 0"
+                                                    strokeWidth="1.7"
+                                                    strokeLinecap="round"
+                                                />
+                                                <circle
+                                                    cx="12"
+                                                    cy="7"
+                                                    r="4"
+                                                    strokeWidth="1.7"
+                                                />
+                                            </svg>
+                                        </div>
 
-                                <input
-                                    id="edit-email"
-                                    type="email"
-                                    value={editEmail}
-                                    onChange={(e) =>
-                                        setEditEmail(e.target.value)
-                                    }
-                                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-yellow-400 focus:bg-white focus:ring-4 focus:ring-yellow-100"
-                                />
-                            </div>
+                                        <input
+                                            id="edit-username"
+                                            type="text"
+                                            value={editUsername}
+                                            onChange={(e) =>
+                                                setEditUsername(e.target.value)
+                                            }
+                                            disabled={savingProfile}
+                                            placeholder="Enter your username"
+                                            autoComplete="username"
+                                            className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 hover:border-gray-300 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100 disabled:cursor-not-allowed disabled:bg-gray-50"
+                                        />
+                                    </div>
 
-
-                            {/* Error */}
-                            {profileMessage && (
-                                <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
-                                    {profileMessage}
+                                    <p className="mt-1.5 text-xs text-gray-400">
+                                        This name will be displayed on your profile after you log out and log back in. It can be changed later.
+                                    </p>
                                 </div>
-                            )}
 
+                                {/* Email */}
+                                <div>
+                                    <label
+                                        htmlFor="edit-email"
+                                        className="mb-2 block text-sm font-medium text-gray-700"
+                                    >
+                                        Email address
+                                    </label>
+
+                                    <div className="relative">
+                                        <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                                            <svg
+                                                className="h-4 w-4"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                            >
+                                                <rect
+                                                    x="3"
+                                                    y="5"
+                                                    width="18"
+                                                    height="14"
+                                                    rx="2"
+                                                    strokeWidth="1.7"
+                                                />
+
+                                                <path
+                                                    d="M3 7l9 6 9-6"
+                                                    strokeWidth="1.7"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                />
+                                            </svg>
+                                        </div>
+
+                                        <input
+                                            id="edit-email"
+                                            type="email"
+                                            value={editEmail}
+                                            onChange={(e) =>
+                                                setEditEmail(e.target.value)
+                                            }
+                                            disabled={savingProfile}
+                                            placeholder="Enter your email address"
+                                            autoComplete="email"
+                                            className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 hover:border-gray-300 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100 disabled:cursor-not-allowed disabled:bg-gray-50"
+                                        />
+                                    </div>
+
+                                    <p className="mt-1.5 text-xs text-gray-400">
+                                        We'll use this email for account-related
+                                        communication.
+                                    </p>
+                                </div>
+
+                                {/* Error */}
+                                {profileMessage && (
+                                    <div className="flex items-start gap-3 rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+                                        <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
+                                            <svg
+                                                className="h-3.5 w-3.5"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                            >
+                                                <circle
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="9"
+                                                    strokeWidth="1.8"
+                                                />
+                                                <path
+                                                    d="M12 8v4M12 16h.01"
+                                                    strokeWidth="1.8"
+                                                    strokeLinecap="round"
+                                                />
+                                            </svg>
+                                        </div>
+
+                                        <p className="text-sm leading-5 text-red-600">
+                                            {profileMessage}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-
-                        {/* Actions */}
-                        <div className="mt-7 flex justify-end gap-3">
-
+                        {/* Footer */}
+                        <div className="flex flex-col-reverse gap-3 border-t border-gray-100 bg-gray-50/70 px-6 py-4 sm:flex-row sm:items-center sm:justify-end sm:px-7">
                             <button
                                 type="button"
                                 disabled={savingProfile}
                                 onClick={() => setShowEditProfile(false)}
-                                className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:opacity-50"
+                                className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:border-gray-300 cursor-pointer hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 Cancel
                             </button>
@@ -946,15 +1085,33 @@ const Profile = () => {
                                 type="button"
                                 disabled={savingProfile}
                                 onClick={handleUpdateProfile}
-                                className="rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-yellow-500 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="inline-flex items-center justify-center cursor-pointer rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                                {savingProfile
-                                    ? "Saving..."
-                                    : "Save changes"}
+                                {savingProfile ? (
+                                    <>
+                                        <Spinner />
+                                        Saving changes...
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg
+                                            className="mr-2 h-4 w-4"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                d="M5 12l4 4L19 6"
+                                                strokeWidth="1.8"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg>
+                                        Save changes
+                                    </>
+                                )}
                             </button>
-
                         </div>
-
                     </div>
                 </div>
             )}

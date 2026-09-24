@@ -6,8 +6,8 @@ const serverConfigurations = require("./configurations/servers");
 const corsOptions = require("./configurations/cors")
 
 const app = express();
-app.use(rateLimiter);
 app.use(corsOptions);
+app.use(rateLimiter);
 const proxy = httpProxy.createProxyServer();
 
 const servers = serverConfigurations();
