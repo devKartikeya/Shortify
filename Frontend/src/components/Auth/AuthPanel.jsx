@@ -487,6 +487,13 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                             message:
                                                 "Password must be at least 8 characters",
                                         },
+
+                                        pattern: {
+                                            value:
+                                                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                            message:
+                                                "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+                                        },
                                     })}
 
                                     className={`w-full rounded-lg border bg-white px-4 py-3 text-sm text-gray-950 outline-none transition-all placeholder:text-gray-400 focus:ring-4 focus:ring-yellow-400/10 ${errors.password
