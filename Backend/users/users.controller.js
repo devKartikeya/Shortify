@@ -183,6 +183,32 @@ async function updateProfileController(req, res) {
     }
 }
 
+async function forgotPasswordController(req, res) {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: "Email address is required"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Password reset flow started"
+        });
+
+    } catch (error) {
+        console.error("Forgot password error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong"
+        });
+    }
+}
+
 module.exports = {
     userRegisterController,
     userLoginController,
@@ -190,5 +216,6 @@ module.exports = {
     deleteUserController,
     changePasswordController,
     logoutUserController,
-    updateProfileController
+    updateProfileController,
+    forgotPasswordController
 };
