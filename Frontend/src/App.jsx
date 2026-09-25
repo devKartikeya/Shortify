@@ -6,6 +6,7 @@ import MyLinks from "./dashboard/pages/MyLinks";
 import QRCodes from "./dashboard/pages/QRCodes";
 import Profile from "./dashboard/pages/Profile";
 import Overview from "./dashboard/pages/Overview";
+import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import DashboardLayout from "./dashboard/DashboardLayout";
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/help" element={<HelpSupport />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 {/* Dashboard */}
                 <Route element={<ProtectedRoute />}>
                     <Route
