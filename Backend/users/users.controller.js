@@ -1,3 +1,7 @@
+const crypto = require("crypto");
+const User = require("./users.model");
+const generateResetToken = require("../utilities/generateResetToken");
+
 const {
     userRegisterService,
     userLoginService,
@@ -183,6 +187,7 @@ async function updateProfileController(req, res) {
     }
 }
 
+
 async function forgotPasswordController(req, res) {
     try {
         const { email } = req.body;
@@ -194,13 +199,52 @@ async function forgotPasswordController(req, res) {
             });
         }
 
+        const user = await User.findOne({ email });
+
+        // Do not reveal whether the email exists
+        if (!user) {
+            return res.status(200).json({
+                success: true,
+                message:
+                    "If an account exists with this email, a password reset link has been sent"
+            });
+        }
+
+        // Generate raw reset token
+        const resetToken = generateResetToken();
+
+        // Hash token before storing it in database
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(resetToken)
+            .digest("hex");
+
+        // Token expires after 30 minutes
+        const resetTokenExpiry = new Date(
+            Date.now() + 30 * 60 * 1000
+        );
+
+        await User.updateOne(
+            { _id: user._id },
+            {
+                passwordResetToken: hashedToken,
+                passwordResetExpires: resetTokenExpiry
+            }
+        );
+
+        console.log("Reset token:", resetToken);
+
         return res.status(200).json({
             success: true,
-            message: "Password reset flow started"
+            message:
+                "If an account exists with this email, a password reset link has been sent"
         });
 
     } catch (error) {
-        console.error("Forgot password error:", error);
+        console.error(
+            "Forgot password error:",
+            error
+        );
 
         return res.status(500).json({
             success: false,
