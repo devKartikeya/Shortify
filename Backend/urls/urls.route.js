@@ -1,34 +1,22 @@
 const express = require("express");
+const router = express.Router();
 const {
     createShortUrlController,
-    redirectUrlController,
     getMyLinksController,
     clearRedisController,
     deleteUrlController
 } = require("./urls.controller");
 
 const authMiddleware = require("../middleware/authentication.middleware");
-const router = express.Router();
 
 // Public URL shortening
-router.post(
-    "/shorten",
-    createShortUrlController
-);
+router.post("/shorten", createShortUrlController);
 
 // Authenticated URL shortening
-router.post(
-    "/shorten/authenticated",
-    authMiddleware,
-    createShortUrlController
-);
+router.post("/shorten/authenticated", authMiddleware, createShortUrlController);
 
 // Get logged-in user's URLs
-router.get(
-    "/my-links",
-    authMiddleware,
-    getMyLinksController
-);
+router.get("/my-links", authMiddleware, getMyLinksController);
 
 router.get("/delete/:shortCode", deleteUrlController);
 

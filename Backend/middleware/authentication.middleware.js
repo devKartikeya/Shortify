@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const verifyToken = require("../utilities/jwt");
 
 const authMiddleware = (req, res, next) => {
     try {
@@ -9,10 +9,7 @@ const authMiddleware = (req, res, next) => {
                 message: "Authentication required"
             });
         }
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET
-        );
+        const decoded = verifyToken(token);
         req.user = decoded;
         next();
     } catch (error) {

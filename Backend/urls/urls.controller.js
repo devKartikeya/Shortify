@@ -5,11 +5,16 @@ const {
     deleteUrl
 } = require("./urls.service");
 const redisClient = require("../configurations/redis");
-
+const verifyToken = require("../utilities/jwt");
 
 // Create short URL
 async function createShortUrlController(req, res) {
     try {
+        const token = req.cookies.token;
+        if (token) {
+            const decoded = verifyToken(token);
+            req.user = decoded;
+        }
         const { originalUrl } = req.body;
         if (!originalUrl) {
             return res.status(400).json({
@@ -82,7 +87,7 @@ async function redirectUrlController(req, res) {
     }
 }
 
-async function clearRedisController(req, res){
+async function clearRedisController(req, res) {
     await redisClient.flushAll();
     console.log("Perfect , All cleared !");
     res.json("Ok");
