@@ -1,14 +1,15 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import DashboardLayout from "./dashboard/DashboardLayout";
-import Overview from "./dashboard/pages/Overview";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import MyLinks from "./dashboard/pages/MyLinks";
-import QRCodes from "./dashboard/pages/QRCodes";
 import About from "./pages/About";
-import Profile from "./dashboard/pages/Profile";
 import Contact from "./pages/Contact";
 import HelpSupport from "./pages/HelpSupport";
+import MyLinks from "./dashboard/pages/MyLinks";
+import QRCodes from "./dashboard/pages/QRCodes";
+import Profile from "./dashboard/pages/Profile";
+import Overview from "./dashboard/pages/Overview";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import ForgotPassword from "./pages/ForgotPassword";
+import DashboardLayout from "./dashboard/DashboardLayout";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const App = () => {
     return (
@@ -20,8 +21,9 @@ const App = () => {
                     element={<Home />}
                 />
                 <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact/>} />
-                <Route path="/help" element={<HelpSupport/>}/>
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/help" element={<HelpSupport />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 {/* Dashboard */}
                 <Route element={<ProtectedRoute />}>
                     <Route

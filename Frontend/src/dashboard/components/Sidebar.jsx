@@ -48,24 +48,6 @@ const navigation = [
 ];
 
 const secondaryNavigation = [
-    // {
-    //     label: "Settings",
-    //     path: "/dashboard/settings",
-    //     icon: (
-    //         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-    //             <path
-    //                 strokeLinecap="round"
-    //                 strokeLinejoin="round"
-    //                 d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
-    //             />
-    //             <path
-    //                 strokeLinecap="round"
-    //                 strokeLinejoin="round"
-    //                 d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.8 1.8-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.56V20h-2.54v-.1a1.7 1.7 0 0 0-1.04-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.8-1.8.06-.06A1.7 1.7 0 0 0 8.1 15a1.7 1.7 0 0 0-1.56-1.04H6.4v-2.54h.14A1.7 1.7 0 0 0 8.1 10.4a1.7 1.7 0 0 0-.34-1.88L7.7 8.46l1.8-1.8.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.04-1.56V5.4h2.54v.1a1.7 1.7 0 0 0 1.04 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 1.8 1.8-.06.06A1.7 1.7 0 0 0 19.4 10.4a1.7 1.7 0 0 0 1.56 1.04h.14v2.54h-.14A1.7 1.7 0 0 0 19.4 15Z"
-    //             />
-    //         </svg>
-    //     )
-    // },
     {
         label: "Help & Support",
         path: "/help",

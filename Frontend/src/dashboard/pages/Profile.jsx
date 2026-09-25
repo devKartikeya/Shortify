@@ -810,7 +810,6 @@ const Profile = () => {
                                 associated data will be permanently deleted.
                             </p>
                         </div>
-
                         {/* Actions */}
                         <div className="mt-6 flex justify-end gap-3">
                             <button

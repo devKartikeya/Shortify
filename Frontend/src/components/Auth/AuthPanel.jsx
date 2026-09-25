@@ -142,24 +142,24 @@ const AuthPanel = ({ isOpen, onClose }) => {
     return (
         <div
             className={`fixed inset-0 z-[100] transition-all duration-300 ${isOpen
-                    ? "visible"
-                    : "invisible pointer-events-none"
+                ? "visible"
+                : "invisible pointer-events-none"
                 }`}
         >
             {/* Backdrop */}
             <div
                 onClick={onClose}
                 className={`absolute inset-0 bg-gray-950/40 backdrop-blur-[2px] transition-opacity duration-300 ${isOpen
-                        ? "opacity-100"
-                        : "opacity-0"
+                    ? "opacity-100"
+                    : "opacity-0"
                     }`}
             />
 
             {/* Auth Drawer */}
             <aside
                 className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${isOpen
-                        ? "translate-x-0"
-                        : "translate-x-full"
+                    ? "translate-x-0"
+                    : "translate-x-full"
                     }`}
             >
 
@@ -309,8 +309,8 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                         },
                                     })}
                                     className={`w-full rounded-lg border bg-white px-4 py-3 text-sm text-gray-950 outline-none transition-all placeholder:text-gray-400 focus:ring-4 focus:ring-yellow-400/10 ${errors.email
-                                            ? "border-red-400 focus:border-red-400"
-                                            : "border-gray-200 focus:border-yellow-400"
+                                        ? "border-red-400 focus:border-red-400"
+                                        : "border-gray-200 focus:border-yellow-400"
                                         }`}
                                 />
                                 {errors.email && (
@@ -331,6 +331,10 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                     </label>
                                     <button
                                         type="button"
+                                        onClick={() => {
+                                            onClose();
+                                            navigate("/forgot-password");
+                                        }}
                                         className="text-xs font-semibold text-yellow-600 transition-colors hover:text-yellow-700"
                                     >
                                         Forgot password?
@@ -355,8 +359,8 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                     })}
 
                                     className={`w-full rounded-lg border bg-white px-4 py-3 text-sm text-gray-950 outline-none transition-all placeholder:text-gray-400 focus:ring-4 focus:ring-yellow-400/10 ${errors.password
-                                            ? "border-red-400 focus:border-red-400"
-                                            : "border-gray-200 focus:border-yellow-400"
+                                        ? "border-red-400 focus:border-red-400"
+                                        : "border-gray-200 focus:border-yellow-400"
                                         }`}
                                 />
 
@@ -413,8 +417,8 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                         },
                                     })}
                                     className={`w-full rounded-lg border bg-white px-4 py-3 text-sm text-gray-950 outline-none transition-all placeholder:text-gray-400 focus:ring-4 focus:ring-yellow-400/10 ${errors.username
-                                            ? "border-red-400 focus:border-red-400"
-                                            : "border-gray-200 focus:border-yellow-400"
+                                        ? "border-red-400 focus:border-red-400"
+                                        : "border-gray-200 focus:border-yellow-400"
                                         }`}
                                 />
                                 {errors.username && (
@@ -452,8 +456,8 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                     })}
 
                                     className={`w-full rounded-lg border bg-white px-4 py-3 text-sm text-gray-950 outline-none transition-all placeholder:text-gray-400 focus:ring-4 focus:ring-yellow-400/10 ${errors.email
-                                            ? "border-red-400 focus:border-red-400"
-                                            : "border-gray-200 focus:border-yellow-400"
+                                        ? "border-red-400 focus:border-red-400"
+                                        : "border-gray-200 focus:border-yellow-400"
                                         }`}
                                 />
                                 {errors.email && (
@@ -497,8 +501,8 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                     })}
 
                                     className={`w-full rounded-lg border bg-white px-4 py-3 text-sm text-gray-950 outline-none transition-all placeholder:text-gray-400 focus:ring-4 focus:ring-yellow-400/10 ${errors.password
-                                            ? "border-red-400 focus:border-red-400"
-                                            : "border-gray-200 focus:border-yellow-400"
+                                        ? "border-red-400 focus:border-red-400"
+                                        : "border-gray-200 focus:border-yellow-400"
                                         }`}
                                 />
                                 {errors.password && (

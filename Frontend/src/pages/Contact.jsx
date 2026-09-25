@@ -85,10 +85,8 @@ const Contact = () => {
     };
     return (
         <main className="min-h-screen bg-white text-slate-900">
-
             {/* ================= HERO ================= */}
             <section className="relative overflow-hidden pt-28 pb-16">
-
                 {/* Background decoration */}
                 <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-yellow-100/70 blur-3xl" />
                 <div className="absolute top-20 -right-32 h-80 w-80 rounded-full bg-amber-100/60 blur-3xl" />
@@ -121,7 +119,6 @@ const Contact = () => {
 
             {/* ================= CONTACT CONTENT ================= */}
             <section className="pb-24">
-
                 <div className="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
 
                     {/* ================= LEFT ================= */}
@@ -149,7 +146,7 @@ const Contact = () => {
 
                             {/* Email */}
                             <a
-                                href="mailto:support@shortify.com"
+                                href="mailto:devkartikeya2122002@gmail.com"
                                 className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-yellow-300 hover:shadow-lg"
                             >
                                 <div className="flex items-center gap-4">
@@ -164,12 +161,11 @@ const Contact = () => {
                                         </p>
 
                                         <p className="mt-1 font-medium text-slate-800">
-                                            support@shortify.com
+                                            devkartikeya2122002@gmail.com
                                         </p>
                                     </div>
 
                                 </div>
-
                                 <ArrowUpRight
                                     size={20}
                                     className="text-slate-300 transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-yellow-500"
@@ -179,21 +175,17 @@ const Contact = () => {
 
                             {/* Response */}
                             <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
                                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-50 text-yellow-600">
                                     <Clock3 size={21} />
                                 </div>
-
                                 <div>
                                     <p className="text-sm text-slate-400">
                                         Response time
                                     </p>
-
                                     <p className="mt-1 font-medium text-slate-800">
                                         Usually within 24 hours
                                     </p>
                                 </div>
-
                             </div>
 
                             {/* Location */}
@@ -212,36 +204,19 @@ const Contact = () => {
                                         Online · Worldwide
                                     </p>
                                 </div>
-
                             </div>
-
-                        </div>
-
-
-                        {/* Small note */}
-                        <div className="mt-8 rounded-2xl bg-slate-50 p-6">
-                            <p className="text-sm leading-6 text-slate-500">
-                                <span className="font-semibold text-slate-700">
-                                    Quick tip:
-                                </span>{" "}
-                                If you're reporting a problem, include the
-                                short URL or describe what happened. It'll
-                                help us understand the issue faster.
-                            </p>
                         </div>
 
                         {/* ================= SOCIAL LINKS ================= */}
-                        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                        <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
                             <div>
                                 <p className="text-sm font-semibold uppercase tracking-widest text-yellow-500">
                                     Connect with us
                                 </p>
-
                                 <h3 className="mt-2 text-lg font-semibold text-slate-800">
                                     Follow Shortify
                                 </h3>
-
                                 <p className="mt-2 text-sm leading-6 text-slate-500">
                                     Stay connected for updates, new features, and everything we're
                                     building around Shortify.
@@ -256,7 +231,7 @@ const Contact = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="Shortify on GitHub"
-                                    className="group flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:bg-slate-900 hover:text-white hover:shadow-md"
+                                    className="group flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:bg-slate-600 hover:text-white hover:shadow-md"
                                 >
                                     <FaGithub
                                         size={19}
@@ -284,43 +259,33 @@ const Contact = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="Shortify on X"
-                                    className="group flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:bg-black hover:text-white hover:shadow-md"
+                                    className="group flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:bg-gray-800 hover:text-white hover:shadow-md"
                                 >
                                     <FaTwitter
                                         size={18}
                                         className="transition-transform duration-300 group-hover:scale-110"
                                     />
                                 </a>
-
                             </div>
-
                         </div>
-
                     </div>
-
 
                     {/* ================= FORM ================= */}
                     <div className="relative">
-
                         {/* Glow */}
                         <div className="absolute -inset-2 rounded-[2rem] bg-yellow-100/40 blur-2xl" />
-
                         <div className="relative rounded-[2rem] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 sm:p-8 lg:p-10">
-
                             <div className="mb-8">
                                 <h2 className="text-2xl font-semibold">
                                     Send us a message
                                 </h2>
-
                                 <p className="mt-2 text-sm leading-6 text-slate-500">
                                     Fill out the form below and we'll get back
                                     to you as soon as possible.
                                 </p>
                             </div>
 
-
                             <form className="space-y-6" onSubmit={handleSubmit}>
-
                                 {/* Name + Email */}
                                 <div className="grid gap-5 sm:grid-cols-2">
 
@@ -342,7 +307,6 @@ const Contact = () => {
                                             className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition-all placeholder:text-slate-400 focus:border-yellow-400 focus:bg-white focus:ring-4 focus:ring-yellow-100"
                                         />
                                     </div>
-
 
                                     <div>
                                         <label
@@ -439,23 +403,15 @@ const Contact = () => {
                                     By submitting this form, you agree to be
                                     contacted regarding your message.
                                 </p>
-
                             </form>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </section>
-
 
             {/* ================= BOTTOM CTA ================= */}
             <section className="border-t border-slate-100 bg-slate-50">
-
                 <div className="mx-auto max-w-7xl px-6 py-16 text-center lg:px-8">
-
                     <p className="text-sm font-semibold uppercase tracking-widest text-yellow-500">
                         Need Shortify?
                     </p>
@@ -476,11 +432,8 @@ const Contact = () => {
 
                         <ArrowUpRight size={17} />
                     </button>
-
                 </div>
-
             </section>
-
         </main>
     );
 };
