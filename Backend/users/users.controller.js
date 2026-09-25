@@ -2,6 +2,8 @@ const crypto = require("crypto");
 const User = require("./users.model");
 const generateResetToken = require("../utilities/generateResetToken");
 
+const sendPasswordResetEmail = require("../email/email.service").sendPasswordResetEmail;
+
 const {
     userRegisterService,
     userLoginService,
@@ -232,7 +234,10 @@ async function forgotPasswordController(req, res) {
             }
         );
 
-        console.log("Reset token:", resetToken);
+        const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+        console.log("Reset url:", resetUrl);
+        await sendPasswordResetEmail({ email: user.email, resetUrl });
 
         return res.status(200).json({
             success: true,
