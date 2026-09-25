@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const User = require("./users.model");
+const bcrypt = require("bcrypt");
 const generateResetToken = require("../utilities/generateResetToken");
 
 const sendPasswordResetEmail = require("../email/email.service").sendPasswordResetEmail;
@@ -236,7 +237,6 @@ async function forgotPasswordController(req, res) {
 
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-        console.log("Reset url:", resetUrl);
         await sendPasswordResetEmail({ email: user.email, resetUrl });
 
         return res.status(200).json({
@@ -258,6 +258,89 @@ async function forgotPasswordController(req, res) {
     }
 }
 
+
+async function resetPasswordController(req, res) {
+    try {
+        const {
+            token,
+            newPassword,
+            confirmPassword
+        } = req.body;
+
+        if (!token || !newPassword || !confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Passwords do not match"
+            });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Password must be at least 6 characters"
+            });
+        }
+
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(token)
+            .digest("hex");
+
+        const user = await User.findOne({
+            passwordResetToken: hashedToken,
+            passwordResetExpires: {
+                $gt: new Date()
+            }
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Invalid or expired password reset link"
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(
+            newPassword,
+            10
+        );
+
+        user.password = hashedPassword;
+
+        // Make the reset token single-use
+        user.passwordResetToken = null;
+        user.passwordResetExpires = null;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message:
+                "Password reset successfully"
+        });
+
+    } catch (error) {
+        console.error(
+            "Reset password error:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong"
+        });
+    }
+}
+
 module.exports = {
     userRegisterController,
     userLoginController,
@@ -266,5 +349,6 @@ module.exports = {
     changePasswordController,
     logoutUserController,
     updateProfileController,
-    forgotPasswordController
+    forgotPasswordController,
+    resetPasswordController
 };
