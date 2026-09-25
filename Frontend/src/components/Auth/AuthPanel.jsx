@@ -351,10 +351,10 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                             "Password is required",
 
                                         minLength: {
-                                            value: 6,
+                                            value: 8,
 
                                             message:
-                                                "Password must be at least 6 characters",
+                                                "Password must be at least 8 characters",
                                         },
                                     })}
 

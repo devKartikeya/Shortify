@@ -40,7 +40,9 @@ Authenticated users can create and manage their own shortened URLs.
 * Protected dashboard
 * Links remain associated with their creator
 * Public shortening remains available separately
+* Edit username and email
 * Change password
+* Reset password 
 * Delete account
 
 ### 📊 Dashboard
@@ -92,6 +94,7 @@ Users can manage their account through the profile section.
 
 * Change password using the current password
 * Confirm new password before updating
+* Reset password through email verification
 * Delete account through a confirmation flow
 * Cookie-based JWT authentication
 * Protected user resources
@@ -1235,8 +1238,13 @@ Shortify/
 │   │   │   └── ...
 │   │   │
 │   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Contact.jsx
+│   │   │   └── ...
+│   │   │
+│   │   ├── dashboard/
 │   │   │   ├── Overview.jsx
-│   │   │   ├── MyLinks.jsx
+│   │   │   ├── Profile.jsx
 │   │   │   └── ...
 │   │   │
 │   │   └── ...
@@ -1254,6 +1262,11 @@ Shortify/
 │   │   ├── urls.service.js
 │   │   └── urls.model.js
 │   │
+│   ├── email/
+│   │   ├── email.route.js
+│   │   ├── email.controller.js
+│   │   ├── email.service.js
+│   │   
 │   ├── users/
 │   │   └── ...
 │   │
@@ -1264,6 +1277,7 @@ Shortify/
 │   ├── app.js
 │   ├── server.js
 │   └── Dockerfile
+│ 
 │
 ├── docker-compose.yml
 └── README.md
@@ -1488,7 +1502,6 @@ The project is actively evolving.
 
 ## Planned
 
-* [ ] Link deletion
 * [ ] Link editing
 * [ ] Custom short aliases
 * [ ] Click history
@@ -1497,7 +1510,6 @@ The project is actively evolving.
 * [ ] Improved cache invalidation strategies
 * [ ] Redis failure/fallback handling
 * [ ] Distributed Redis-backed rate limiting
-* [ ] Load balancer health checks
 * [ ] Automatic unhealthy-instance handling
 * [ ] Production deployment
 * [ ] Continuous Deployment

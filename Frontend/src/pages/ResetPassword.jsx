@@ -1,18 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-    Link,
-    useSearchParams
-} from "react-router-dom";
-import {
-    LockKeyhole,
-    Eye,
-    EyeOff,
-    ArrowLeft,
-    CheckCircle2,
-    AlertCircle,
-    Link2
-} from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { LockKeyhole, Eye, EyeOff, ArrowLeft, CheckCircle2, AlertCircle, Link2 } from "lucide-react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -21,8 +10,7 @@ const ResetPassword = () => {
     const token = searchParams.get("token");
 
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] =
-        useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [serverError, setServerError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
@@ -94,26 +82,21 @@ const ResetPassword = () => {
         return (
             <div className="min-h-screen bg-white px-4 py-10">
                 <div className="mx-auto flex min-h-[80vh] max-w-md items-center justify-center">
-
                     <div className="w-full rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-
                         <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-red-50">
                             <AlertCircle
                                 size={28}
                                 className="text-red-500"
                             />
                         </div>
-
                         <h1 className="text-2xl font-bold text-slate-900">
                             Invalid reset link
                         </h1>
-
                         <p className="mt-3 text-sm leading-6 text-slate-500">
                             This password reset link is
                             missing a valid token.
                             Please request a new reset link.
                         </p>
-
                         <Link
                             to="/"
                             className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-yellow-600 transition-colors hover:text-yellow-700"
@@ -121,9 +104,7 @@ const ResetPassword = () => {
                             <ArrowLeft size={16} />
                             Back to home
                         </Link>
-
                     </div>
-
                 </div>
             </div>
         );
@@ -162,9 +143,7 @@ const ResetPassword = () => {
                         >
                             Continue to Shortify
                         </Link>
-
                     </div>
-
                 </div>
             </div>
         );
@@ -187,33 +166,26 @@ const ResetPassword = () => {
                         </h1>
                         <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-slate-500">
                             Create a new password for your
-                            Shortify account. Make sure it's
-                            at least 6 characters long.
+                            Shortify account.
                         </p>
                     </div>
 
                     {/* Form Card */}
-
                     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-
                         <form
                             onSubmit={handleSubmit(onSubmit)}
                             className="space-y-5"
                         >
 
                             {/* New Password */}
-
                             <div>
-
                                 <label
                                     htmlFor="newPassword"
                                     className="mb-2 block text-sm font-semibold text-slate-700"
                                 >
                                     New password
                                 </label>
-
                                 <div className="relative">
-
                                     <LockKeyhole
                                         size={18}
                                         className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -228,21 +200,26 @@ const ResetPassword = () => {
                                         }
                                         placeholder="Enter new password"
                                         autoComplete="new-password"
-                                        className={`w-full rounded-xl border bg-white py-3 pl-10 pr-11 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 ${
-                                            errors.newPassword
-                                                ? "border-red-400 focus:border-red-500"
-                                                : "border-slate-200 focus:border-yellow-500"
-                                        }`}
+                                        className={`w-full rounded-xl border bg-white py-3 pl-10 pr-11 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 ${errors.newPassword
+                                            ? "border-red-400 focus:border-red-500"
+                                            : "border-slate-200 focus:border-yellow-500"
+                                            }`}
                                         {...register(
                                             "newPassword",
                                             {
                                                 required:
                                                     "New password is required",
                                                 minLength: {
-                                                    value: 6,
+                                                    value: 8,
                                                     message:
-                                                        "Password must be at least 6 characters"
-                                                }
+                                                        "Password must be at least 8 characters"
+                                                },
+                                                pattern: {
+                                                    value:
+                                                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                                    message:
+                                                        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+                                                },
                                             }
                                         )}
                                     />
@@ -267,7 +244,6 @@ const ResetPassword = () => {
                                             <Eye size={18} />
                                         )}
                                     </button>
-
                                 </div>
 
                                 {errors.newPassword && (
@@ -279,13 +255,10 @@ const ResetPassword = () => {
                                         }
                                     </p>
                                 )}
-
                             </div>
 
                             {/* Confirm Password */}
-
                             <div>
-
                                 <label
                                     htmlFor="confirmPassword"
                                     className="mb-2 block text-sm font-semibold text-slate-700"
@@ -309,11 +282,10 @@ const ResetPassword = () => {
                                         }
                                         placeholder="Confirm new password"
                                         autoComplete="new-password"
-                                        className={`w-full rounded-xl border bg-white py-3 pl-10 pr-11 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 ${
-                                            errors.confirmPassword
-                                                ? "border-red-400 focus:border-red-500"
-                                                : "border-slate-200 focus:border-yellow-500"
-                                        }`}
+                                        className={`w-full rounded-xl border bg-white py-3 pl-10 pr-11 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 ${errors.confirmPassword
+                                            ? "border-red-400 focus:border-red-500"
+                                            : "border-slate-200 focus:border-yellow-500"
+                                            }`}
                                         {...register(
                                             "confirmPassword",
                                             {
@@ -322,7 +294,7 @@ const ResetPassword = () => {
                                                 validate:
                                                     (value) =>
                                                         value ===
-                                                            newPassword ||
+                                                        newPassword ||
                                                         "Passwords do not match"
                                             }
                                         )}
@@ -348,7 +320,6 @@ const ResetPassword = () => {
                                             <Eye size={18} />
                                         )}
                                     </button>
-
                                 </div>
 
                                 {errors.confirmPassword && (
@@ -360,7 +331,6 @@ const ResetPassword = () => {
                                         }
                                     </p>
                                 )}
-
                             </div>
 
                             {/* Server Error */}
@@ -379,7 +349,6 @@ const ResetPassword = () => {
                             )}
 
                             {/* Submit */}
-
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
@@ -395,28 +364,20 @@ const ResetPassword = () => {
                         </form>
 
                         {/* Security note */}
-
                         <div className="mt-1 flex items-start gap-3 border-t border-slate-100 pt-3">
-
                             <Link2
                                 size={17}
                                 className="mt-0.5 shrink-0 text-slate-400"
                             />
-
                             <p className="text-xs leading-5 text-slate-500">
                                 Reset link is valid for
                                 30 minutes and can be
                                 used once.
                             </p>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
     );
 };
