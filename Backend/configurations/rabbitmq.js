@@ -25,6 +25,11 @@ async function connectRabbitMQ() {
     }
 }
 
+function getRabbitMQChannel() {
+    return channel;
+}
+
 module.exports = {
-    connectRabbitMQ
+    connectRabbitMQ,
+    getRabbitMQChannel
 };
