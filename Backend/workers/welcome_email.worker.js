@@ -1,4 +1,9 @@
-const { connectRabbitMQ, getRabbitMQChannel } = require("../configurations/rabbitmq");
+const {
+    connectRabbitMQ,
+    getRabbitMQChannel
+} = require("../configurations/rabbitmq");
+
+const { sendWelcomeEmail } = require("../email/email.service");
 
 async function start() {
     await connectRabbitMQ();
@@ -12,14 +17,26 @@ async function start() {
             const payload = JSON.parse(
                 message.content.toString()
             );
-            console.log("WELCOME EMAIL JOB:", payload);
 
-            //Call the email service to send the welcome email
+            console.log("Processing welcome email:", payload.email);
+
+            await sendWelcomeEmail({
+                username: payload.username,
+                email: payload.email
+            });
+
             channel.ack(message);
 
+            console.log(
+                `Welcome email sent to ${payload.email}`
+            );
+
         } catch (error) {
-            console.error("Welcome email worker failed:", error);
-            // For now don't requeue
+            console.error(
+                "Welcome email worker failed:",
+                error
+            );
+
             channel.nack(message, false, false);
         }
     });

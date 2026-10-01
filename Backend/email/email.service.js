@@ -122,7 +122,52 @@ async function sendPasswordResetEmail({
     return response.data;
 }
 
+async function sendWelcomeEmail({ username, email }) {
+    await axios.post(
+        "https://api.brevo.com/v3/smtp/email",
+        {
+            sender: {
+                email: process.env.SUPPORT_EMAIL,
+                name: "Shortify"
+            },
+
+            to: [
+                {
+                    email,
+                    name: username
+                }
+            ],
+
+            subject: "Welcome to Shortify 🚀",
+
+            htmlContent: `
+                <h2>Welcome to Shortify, ${username}!</h2>
+
+                <p>
+                    Your account has been successfully created.
+                </p>
+
+                <p>
+                    Start shortening your URLs and managing
+                    your links with Shortify.
+                </p>
+
+                <p>
+                    — Team Shortify
+                </p>
+            `
+        },
+        {
+            headers: {
+                "api-key": process.env.BREVO_API_KEY,
+                "Content-Type": "application/json"
+            }
+        }
+    );
+}
+
 module.exports = {
     sendContactEmail,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    sendWelcomeEmail
 };
