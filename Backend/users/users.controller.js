@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const User = require("./users.model");
 const bcrypt = require("bcrypt");
+const { getRabbitMQChannel } = require("../configurations/rabbitmq");
 const generateResetToken = require("../utilities/generateResetToken");
 
 const sendPasswordResetEmail = require("../email/email.service").sendPasswordResetEmail;
@@ -32,6 +33,20 @@ async function userRegisterController(req, res) {
             username,
             email,
             password
+        );
+
+        const channel = getRabbitMQChannel();
+
+        channel.publish(
+            "shortify_exchange",
+            "user.registered",
+            Buffer.from(
+                JSON.stringify({
+                    userId: user.user._id,
+                    username: user.user.username,
+                    email: user.user.email
+                })
+            )
         );
 
         // Store JWT in HTTP-only cookie

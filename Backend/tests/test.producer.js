@@ -5,12 +5,14 @@ async function sendTestMessage() {
 
     const channel = getRabbitMQChannel();
 
-    channel.sendToQueue(
-        "email_queue",
-        Buffer.from("Hello from Shortify Producer")
+    channel.publish(
+        "shortify_exchange",
+        "user.registered",
+        Buffer.from("Message from test.producer.js")
     );
 
-    console.log("Message sent to email_queue");
+    console.log("Message sent to exchange");
+
 }
 
 sendTestMessage();

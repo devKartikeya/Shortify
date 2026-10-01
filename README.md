@@ -1,12 +1,12 @@
 # 🔗 Shortify
 
-> A modern, full-stack URL shortener built with MERN, Redis, Docker, automated testing, load balancing, and practical system-design principles.
+> A modern, full-stack URL shortener built with MERN, Redis, Docker, RabbitMQ, load balancing, automated testing and practical system-design principles.
 
 Shortify is a full-stack URL shortening application that allows users to convert long URLs into compact, shareable links.
 
 The project supports both **public URL shortening** and **authenticated, user-specific link management**, with a professional dashboard for managing links and tracking link performance.
 
-Shortify is being progressively developed as an engineering-focused project rather than just a basic CRUD application, with emphasis on **clean architecture, caching, rate limiting, performance optimization, testing, containerization, CI automation, load balancing, horizontal scaling, and practical system design**.
+Shortify is being progressively developed as an engineering-focused project rather than just a basic CRUD application, with emphasis on **clean architecture, caching, rate limiting, asynchronous communication, performance optimization, testing, containerization, CI automation, load balancing, horizontal scaling, and practical system design**.
 
 ---
 
