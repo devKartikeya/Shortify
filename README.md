@@ -15,18 +15,27 @@ Shortify is being progressively developed as an engineering-focused project rath
 ### 🔗 URL Shortening
 
 * Convert long URLs into short, shareable links
+
 * Automatically generate unique short codes
+
 * Supports both `HTTP` and `HTTPS` URLs
+
 * Validates URLs before creating short links
+
 * Prevents short-code collisions
+
 * Public URL shortening
+
 * Detects duplicate original URLs
+
 * Reuses the existing short code when the same URL is shortened again
 
 ### 🔗 QR-Code Generation
 
 * Generate QR codes directly from shortened links
+
 * Associate QR codes with shortened URLs
+
 * Track QR-related link activity
 
 ### 👤 User Accounts
@@ -34,15 +43,25 @@ Shortify is being progressively developed as an engineering-focused project rath
 Authenticated users can create and manage their own shortened URLs.
 
 * User registration and login
+
 * Cookie-based authentication
+
 * JWT-based authentication
+
 * User-specific links
+
 * Protected dashboard
+
 * Links remain associated with their creator
+
 * Public shortening remains available separately
+
 * Edit username and email
+
 * Change password
-* Reset password 
+
+* Reset password
+
 * Delete account
 
 ### 📊 Dashboard
@@ -52,12 +71,19 @@ The dashboard provides an overview of the user's links and their performance.
 Currently includes:
 
 * Total links
+
 * Total clicks
+
 * Average clicks per link
+
 * Links that have received clicks
+
 * Unused links
+
 * Best-performing link
+
 * Best link's share of total clicks
+
 * Recently created links
 
 The analytics are calculated from actual link data available in the application — no simulated analytics are used.
@@ -67,9 +93,13 @@ The analytics are calculated from actual link data available in the application 
 Every time a short URL is visited:
 
 1. The short code is resolved
+
 2. The URL is retrieved from Redis when cached
+
 3. The click counter is incremented atomically in Redis
+
 4. The visitor is redirected to the original URL
+
 5. Redis click counts are periodically synchronized with MongoDB
 
 This allows frequent redirects to avoid a MongoDB read and avoids performing a MongoDB write for every individual click.
@@ -81,11 +111,17 @@ Authenticated users have a dedicated **My Links** section.
 The interface provides:
 
 * Recent-first ordering
+
 * Search and filtering
+
 * Easy access to short URLs
+
 * Original URL visibility
+
 * Click counts
+
 * Link creation information
+
 * User-specific link management
 
 ### 🔐 Account & Security Management
@@ -93,10 +129,15 @@ The interface provides:
 Users can manage their account through the profile section.
 
 * Change password using the current password
+
 * Confirm new password before updating
+
 * Reset password through email verification
+
 * Delete account through a confirmation flow
+
 * Cookie-based JWT authentication
+
 * Protected user resources
 
 ---
@@ -106,43 +147,77 @@ Users can manage their account through the profile section.
 Shortify follows a modular backend architecture where responsibilities are separated across different layers.
 
 ```text
+
 Client
-  │
-  ▼
+
+  │
+
+  ▼
+
 Load Balancer
-  │
-  ├───────────────┐
-  ▼               ▼
-Backend 1       Backend 2
-  │               │
-  └───────┬───────┘
-          │
-          ▼
-   Application Layers
-          │
-          ▼
+
+  │
+
+  ├───────────────┐
+
+  ▼               ▼
+
+Backend 1       Backend 2
+
+  │               │
+
+  └───────┬───────┘
+
+          │
+
+          ▼
+
+   Application Layers
+
+          │
+
+          ▼
+
 Route
-  │
-  ▼
+
+  │
+
+  ▼
+
 Authentication Middleware
-  │
-  ▼
+
+  │
+
+  ▼
+
 Controller
-  │
-  ▼
+
+  │
+
+  ▼
+
 Service
-  │
-  ▼
+
+  │
+
+  ▼
+
 Model
-  │
-  ▼
+
+  │
+
+  ▼
+
 MongoDB
+
 ```
 
 The backend follows:
 
 ```text
+
 Route → Controller → Service → Model
+
 ```
 
 ### Routes
@@ -172,9 +247,13 @@ Shortify uses **Redis** as a high-speed in-memory data layer alongside MongoDB.
 Redis is used for multiple performance-oriented responsibilities:
 
 * URL caching
+
 * Faster repeated URL lookups
+
 * Click counters
+
 * Periodic click synchronization
+
 * Atomic operations
 
 Shortify currently uses **application-level rate limiting** through Express middleware. Redis is not currently used as the rate-limiting store.
@@ -182,26 +261,47 @@ Shortify currently uses **application-level rate limiting** through Express midd
 MongoDB remains the **primary persistent source of truth**, while Redis stores fast, derived, or temporary state.
 
 ```text
-                 ┌─────────────┐
-                 │   Client    │
-                 └──────┬──────┘
-                        │
-                        ▼
-                 ┌─────────────┐
-                 │Load Balancer│
-                 └──────┬──────┘
-                        │
-                        ▼
-                 ┌─────────────┐
-                 │   Backend   │
-                 └──────┬──────┘
-                        │
-                 ┌──────┴──────┐
-                 │             │
-                 ▼             ▼
-            ┌────────┐    ┌─────────┐
-            │ Redis  │    │ MongoDB │
-            └────────┘    └─────────┘
+
+                 ┌─────────────┐
+
+                 │   Client    │
+
+                 └──────┬──────┘
+
+                        │
+
+                        ▼
+
+                 ┌─────────────┐
+
+                 │Load Balancer│
+
+                 └──────┬──────┘
+
+                        │
+
+                        ▼
+
+                 ┌─────────────┐
+
+                 │   Backend   │
+
+                 └──────┬──────┘
+
+                        │
+
+                 ┌──────┴──────┐
+
+                 │             │
+
+                 ▼             ▼
+
+            ┌────────┐    ┌─────────┐
+
+            │ Redis  │    │ MongoDB │
+
+            └────────┘    └─────────┘
+
 ```
 
 ---
@@ -213,41 +313,67 @@ Shortify caches resolved original URLs in Redis.
 ### Cache Key
 
 ```text
+
 shortify:url:<shortCode>
+
 ```
 
 For example:
 
 ```text
+
 shortify:url:aB72xQ
 
 → https://example.com/some/long/url
+
 ```
 
 ### Request Flow
 
 ```text
+
 GET /aB72xQ
-      │
-      ▼
-  Check Redis
-      │
-   ┌──┴────┐
-   │       │
-  HIT     MISS
-   │       │
-   │       ▼
-   │    MongoDB
-   │       │
-   │       ▼
-   │    Redis SET
-   │       │
-   └───┬───┘
-       ▼
- Original URL
-       │
-       ▼
-   Redirect
+
+      │
+
+      ▼
+
+  Check Redis
+
+      │
+
+   ┌──┴────┐
+
+   │       │
+
+  HIT     MISS
+
+   │       │
+
+   │       ▼
+
+   │    MongoDB
+
+   │       │
+
+   │       ▼
+
+   │    Redis SET
+
+   │       │
+
+   └───┬───┘
+
+       ▼
+
+ Original URL
+
+       │
+
+       ▼
+
+   Redirect
+
 ```
 
 On a cache hit, the application can resolve the URL without performing a MongoDB read.
@@ -263,30 +389,43 @@ Click counting has been optimized using Redis atomic counters.
 Instead of updating MongoDB on every redirect:
 
 ```text
+
 Every request
-     ↓
+
+     ↓
+
 MongoDB $inc
+
 ```
 
 Shortify now uses:
 
 ```text
+
 Every request
-     ↓
+
+     ↓
+
 Redis INCR
+
 ```
 
 The click counter uses keys such as:
 
 ```text
+
 shortify:clicks:<shortCode>
+
 ```
 
 For example:
 
 ```text
+
 shortify:clicks:aB72xQ
+
 → 137
+
 ```
 
 Redis's atomic `INCR` operation allows multiple requests to safely increment the same counter.
@@ -298,49 +437,79 @@ Redis's atomic `INCR` operation allows multiple requests to safely increment the
 Redis provides the high-speed counter while MongoDB provides durable persistence.
 
 ```text
-                User Clicks
-                     │
-                     ▼
-                Redis INCR
-                     │
-                     ▼
-             Redis Click Counter
-                     │
-                     │
-              Periodic Sync
-                     │
-                     ▼
-                MongoDB $inc
+
+                User Clicks
+
+                     │
+
+                     ▼
+
+                Redis INCR
+
+                     │
+
+                     ▼
+
+             Redis Click Counter
+
+                     │
+
+                     │
+
+              Periodic Sync
+
+                     │
+
+                     ▼
+
+                MongoDB $inc
+
 ```
 
 Example:
 
 ```text
+
 MongoDB
+
 clicks = 500
 
 Redis
+
 pending clicks = 37
+
 ```
 
 During synchronization:
 
 ```text
+
 Redis
+
 37
- │
- ├── atomically claimed
- ▼
+
+ │
+
+ ├── atomically claimed
+
+ ▼
+
 0
+
 ```
 
 Then:
 
 ```text
+
 MongoDB
+
 500 + 37
-   ↓
+
+   ↓
+
 537
+
 ```
 
 If new clicks arrive during or after synchronization, they accumulate separately in Redis and are persisted during the next synchronization cycle.
@@ -352,11 +521,17 @@ This design significantly reduces MongoDB write pressure for frequently accessed
 The simpler design would be:
 
 ```text
+
 Request
-  ↓
+
+  ↓
+
 MongoDB $inc
-  ↓
+
+  ↓
+
 Redirect
+
 ```
 
 But a highly accessed short URL could generate a MongoDB write for every click.
@@ -364,15 +539,23 @@ But a highly accessed short URL could generate a MongoDB write for every click.
 The Redis-based design changes this to:
 
 ```text
+
 Request
-  ↓
+
+  ↓
+
 Redis INCR
-  ↓
+
+  ↓
+
 Redirect
 
 Periodic batch
-  ↓
+
+  ↓
+
 MongoDB
+
 ```
 
 This introduces a deliberate trade-off:
@@ -392,17 +575,29 @@ The current implementation uses Express rate-limiting middleware.
 Conceptually:
 
 ```text
+
 Client
-  │
-  ▼
+
+  │
+
+  ▼
+
 Request
-  │
-  ▼
+
+  │
+
+  ▼
+
 Express Rate Limiter
-  │
-  ├── Within limit → Allow
-  │
-  └── Limit exceeded → Reject
+
+  │
+
+  ├── Within limit → Allow
+
+  │
+
+  └── Limit exceeded → Reject
+
 ```
 
 The current implementation is suitable for the existing single-backend-instance architecture.
@@ -412,32 +607,168 @@ However, when multiple backend instances are introduced, process-local rate-limi
 This creates a practical scalability consideration:
 
 ```text
+
 Single Instance
 
 Client
-  ↓
+
+  ↓
+
 Backend
-  ↓
+
+  ↓
+
 Rate Limiter
+
 ```
 
 versus:
 
 ```text
+
 Multiple Instances
 
-             ┌── Backend 1
-             │
+             ┌── Backend 1
+
+             │
+
 Client → LB ─┼── Backend 2
-             │
-             └── Backend 3
+
+             │
+
+             └── Backend 3
+
 ```
 
 A distributed rate-limiting implementation using a shared store such as Redis can be introduced when the architecture requires a globally shared request limit.
 
 ---
 
-# ⚖️ System Design
+**
+
+🐇 RabbitMQ
+
+Shortify uses RabbitMQ as a message broker for asynchronous background work.
+
+The first real use case is sending a welcome email after user registration.
+
+Instead of making the registration request wait for the email provider, the backend publishes an event to RabbitMQ and a separate worker processes the email job.
+
+Registration → Welcome Email Flow
+
+User Registration
+       │
+       ▼
+Backend API
+       │
+       ├── Save User → MongoDB
+       │
+       └── Publish "user.registered"
+                    │
+                    ▼
+             RabbitMQ Exchange
+                    │
+                    │ user.registered
+                    ▼
+          welcome_email_queue
+                    │
+                    ▼
+          Welcome Email Worker
+                    │
+                    ▼
+                  Brevo
+                    │
+                    ▼
+             Welcome Email
+
+Exchange and Routing
+
+Shortify uses a direct exchange named:
+
+shortify_exchange
+
+The registration event is published using the routing key:
+
+user.registered
+
+The queue is bound to that routing key:
+
+shortify_exchange
+        │
+        │ user.registered
+        ▼
+welcome_email_queue
+
+This keeps the backend decoupled from the worker. The backend only needs to publish the event; it does not need to know how or where the email is processed.
+
+Message Payload
+
+The registration event contains only the information required by the email worker:
+
+{
+  "userId": "user-id",
+  "username": "Kartikeya",
+  "email": "user@example.com"
+}
+
+Sensitive information such as the user's password is never included in the message.
+
+Separate Worker Process
+
+The email worker is part of the same Backend codebase but runs as a separate Node.js process.
+
+Backend Codebase
+│
+├── API Process
+│   └── node server.js
+│
+└── Worker Process
+    └── node workers/welcome_email.worker.js
+
+Both processes communicate through RabbitMQ rather than directly calling each other.
+
+The worker continuously consumes messages from welcome_email_queue.
+
+Acknowledgement
+
+The worker acknowledges a message only after the email has been successfully sent.
+
+Message received
+       │
+       ▼
+Parse payload
+       │
+       ▼
+Send email through Brevo
+       │
+   ┌───┴────┐
+   │        │
+Success    Failure
+   │        │
+   ▼        ▼
+ ACK      NACK
+
+This provides a foundation for reliable asynchronous processing and future retry/dead-letter handling.
+
+Current RabbitMQ Topology
+
+                    shortify_exchange
+                    /               \
+                   /                 \
+     user.registered                 password.reset
+             │                             │
+             ▼                             ▼
+ welcome_email_queue                password_queue
+             │
+             ▼
+    Welcome Email Worker
+             │
+             ▼
+           Brevo
+
+RabbitMQ is currently being used for asynchronous communication, while the backend API and background worker remain separate processes.
+
+⚖️ System Design**
 
 Shortify is being developed with practical system-design principles rather than treating system design as a separate theoretical topic.
 
@@ -448,13 +779,21 @@ The architecture has evolved by identifying actual problems and introducing comp
 Initially:
 
 ```text
+
 Request
-   ↓
+
+   ↓
+
 MongoDB
-   ↓
+
+   ↓
+
 Original URL
-   ↓
+
+   ↓
+
 Redirect
+
 ```
 
 Problem:
@@ -464,7 +803,9 @@ Problem:
 Solution:
 
 ```text
+
 Redis Cache
+
 ```
 
 ---
@@ -476,11 +817,17 @@ After caching, another problem appeared.
 A cache hit avoided the MongoDB read, but click tracking still required a MongoDB write.
 
 ```text
+
 Redis HIT
-   ↓
+
+   ↓
+
 MongoDB $inc
-   ↓
+
+   ↓
+
 Redirect
+
 ```
 
 Problem:
@@ -490,19 +837,29 @@ Problem:
 Solution:
 
 ```text
+
 Redis INCR
-   ↓
+
+   ↓
+
 Periodic synchronization
-   ↓
+
+   ↓
+
 MongoDB $inc
+
 ```
 
 But this introduced another trade-off:
 
 ```text
+
 More performance
-      ↕
+
+      ↕
+
 Delayed persistence
+
 ```
 
 ---
@@ -514,21 +871,33 @@ As the system grows, a single backend instance becomes a potential capacity and 
 Instead of running only:
 
 ```text
+
 Client
-  ↓
+
+  ↓
+
 Backend
+
 ```
 
 Shortify can distribute requests across multiple instances:
 
 ```text
+
 Client
-  ↓
+
+  ↓
+
 Load Balancer
-  ↓
+
+  ↓
+
 ┌───────────┬───────────┐
-▼           ▼           ▼
-Backend 1   Backend 2   Backend 3
+
+▼           ▼           ▼
+
+Backend 1   Backend 2   Backend 3
+
 ```
 
 This allows the application to scale horizontally by adding more backend instances.
@@ -544,23 +913,37 @@ A local load balancer was implemented using Node.js and `http-proxy` to understa
 The load balancer maintains a list of backend instances and distributes incoming requests between them using a **Round Robin** strategy.
 
 ```text
+
 Client
-  │
-  ▼
+
+  │
+
+  ▼
+
 Load Balancer
-  │
-  ├──► Backend 1
-  │
-  └──► Backend 2
+
+  │
+
+  ├──► Backend 1
+
+  │
+
+  └──► Backend 2
+
 ```
 
 For example:
 
 ```text
+
 Request 1 → Backend 1
+
 Request 2 → Backend 2
+
 Request 3 → Backend 1
+
 Request 4 → Backend 2
+
 ```
 
 The basic Round Robin mechanism cycles through the available backend targets.
@@ -568,26 +951,47 @@ The basic Round Robin mechanism cycles through the available backend targets.
 ### Request Flow
 
 ```text
+
 Browser
-   │
-   │ HTTP Request
-   ▼
+
+   │
+
+   │ HTTP Request
+
+   ▼
+
 Load Balancer
-   │
-   ├──────────────┐
-   ▼              ▼
-Backend 1      Backend 2
-   │              │
-   └───────┬──────┘
-           │
-           ▼
-      Response
-           │
-           ▼
-     Load Balancer
-           │
-           ▼
-        Browser
+
+   │
+
+   ├──────────────┐
+
+   ▼              ▼
+
+Backend 1      Backend 2
+
+   │              │
+
+   └───────┬──────┘
+
+           │
+
+           ▼
+
+      Response
+
+           │
+
+           ▼
+
+     Load Balancer
+
+           │
+
+           ▼
+
+        Browser
+
 ```
 
 The load balancer acts as an intermediary between the client and backend instances.
@@ -601,14 +1005,23 @@ A major architectural milestone in Shortify is that the frontend no longer commu
 Instead:
 
 ```text
+
 Frontend
-   │
-   ▼
+
+   │
+
+   ▼
+
 Load Balancer
-   │
-   ├──► Backend 1
-   │
-   └──► Backend 2
+
+   │
+
+   ├──► Backend 1
+
+   │
+
+   └──► Backend 2
+
 ```
 
 The frontend API configuration was changed so that its API base URL points to the load balancer rather than directly to a backend server.
@@ -616,25 +1029,39 @@ The frontend API configuration was changed so that its API base URL points to th
 Conceptually:
 
 ```text
+
 Before
 
 Frontend
-   │
-   ▼
+
+   │
+
+   ▼
+
 Backend :3000
+
 ```
 
 Now:
 
 ```text
+
 Frontend
-   │
-   ▼
+
+   │
+
+   ▼
+
 Load Balancer :4000
-   │
-   ├──► Backend :3000
-   │
-   └──► Backend :3001
+
+   │
+
+   ├──► Backend :3000
+
+   │
+
+   └──► Backend :3001
+
 ```
 
 This means the frontend does not need to know which backend instance will process a request.
@@ -652,23 +1079,41 @@ Shortify now demonstrates the basic architecture required for horizontal scaling
 Horizontal scaling means running **multiple instances of the same application** and distributing requests between them.
 
 ```text
-                 ┌───────────────┐
-                 │ Load Balancer │
-                 └───────┬───────┘
-                         │
-            ┌────────────┼────────────┐
-            │            │            │
-            ▼            ▼            ▼
-       Backend 1     Backend 2     Backend 3
-            │            │            │
-            └────────────┼────────────┘
-                         │
-                  Shared Services
-                         │
-              ┌──────────┴──────────┐
-              │                     │
-              ▼                     ▼
-           Redis                 MongoDB
+
+                 ┌───────────────┐
+
+                 │ Load Balancer │
+
+                 └───────┬───────┘
+
+                         │
+
+            ┌────────────┼────────────┐
+
+            │            │            │
+
+            ▼            ▼            ▼
+
+       Backend 1     Backend 2     Backend 3
+
+            │            │            │
+
+            └────────────┼────────────┘
+
+                         │
+
+                  Shared Services
+
+                         │
+
+              ┌──────────┴──────────┐
+
+              │                     │
+
+              ▼                     ▼
+
+           Redis                 MongoDB
+
 ```
 
 The important principle is:
@@ -692,15 +1137,25 @@ Shared infrastructure such as MongoDB and Redis can therefore be accessed by mul
 Conceptually:
 
 ```text
-                 Load Balancer
-                 /     |     \
-                /      |      \
-               ▼       ▼       ▼
-          Backend 1 Backend 2 Backend 3
-               \       |       /
-                \      |      /
-                 ▼     ▼     ▼
-                 Redis / MongoDB
+
+                 Load Balancer
+
+                 /     |     \
+
+                /      |      \
+
+               ▼       ▼       ▼
+
+          Backend 1 Backend 2 Backend 3
+
+               \       |       /
+
+                \      |      /
+
+                 ▼     ▼     ▼
+
+                 Redis / MongoDB
+
 ```
 
 This is one of the foundations required for a horizontally scalable backend.
@@ -712,40 +1167,75 @@ This is one of the foundations required for a horizontally scalable backend.
 The current Shortify architecture combines the application layer, Redis optimization, persistent storage, and the load-balancing layer.
 
 ```text
-                         ┌──────────────┐
-                         │    Client    │
-                         └──────┬───────┘
-                                │
-                                ▼
-                       ┌────────────────┐
-                       │ Load Balancer  │
-                       └───────┬────────┘
-                               │
-                    ┌──────────┴──────────┐
-                    │                     │
-                    ▼                     ▼
-              ┌───────────┐         ┌───────────┐
-              │ Backend 1 │         │ Backend 2 │
-              └─────┬─────┘         └─────┬─────┘
-                    │                     │
-                    └──────────┬──────────┘
-                               │
-                 ┌─────────────┼─────────────┐
-                 │             │             │
-                 ▼             ▼             ▼
-              Redis         MongoDB     Application
-                 │                         Rate Limiter
-                 │
-        ┌────────┼─────────┐
-        │        │         │
-        ▼        ▼         ▼
-     URL Cache Clicks  Derived State
-        │        │
-        │        ▼
-        │   Periodic Sync
-        │        │
-        ▼        ▼
-      Fast Reads → MongoDB Persistence
+
+                         ┌──────────────┐
+
+                         │    Client    │
+
+                         └──────┬───────┘
+
+                                │
+
+                                ▼
+
+                       ┌────────────────┐
+
+                       │ Load Balancer  │
+
+                       └───────┬────────┘
+
+                               │
+
+                    ┌──────────┴──────────┐
+
+                    │                     │
+
+                    ▼                     ▼
+
+              ┌───────────┐         ┌───────────┐
+
+              │ Backend 1 │         │ Backend 2 │
+
+              └─────┬─────┘         └─────┬─────┘
+
+                    │                     │
+
+                    └──────────┬──────────┘
+
+                               │
+
+                 ┌─────────────┼─────────────┐
+
+                 │             │             │
+
+                 ▼             ▼             ▼
+
+              Redis         MongoDB     Application
+
+                 │                         Rate Limiter
+
+                 │
+
+        ┌────────┼─────────┐
+
+        │        │         │
+
+        ▼        ▼         ▼
+
+     URL Cache Clicks  Derived State
+
+        │        │
+
+        │        ▼
+
+        │   Periodic Sync
+
+        │        │
+
+        ▼        ▼
+
+      Fast Reads → MongoDB Persistence
+
 ```
 
 ---
@@ -755,21 +1245,37 @@ The current Shortify architecture combines the application layer, Redis optimiza
 The current architecture provides a foundation for further scaling as traffic increases.
 
 ```text
-                         ┌───────────────┐
-                         │ Load Balancer │
-                         └───────┬───────┘
-                                 │
-              ┌──────────────────┼──────────────────┐
-              │                  │                  │
-              ▼                  ▼                  ▼
-         Backend 1          Backend 2          Backend 3
-              │                  │                  │
-              └──────────────────┼──────────────────┘
-                                 │
-                    ┌────────────┴────────────┐
-                    │                         │
-                    ▼                         ▼
-                  Redis                    MongoDB
+
+                         ┌───────────────┐
+
+                         │ Load Balancer │
+
+                         └───────┬───────┘
+
+                                 │
+
+              ┌──────────────────┼──────────────────┐
+
+              │                  │                  │
+
+              ▼                  ▼                  ▼
+
+         Backend 1          Backend 2          Backend 3
+
+              │                  │                  │
+
+              └──────────────────┼──────────────────┘
+
+                                 │
+
+                    ┌────────────┴────────────┐
+
+                    │                         │
+
+                    ▼                         ▼
+
+                  Redis                    MongoDB
+
 ```
 
 Because Redis provides shared application state such as cached URLs and accumulated click counters, multiple backend instances can work with the same Redis layer.
@@ -781,13 +1287,21 @@ The load balancer provides the routing layer that distributes requests among the
 Further production-scale improvements can include:
 
 * Health checks
+
 * Automatic removal of unhealthy instances
+
 * Failure handling
+
 * Connection draining
+
 * More advanced load-balancing algorithms
+
 * Distributed rate limiting
+
 * Container orchestration
+
 * Automated deployment
+
 * Monitoring and observability
 
 These are intentionally introduced only when they solve an actual architectural requirement.
@@ -809,22 +1323,39 @@ Supertest is used to test the Express application through HTTP-like requests wit
 Conceptually:
 
 ```text
+
 Jest
-  │
-  ▼
+
+  │
+
+  ▼
+
 Supertest
-  │
-  ▼
+
+  │
+
+  ▼
+
 Express App
-  │
-  ▼
+
+  │
+
+  ▼
+
 Route
-  │
-  ▼
+
+  │
+
+  ▼
+
 Response
-  │
-  ▼
+
+  │
+
+  ▼
+
 Assertions
+
 ```
 
 The Express application is separated from the server bootstrap so tests can run without starting the production server or unnecessarily establishing database connections.
@@ -838,21 +1369,33 @@ Shortify is containerized using Docker.
 The application uses separate containers for its application services.
 
 ```text
+
 Docker
- │
- ├── Frontend Container
- │      └── Nginx
- │
- └── Backend Container
-        └── Node.js
+
+ │
+
+ ├── Frontend Container
+
+ │      └── Nginx
+
+ │
+
+ └── Backend Container
+
+        └── Node.js
+
 ```
 
 Docker provides:
 
 * Consistent development environments
+
 * Isolated application services
+
 * Reproducible builds
+
 * Easier deployment
+
 * Clear service boundaries
 
 ### Frontend
@@ -860,16 +1403,27 @@ Docker provides:
 The frontend uses a **multi-stage Docker build**:
 
 ```text
+
 Node.js
-   │
-   ├── Install dependencies
-   │
-   ├── Build React application
-   │
-   ▼
+
+   │
+
+   ├── Install dependencies
+
+   │
+
+   ├── Build React application
+
+   │
+
+   ▼
+
 Nginx
-   │
-   └── Serve production build
+
+   │
+
+   └── Serve production build
+
 ```
 
 The final frontend image contains the production build served by Nginx rather than the complete Node.js development environment.
@@ -885,17 +1439,25 @@ The backend runs inside a Node.js container.
 Docker Compose is used to coordinate the application services.
 
 ```text
+
 Docker Compose
-      │
-      ├── Frontend
-      │
-      └── Backend
+
+      │
+
+      ├── Frontend
+
+      │
+
+      └── Backend
+
 ```
 
 Compose provides a convenient way to build and run the services together.
 
 ```bash
+
 docker compose up --build
+
 ```
 
 The application services communicate through Docker's networking infrastructure, while the browser communicates with the published host ports.
@@ -911,31 +1473,57 @@ Shortify uses **GitHub Actions** for Continuous Integration.
 The current CI pipeline performs:
 
 ```text
+
 Git Push / Pull Request
-        │
-        ▼
+
+        │
+
+        ▼
+
 GitHub Actions
-        │
-        ▼
+
+        │
+
+        ▼
+
 Checkout Repository
-        │
-        ▼
+
+        │
+
+        ▼
+
 Setup Node.js
-        │
-        ▼
+
+        │
+
+        ▼
+
 Install Backend Dependencies
-        │
-        ▼
+
+        │
+
+        ▼
+
 Run Jest Tests
-        │
-        ▼
+
+        │
+
+        ▼
+
 Install Frontend Dependencies
-        │
-        ▼
+
+        │
+
+        ▼
+
 Build Frontend
-        │
-        ▼
+
+        │
+
+        ▼
+
 Build Docker Images
+
 ```
 
 The CI pipeline helps ensure that changes can be tested and that the application can successfully produce its Docker images before being considered ready for deployment.
@@ -949,15 +1537,21 @@ The CI pipeline helps ensure that changes can be tested and that the application
 ## Public URL Shortening
 
 ```http
+
 POST /urls/shorten
+
 ```
 
 Request:
 
 ```json
+
 {
-  "originalUrl": "https://example.com/some/long/url"
+
+  "originalUrl": "https://example.com/some/long/url"
+
 }
+
 ```
 
 The service validates the URL and checks whether the same normalized URL already exists.
@@ -965,23 +1559,37 @@ The service validates the URL and checks whether the same normalized URL already
 If it exists:
 
 ```text
+
 Existing URL
-     ↓
+
+     ↓
+
 Existing shortCode
-     ↓
+
+     ↓
+
 Return existing link
+
 ```
 
 Otherwise:
 
 ```text
+
 New URL
-  ↓
+
+  ↓
+
 Generate shortCode
-  ↓
+
+  ↓
+
 Check short-code collision
-  ↓
+
+  ↓
+
 Save
+
 ```
 
 ---
@@ -989,7 +1597,9 @@ Save
 ## Authenticated URL Shortening
 
 ```http
+
 POST /urls/shorten/authenticated
+
 ```
 
 Requires authentication.
@@ -1003,7 +1613,9 @@ If the original URL already exists according to the application's deduplication 
 ## Get My Links
 
 ```http
+
 GET /urls/my-links
+
 ```
 
 Requires authentication.
@@ -1015,7 +1627,9 @@ Returns the shortened URLs belonging to the currently authenticated user.
 ## Change Password
 
 ```http
+
 PATCH /users/change-password
+
 ```
 
 Requires authentication.
@@ -1023,11 +1637,17 @@ Requires authentication.
 Request:
 
 ```json
+
 {
-  "oldPassword": "current-password",
-  "newPassword": "new-password",
-  "confirmPassword": "new-password"
+
+  "oldPassword": "current-password",
+
+  "newPassword": "new-password",
+
+  "confirmPassword": "new-password"
+
 }
+
 ```
 
 The endpoint validates the current password and ensures that the new password is confirmed before updating the user's password.
@@ -1045,34 +1665,59 @@ Account deletion removes the user's account and associated application data acco
 ## Redirect Short URL
 
 ```http
+
 GET /:shortCode
+
 ```
 
 When a valid short code is requested:
 
 ```text
+
 Request
-  ↓
+
+  ↓
+
 Check Redis URL cache
-  ↓
+
+  ↓
+
 HIT ───────────────┐
-  │                │
-  │              MISS
-  │                │
-  │                ▼
-  │             MongoDB
-  │                │
-  │                ▼
-  │             Redis SET
-  │                │
-  └────────┬───────┘
-           ▼
-      Original URL
-           │
-           ├── Redis INCR
-           │
-           ▼
-        Redirect
+
+  │                │
+
+  │              MISS
+
+  │                │
+
+  │                ▼
+
+  │             MongoDB
+
+  │                │
+
+  │                ▼
+
+  │             Redis SET
+
+  │                │
+
+  └────────┬───────┘
+
+           ▼
+
+      Original URL
+
+           │
+
+           ├── Redis INCR
+
+           │
+
+           ▼
+
+        Redirect
+
 ```
 
 The click count is maintained in Redis and periodically synchronized with MongoDB.
@@ -1084,22 +1729,39 @@ The click count is maintained in Redis and periodically synchronized with MongoD
 Shortify uses cookie-based authentication with JWT.
 
 ```text
+
 Login
-  │
-  ▼
+
+  │
+
+  ▼
+
 JWT Generated
-  │
-  ▼
+
+  │
+
+  ▼
+
 HTTP Cookie
-  │
-  ▼
+
+  │
+
+  ▼
+
 Authenticated Request
-  │
-  ▼
+
+  │
+
+  ▼
+
 Authentication Middleware
-  │
-  ▼
+
+  │
+
+  ▼
+
 Protected Resource
+
 ```
 
 Authentication is handled independently from the application's business logic through middleware.
@@ -1115,13 +1777,21 @@ Authenticated users can manage important account-level operations through their 
 Users can change their password by providing:
 
 ```text
+
 Current Password
-       ↓
+
+       ↓
+
 New Password
-       ↓
+
+       ↓
+
 Confirm New Password
-       ↓
+
+       ↓
+
 Password Updated
+
 ```
 
 ### Delete Account
@@ -1139,8 +1809,11 @@ Shortify validates URLs before storing them.
 Currently accepted protocols:
 
 ```text
+
 http://
+
 https://
+
 ```
 
 Invalid URLs are rejected before a database record is created.
@@ -1154,8 +1827,11 @@ The URL is normalized before duplicate detection so that equivalent normalized v
 Shortify currently maintains an aggregate click count for each link.
 
 ```text
+
 Link
+
 └── clicks: 42
+
 ```
 
 The important distinction is that the counter is now updated through Redis during normal redirect traffic and periodically persisted to MongoDB.
@@ -1165,6 +1841,7 @@ MongoDB ultimately stores the durable aggregate count.
 Therefore, the application can reliably calculate:
 
 ```text
+
 Total Links
 
 Total Clicks
@@ -1178,27 +1855,35 @@ Unused Links
 Best Performing Link
 
 Best Link's Click Share
+
 ```
 
 For example:
 
 ```text
+
 10 links
 
 50 total clicks
+
 ```
 
 gives:
 
 ```text
+
 Average clicks/link = 5.0
+
 ```
 
 If 7 links have received at least one click:
 
 ```text
+
 Links with clicks = 7
+
 Unused links = 3
+
 ```
 
 ---
@@ -1210,11 +1895,17 @@ The current model does not store individual click events.
 Therefore, Shortify does **not** pretend to know:
 
 * Clicks per day
+
 * Clicks per hour
+
 * 7-day growth
+
 * Monthly trends
+
 * Geographic distribution
+
 * Device statistics
+
 * Browser statistics
 
 These features require additional analytics data to be persisted.
@@ -1226,61 +1917,115 @@ This keeps the current dashboard transparent and based on actual available data.
 # 📁 Project Structure
 
 ```text
+
 Shortify/
 
 │
+
 ├── Frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── CreateLinkModal.jsx
-│   │   │   ├── EmptyLinks.jsx
-│   │   │   ├── LinkCard.jsx
-│   │   │   └── ...
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   ├── Contact.jsx
-│   │   │   └── ...
-│   │   │
-│   │   ├── dashboard/
-│   │   │   ├── Overview.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   └── ...
-│   │   │
-│   │   └── ...
-│   │
-│   └── Dockerfile
+
+│   ├── src/
+
+│   │   ├── components/
+
+│   │   │   ├── CreateLinkModal.jsx
+
+│   │   │   ├── EmptyLinks.jsx
+
+│   │   │   ├── LinkCard.jsx
+
+│   │   │   └── ...
+
+│   │   │
+
+│   │   ├── pages/
+
+│   │   │   ├── Home.jsx
+
+│   │   │   ├── Contact.jsx
+
+│   │   │   └── ...
+
+│   │   │
+
+│   │   ├── dashboard/
+
+│   │   │   ├── Overview.jsx
+
+│   │   │   ├── Profile.jsx
+
+│   │   │   └── ...
+
+│   │   │
+
+│   │   └── ...
+
+│   │
+
+│   └── Dockerfile
+
 │
+
 ├── Backend/
-│   ├── configurations/
-│   │   ├── database.js
-│   │   └── redis.js
-│   │
-│   ├── urls/
-│   │   ├── urls.route.js
-│   │   ├── urls.controller.js
-│   │   ├── urls.service.js
-│   │   └── urls.model.js
-│   │
-│   ├── email/
-│   │   ├── email.route.js
-│   │   ├── email.controller.js
-│   │   ├── email.service.js
-│   │   
-│   ├── users/
-│   │   └── ...
-│   │
-│   ├── middleware/
-│   │   ├── authentication.middleware.js
-│   │   └── ...
-│   │
-│   ├── app.js
-│   ├── server.js
-│   └── Dockerfile
-│ 
+
+│   ├── configurations/
+
+│   │   ├── database.js
+
+│   │   └── redis.js
+
+│   │
+
+│   ├── urls/
+
+│   │   ├── urls.route.js
+
+│   │   ├── urls.controller.js
+
+│   │   ├── urls.service.js
+
+│   │   └── urls.model.js
+
+│   │
+
+│   ├── email/
+
+│   │   ├── email.route.js
+
+│   │   ├── email.controller.js
+
+│   │   ├── email.service.js
+
+│   │  
+
+│   ├── users/
+
+│   │   └── ...
+
+│   │
+
+│   ├── middleware/
+
+│   │   ├── authentication.middleware.js
+
+│   │   └── ...
+
+│   │
+
+│   ├── app.js
+
+│   ├── server.js
+
+│   └── Dockerfile
+
 │
+
+│
+
 ├── docker-compose.yml
+
 └── README.md
+
 ```
 
 ---
@@ -1290,17 +2035,21 @@ Shortify/
 ## 1. Clone the repository
 
 ```bash
+
 git clone https://github.com/devKartikeya/Shortify.git
 
 cd Shortify
+
 ```
 
 ## 2. Install backend dependencies
 
 ```bash
+
 cd Backend
 
 npm install
+
 ```
 
 ## 3. Configure environment variables
@@ -1310,11 +2059,13 @@ Create a `.env` file inside the `Backend` directory.
 Example:
 
 ```env
+
 PORT=3000
 
 MONGO_URI=your_mongodb_connection_string
 
 JWT_SECRET=your_secret
+
 ```
 
 Use the actual environment variables required by the current backend configuration.
@@ -1326,13 +2077,17 @@ Make sure Redis is running locally.
 The default Redis connection is:
 
 ```text
+
 redis://localhost:6379
+
 ```
 
 ## 5. Start the backend
 
 ```bash
+
 npm start
+
 ```
 
 ## 6. Start the frontend
@@ -1340,11 +2095,13 @@ npm start
 Open another terminal:
 
 ```bash
+
 cd Frontend
 
 npm install
 
 npm run dev
+
 ```
 
 The frontend will then be available through the Vite development server.
@@ -1356,7 +2113,9 @@ The frontend will then be available through the Vite development server.
 From the project root:
 
 ```bash
+
 docker compose up --build
+
 ```
 
 This builds the application containers according to their respective Dockerfiles.
@@ -1368,7 +2127,9 @@ This builds the application containers according to their respective Dockerfiles
 From the backend directory:
 
 ```bash
+
 npm test
+
 ```
 
 The backend test suite uses Jest and Supertest.
@@ -1380,42 +2141,63 @@ The backend test suite uses Jest and Supertest.
 Suppose the original URL is:
 
 ```text
+
 https://www.example.com/products/category/something/very/long
+
 ```
 
 Shortify can generate:
 
 ```text
+
 http://localhost:3000/aB72xQ
+
 ```
 
 When someone opens:
 
 ```text
+
 /aB72xQ
+
 ```
 
 Shortify:
 
 ```text
+
 1. Checks Redis for the original URL
+
 2. Falls back to MongoDB on a cache miss
+
 3. Caches the URL in Redis
+
 4. Increments the Redis click counter
+
 5. Redirects the visitor
+
 6. Periodically persists accumulated clicks to MongoDB
+
 ```
 
 When the application is running behind the load balancer:
 
 ```text
+
 Browser
-   ↓
+
+   ↓
+
 Load Balancer
-   ↓
+
+   ↓
+
 Backend Instance
-   ↓
+
+   ↓
+
 Redis / MongoDB
+
 ```
 
 The authenticated owner can then see the link and its persisted click count from the dashboard.
@@ -1427,26 +2209,47 @@ The authenticated owner can then see the link and its persisted click count from
 Shortify is being developed with a focus on:
 
 * Clean architecture
+
 * Practical full-stack development
+
 * Real-world authentication
+
 * User-specific data
+
 * Account security
+
 * Maintainable React components
+
 * REST API design
+
 * Accurate analytics
+
 * Redis caching
+
 * Redis atomic counters
+
 * Application-level rate limiting
+
 * Automated testing
+
 * Docker containerization
+
 * Docker Compose
+
 * CI automation
+
 * Load balancing
+
 * Horizontal scaling
+
 * Stateless backend design
+
 * Practical system design
+
 * Performance optimization
+
 * Scalability considerations
+
 * Professional UI/UX
 
 The goal is not simply to create another URL shortener.
@@ -1466,54 +2269,101 @@ The project is actively evolving.
 ## Completed
 
 * [x] URL shortening
+
 * [x] Unique short-code generation
+
 * [x] URL validation
+
 * [x] URL redirection
+
 * [x] Duplicate URL detection
+
 * [x] Existing short-code reuse
+
 * [x] Click counting
+
 * [x] User authentication
+
 * [x] Cookie-based JWT authentication
+
 * [x] User-specific links
+
 * [x] Protected dashboard
+
 * [x] Overall link statistics
+
 * [x] Recent links
+
 * [x] Dedicated My Links page
+
 * [x] Link search/filtering
+
 * [x] Professional dashboard UI
+
 * [x] QR-Code generation
+
 * [x] Modular backend architecture
+
 * [x] Jest/Supertest backend testing
+
 * [x] Redis integration
+
 * [x] Redis URL caching
+
 * [x] Redis atomic click counters
+
 * [x] Periodic Redis → MongoDB click synchronization
+
 * [x] Application-level rate limiting
+
 * [x] Change password
+
 * [x] Delete account
+
 * [x] Docker containerization
+
 * [x] Docker Compose
+
 * [x] GitHub Actions CI
+
 * [x] Horizontal scaling architecture
+
 * [x] Local load balancer
+
 * [x] Round Robin request distribution
+
 * [x] Frontend connected through load balancer
+
 * [x] Multiple backend instances behind load balancer
+[L2215a] * [x] RabbitMQ integration
+[L2215b] * [x] Asynchronous welcome email worker
 
 ## Planned
 
 * [ ] Link editing
+
 * [ ] Custom short aliases
+
 * [ ] Click history
+
 * [ ] Daily/weekly/monthly analytics
+
 * [ ] Advanced analytics
+
 * [ ] Improved cache invalidation strategies
+
 * [ ] Redis failure/fallback handling
+
 * [ ] Distributed Redis-backed rate limiting
+
 * [ ] Automatic unhealthy-instance handling
+
 * [ ] Production deployment
+
 * [ ] Continuous Deployment
+
 * [ ] Further scalability improvements
+
 * [ ] Monitoring and observability
 
 > The roadmap is intentionally incremental. Features are added as the underlying requirements, data model, and architecture support them properly.
@@ -1527,25 +2377,37 @@ Once individual click events are stored, the analytics system can evolve from si
 ### Current
 
 ```text
+
 Link
+
 └── clicks: 42
+
 ```
 
 ### Future
 
 ```text
+
 Link
+
 └── clickEvents
-       ├── timestamp
-       ├── referrer
-       ├── device
-       ├── browser
-       └── ...
+
+       ├── timestamp
+
+       ├── referrer
+
+       ├── device
+
+       ├── browser
+
+       └── ...
+
 ```
 
 This would make features such as:
 
 ```text
+
 Today
 
 Last 7 Days
@@ -1559,6 +2421,7 @@ Peak Activity
 Traffic Sources
 
 Device Breakdown
+
 ```
 
 possible without fabricating data.
@@ -1574,6 +2437,7 @@ Suggestions, improvements, and constructive feedback are welcome.
 If you'd like to contribute:
 
 ```bash
+
 git fork
 
 git clone
@@ -1583,6 +2447,7 @@ git checkout -b feature/your-feature
 git commit -m "Add your feature"
 
 git push
+
 ```
 
 Then open a pull request.
@@ -1602,39 +2467,73 @@ A formal license can be added as the project moves toward public production use.
 **Shortify** is a full-stack URL shortening project built to explore and apply real-world engineering concepts:
 
 ```text
+
 React
-   ↓
+
+   ↓
+
 REST APIs
-   ↓
+
+   ↓
+
 Authentication
-   ↓
+
+   ↓
+
 Load Balancer
-   ↓
+
+   ↓
+
 Multiple Backend Instances
-   ↓
+
+   ↓
+
 MongoDB
-   ↕
+
+   ↕
+
 Redis
-   ↓
+
+   ↓
+
 Caching
-   ↓
+
+   ↓
+
 Atomic Counters
-   ↓
+
+   ↓
+
 Periodic Synchronization
-   ↓
+
+   ↓
+
 Rate Limiting
-   ↓
+
+   ↓
+
 Testing
-   ↓
+
+   ↓
+
 Docker
-   ↓
+
+   ↓
+
 Docker Compose
-   ↓
+
+   ↓
+
 GitHub Actions
-   ↓
+
+   ↓
+
 Horizontal Scaling
-   ↓
+
+   ↓
+
 System Design
+
 ```
 
 The project is intentionally evolving from a simple MERN application into a more complete **full-stack + DevOps + system-design engineering project**.
