@@ -2,7 +2,7 @@
 
 > A modern, full-stack URL shortener built with MERN, Redis, Docker, RabbitMQ, load balancing, automated testing and practical system-design principles.
 
-Shortify is a full-stack URL shortening application that allows users to convert long URLs into compact, shareable links.
+Shortify is a full-stack URL shortening application that allows users to convert long URLs into compact, shareable links and generate customizable QRs.
 
 The project supports both **public URL shortening** and **authenticated, user-specific link management**, with a professional dashboard for managing links and tracking link performance.
 
@@ -37,6 +37,14 @@ Shortify is being progressively developed as an engineering-focused project rath
 * Associate QR codes with shortened URLs
 
 * Track QR-related link activity
+
+* Customize QRs with multiplicity of colors, sizes and styles
+
+* Integrate Brand identity through logos and text directly into Qr-Codes
+
+* Save user's presets for subsequent customization
+
+* Handle Error correction for resilience
 
 ### 👤 User Accounts
 
