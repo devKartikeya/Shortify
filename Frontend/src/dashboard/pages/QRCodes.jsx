@@ -16,6 +16,9 @@ const QRCodes = () => {
     const [qrColor, setQrColor] = useState("#111827");
     const [bgColor, setBgColor] = useState("#ffffff");
 
+    const [qrSize, setQrSize] = useState(512);
+    const [logoSize, setLogoSize] = useState(64);
+
     const fetchLinks = async () => {
         try {
             setLoading(true);
@@ -132,11 +135,11 @@ const QRCodes = () => {
         if (logo) {
             const image = new Image();
             image.onload = () => {
-                const logoSize = 56;
+                const currentLogoSize = logoSize;
                 const x =
-                    (finalCanvas.width - logoSize) / 2;
+                    (finalCanvas.width - currentLogoSize) / 2;
                 const y =
-                    (finalCanvas.height - logoSize) / 2;
+                    (finalCanvas.height - currentLogoSize) / 2;
 
                 // Logo background
                 context.fillStyle = bgColor;
@@ -144,8 +147,8 @@ const QRCodes = () => {
                 context.roundRect(
                     x - 6,
                     y - 6,
-                    logoSize + 12,
-                    logoSize + 12,
+                    currentLogoSize + 12,
+                    currentLogoSize + 12,
                     12
                 );
                 context.fill();
@@ -156,8 +159,8 @@ const QRCodes = () => {
                 context.roundRect(
                     x,
                     y,
-                    logoSize,
-                    logoSize,
+                    currentLogoSize,
+                    currentLogoSize,
                     8
                 );
 
@@ -166,8 +169,8 @@ const QRCodes = () => {
                     image,
                     x,
                     y,
-                    logoSize,
-                    logoSize
+                    currentLogoSize,
+                    currentLogoSize
                 );
                 context.restore();
                 downloadCanvas(finalCanvas);
@@ -525,6 +528,56 @@ const QRCodes = () => {
                         </div>
                     </div>
 
+                    {/* QR Size */}
+                    <div className="mt-5">
+                        <label className="text-xs font-medium text-gray-600">
+                            QR size
+                        </label>
+
+                        <div className="mt-2 grid grid-cols-3 gap-2">
+                            {[256, 512, 1024].map((size) => (
+                                <button
+                                    key={size}
+                                    type="button"
+                                    onClick={() => setQrSize(size)}
+                                    className={`rounded-xl border px-3 py-2.5 text-xs font-semibold transition ${qrSize === size
+                                            ? "border-yellow-400 bg-yellow-50 text-gray-950"
+                                            : "border-gray-200 bg-gray-50 text-gray-500 hover:bg-white"
+                                        }`}
+                                >
+                                    {size}px
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Logo Size */}
+                    <div className="mt-5">
+                        <label className="text-xs font-medium text-gray-600">
+                            Logo size
+                        </label>
+
+                        <div className="mt-2 grid grid-cols-3 gap-2">
+                            {[
+                                { label: "Small", value: 60 },
+                                { label: "Medium", value: 90 },
+                                { label: "Large", value: 120 },
+                            ].map((option) => (
+                                <button
+                                    key={option.value}
+                                    type="button"
+                                    onClick={() => setLogoSize(option.value)}
+                                    className={`rounded-xl border px-3 py-2.5 text-xs font-semibold transition ${logoSize === option.value
+                                            ? "border-yellow-400 bg-yellow-50 text-gray-950"
+                                            : "border-gray-200 bg-gray-50 text-gray-500 hover:bg-white"
+                                        }`}
+                                >
+                                    {option.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
                     {selectedLink ? (
                         <div className="p-6">
                             {/* QR */}
@@ -536,7 +589,7 @@ const QRCodes = () => {
                                     <QRCodeCanvas
                                         id="shortify-qr-code"
                                         value={getShortUrl(selectedLink)}
-                                        size={220}
+                                        size={Math.min(qrSize / 2, 320)}
                                         level="H"
                                         includeMargin={true}
                                         fgColor={qrColor}
@@ -545,8 +598,10 @@ const QRCodes = () => {
 
                                     {logo && (
                                         <div
-                                            className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl border-4 shadow-sm"
+                                            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl border-4 shadow-sm"
                                             style={{
+                                                width: `${Math.min(logoSize / 2, 120)}px`,
+                                                height: `${Math.min(logoSize / 2, 120)}px`,
                                                 backgroundColor: bgColor,
                                                 borderColor: bgColor,
                                             }}
