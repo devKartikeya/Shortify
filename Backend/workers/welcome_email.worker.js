@@ -10,6 +10,10 @@ async function start() {
 
     const channel = getRabbitMQChannel();
 
+    /* This will ensure that the worker processes one message at a time, which is important for sending emails to avoid overwhelming the email service. (Backpressure) */
+    /* What is Backpressure? Backpressure is a mechanism to control the rate at which messages are consumed from a queue, preventing the system from being overwhelmed. */
+    channel.prefetch(1);
+
     channel.consume("welcome_email_queue", async (message) => {
         if (!message) return;
 
