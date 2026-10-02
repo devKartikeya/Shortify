@@ -1,10 +1,11 @@
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Hero from "../components/Home/Hero";
 import Stats from "../components/Home/Stats";
+import About from "../components/Home/About";
 import Features from "../components/Home/Features";
 import HowItWorks from "../components/Home/HowItWorks";
-import Footer from "../components/Footer";
-import About from "../components/Home/About";
+import QRCodePromo from "../components/Home/QRCodePromo";
 
 const Home = () => {
     return (
@@ -15,6 +16,7 @@ const Home = () => {
                 <Stats />
                 <About />
                 <Features />
+                <QRCodePromo />
                 <HowItWorks />
             </main>
             <Footer />
