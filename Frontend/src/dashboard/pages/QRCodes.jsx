@@ -12,6 +12,10 @@ const QRCodes = () => {
     const [error, setError] = useState("");
     const [search, setSearch] = useState("");
 
+    const [logo, setLogo] = useState(null);
+    const [qrColor, setQrColor] = useState("#111827");
+    const [bgColor, setBgColor] = useState("#ffffff");
+
     const fetchLinks = async () => {
         try {
             setLoading(true);
@@ -67,6 +71,21 @@ const QRCodes = () => {
         return `${import.meta.env.VITE_API_URL}/${link.shortCode}`;
     };
 
+    const handleLogoUpload = (event) => {
+        const file = event.target.files?.[0];
+
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setLogo(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
+
     const copyShortUrl = async () => {
         if (!selectedLink) return;
 
@@ -79,23 +98,96 @@ const QRCodes = () => {
         }
     };
 
-    const downloadQRCode = () => {
+    const downloadQRCode = async () => {
         if (!selectedLink) return;
-
-        const canvas = document.getElementById(
+        const qrCanvas = document.getElementById(
             "shortify-qr-code"
         );
 
-        if (!canvas) return;
+        if (!qrCanvas) return;
+        const finalCanvas = document.createElement("canvas");
+        const padding = 32;
+        finalCanvas.width = qrCanvas.width + padding * 2;
+        finalCanvas.height = qrCanvas.height + padding * 2;
+        const context = finalCanvas.getContext("2d");
+        if (!context) return;
 
+        // Background
+        context.fillStyle = bgColor;
+        context.fillRect(
+            0,
+            0,
+            finalCanvas.width,
+            finalCanvas.height
+        );
+
+        // QR
+        context.drawImage(
+            qrCanvas,
+            padding,
+            padding
+        );
+
+        // Logo
+        if (logo) {
+            const image = new Image();
+            image.onload = () => {
+                const logoSize = 56;
+                const x =
+                    (finalCanvas.width - logoSize) / 2;
+                const y =
+                    (finalCanvas.height - logoSize) / 2;
+
+                // Logo background
+                context.fillStyle = bgColor;
+                context.beginPath();
+                context.roundRect(
+                    x - 6,
+                    y - 6,
+                    logoSize + 12,
+                    logoSize + 12,
+                    12
+                );
+                context.fill();
+
+                // Logo
+                context.save();
+                context.beginPath();
+                context.roundRect(
+                    x,
+                    y,
+                    logoSize,
+                    logoSize,
+                    8
+                );
+
+                context.clip();
+                context.drawImage(
+                    image,
+                    x,
+                    y,
+                    logoSize,
+                    logoSize
+                );
+                context.restore();
+                downloadCanvas(finalCanvas);
+            };
+            image.src = logo;
+            return;
+        }
+        downloadCanvas(finalCanvas);
+    };
+
+    const downloadCanvas = (canvas) => {
         const pngUrl = canvas
             .toDataURL("image/png")
             .replace("image/png", "image/octet-stream");
-
-        const downloadLink = document.createElement("a");
+        const downloadLink =
+            document.createElement("a");
 
         downloadLink.href = pngUrl;
-        downloadLink.download = `shortify-${selectedLink.shortCode}.png`;
+        downloadLink.download =
+            `shortify-${selectedLink.shortCode}-custom.png`;
 
         document.body.appendChild(downloadLink);
         downloadLink.click();
@@ -245,12 +337,9 @@ const QRCodes = () => {
                         </div>
                     ) : (
                         <div className="divide-y divide-gray-100">
-
                             {filteredLinks.map((link) => {
-
                                 const isSelected =
                                     selectedLink?._id === link._id;
-
                                 return (
                                     <button
                                         key={link._id}
@@ -258,17 +347,16 @@ const QRCodes = () => {
                                             setSelectedLink(link)
                                         }
                                         className={`flex w-full items-center gap-4 p-4 text-left transition-colors cursor-pointer ${isSelected
-                                                ? "bg-yellow-50/70"
-                                                : "hover:bg-gray-50"
+                                            ? "bg-yellow-50/70"
+                                            : "hover:bg-gray-50"
                                             }`}
                                     >
 
                                         {/* Link Icon */}
-
                                         <div
                                             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${isSelected
-                                                    ? "bg-yellow-400 text-gray-950"
-                                                    : "bg-gray-100 text-gray-500"
+                                                ? "bg-yellow-400 text-gray-950"
+                                                : "bg-gray-100 text-gray-500"
                                                 }`}
                                         >
 
@@ -291,45 +379,35 @@ const QRCodes = () => {
                                                     d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
                                                 />
                                             </svg>
-
                                         </div>
 
                                         {/* Information */}
-
                                         <div className="min-w-0 flex-1">
-
                                             <p className="truncate text-sm font-semibold text-gray-950">
                                                 /{link.shortCode}
                                             </p>
-
                                             <p className="mt-1 truncate text-xs text-gray-400">
                                                 {link.originalUrl}
                                             </p>
-
                                         </div>
 
                                         {/* Clicks */}
-
                                         <div className="hidden text-right sm:block">
-
                                             <p className="text-sm font-semibold text-gray-900">
                                                 {link.clicks || 0}
                                             </p>
-
                                             <p className="text-[11px] text-gray-400">
                                                 clicks
                                             </p>
-
                                         </div>
 
                                         {/* Arrow */}
-
                                         <svg
                                             viewBox="0 0 20 20"
                                             fill="currentColor"
                                             className={`h-4 w-4 shrink-0 ${isSelected
-                                                    ? "text-gray-950"
-                                                    : "text-gray-300"
+                                                ? "text-gray-950"
+                                                : "text-gray-300"
                                                 }`}
                                         >
                                             <path
@@ -342,77 +420,164 @@ const QRCodes = () => {
                                     </button>
                                 );
                             })}
-
                         </div>
-
                     )}
-
                 </div>
-
                 {/* ================= QR PREVIEW ================= */}
 
                 <div className="rounded-2xl border border-gray-200 bg-white">
-
                     <div className="border-b border-gray-100 p-6">
-
                         <h2 className="font-semibold text-gray-950">
                             QR code
                         </h2>
-
                         <p className="mt-1 text-xs text-gray-400">
                             Preview and download your QR code.
                         </p>
+                    </div>
 
+                    {/* Customization */}
+                    <div className="mt-6 border-t border-gray-100 pt-6">
+                        <div>
+                            <p className="text-sm font-semibold text-gray-950">
+                                Customize QR
+                            </p>
+
+                            <p className="mt-1 text-xs text-gray-400">
+                                Add your brand identity to the QR code.
+                            </p>
+                        </div>
+
+                        {/* Logo */}
+                        <div className="mt-5">
+                            <label className="text-xs font-medium text-gray-600">
+                                Brand logo
+                            </label>
+
+                            <div className="mt-2 flex items-center gap-3">
+                                <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-600 transition hover:border-yellow-400 hover:bg-yellow-50">
+                                    Upload logo
+
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleLogoUpload}
+                                        className="hidden"
+                                    />
+                                </label>
+
+                                {logo && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setLogo(null)}
+                                        className="text-xs font-medium text-red-500 hover:text-red-600"
+                                    >
+                                        Remove
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Colors */}
+                        <div className="mt-5 grid grid-cols-2 gap-4">
+                            {/* QR Color */}
+                            <div>
+                                <label className="text-xs font-medium text-gray-600">
+                                    QR color
+                                </label>
+
+                                <div className="mt-2 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2">
+                                    <input
+                                        type="color"
+                                        value={qrColor}
+                                        onChange={(event) =>
+                                            setQrColor(event.target.value)
+                                        }
+                                        className="h-8 w-8 cursor-pointer rounded-lg border-0 bg-transparent p-0"
+                                    />
+
+                                    <span className="text-xs font-medium text-gray-500">
+                                        {qrColor}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Background */}
+                            <div>
+                                <label className="text-xs font-medium text-gray-600">
+                                    Background
+                                </label>
+
+                                <div className="mt-2 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2">
+                                    <input
+                                        type="color"
+                                        value={bgColor}
+                                        onChange={(event) =>
+                                            setBgColor(event.target.value)
+                                        }
+                                        className="h-8 w-8 cursor-pointer rounded-lg border-0 bg-transparent p-0"
+                                    />
+
+                                    <span className="text-xs font-medium text-gray-500">
+                                        {bgColor}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {selectedLink ? (
-
                         <div className="p-6">
-
                             {/* QR */}
-
                             <div className="flex items-center justify-center rounded-2xl bg-gray-50 p-8">
-
-                                <div className="rounded-2xl bg-white p-4 shadow-sm">
-
+                                <div
+                                    className="relative rounded-2xl p-4 shadow-sm"
+                                    style={{ backgroundColor: bgColor }}
+                                >
                                     <QRCodeCanvas
                                         id="shortify-qr-code"
                                         value={getShortUrl(selectedLink)}
                                         size={220}
                                         level="H"
                                         includeMargin={true}
+                                        fgColor={qrColor}
+                                        bgColor={bgColor}
                                     />
 
+                                    {logo && (
+                                        <div
+                                            className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl border-4 shadow-sm"
+                                            style={{
+                                                backgroundColor: bgColor,
+                                                borderColor: bgColor,
+                                            }}
+                                        >
+                                            <img
+                                                src={logo}
+                                                alt="QR logo"
+                                                className="h-full w-full rounded-lg object-contain"
+                                            />
+                                        </div>
+                                    )}
                                 </div>
-
                             </div>
 
                             {/* Selected Link */}
-
                             <div className="mt-6">
-
                                 <p className="text-xs font-medium text-gray-400">
                                     Short link
                                 </p>
-
                                 <div className="mt-2 rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-3">
-
                                     <p className="truncate text-sm font-semibold text-gray-950">
                                         /{selectedLink.shortCode}
                                     </p>
-
                                     <p className="mt-1 truncate text-xs text-gray-400">
                                         {getShortUrl(selectedLink)}
                                     </p>
-
                                 </div>
-
                             </div>
 
                             {/* Actions */}
-
                             <div className="mt-5 grid grid-cols-2 gap-3">
-
                                 <button
                                     onClick={copyShortUrl}
                                     className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 active:scale-[0.98]"
@@ -432,18 +597,14 @@ const QRCodes = () => {
                                             height="11"
                                             rx="2"
                                         />
-
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
                                             d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
                                         />
                                     </svg>
-
                                     Copy link
-
                                 </button>
-
                                 <button
                                     onClick={downloadQRCode}
                                     className="flex items-center justify-center gap-2 rounded-xl bg-gray-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-gray-800 active:scale-[0.98]"
@@ -474,21 +635,13 @@ const QRCodes = () => {
                                             d="M5 21h14"
                                         />
                                     </svg>
-
                                     Download
-
                                 </button>
-
                             </div>
-
                             {/* Info */}
-
                             <div className="mt-5 rounded-xl border border-yellow-200 bg-yellow-50 p-4">
-
                                 <div className="flex gap-3">
-
                                     <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-yellow-400 text-gray-950">
-
                                         <svg
                                             viewBox="0 0 20 20"
                                             fill="currentColor"
@@ -500,36 +653,24 @@ const QRCodes = () => {
                                                 clipRule="evenodd"
                                             />
                                         </svg>
-
                                     </div>
-
                                     <div>
-
                                         <p className="text-xs font-semibold text-yellow-800">
                                             Works with your existing link
                                         </p>
-
                                         <p className="mt-1 text-xs leading-5 text-yellow-700">
                                             Anyone scanning this QR code will
                                             be redirected through your Shortify
                                             link, so its existing click tracking
                                             continues to work.
                                         </p>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     ) : (
-
                         <div className="flex min-h-[500px] flex-col items-center justify-center px-6 text-center">
-
                             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 text-gray-400">
-
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"
@@ -544,34 +685,23 @@ const QRCodes = () => {
                                     <path d="M18 14h2v6h-2z" />
                                     <path d="M14 18h4" />
                                 </svg>
-
                             </div>
-
                             <p className="mt-4 text-sm font-semibold text-gray-900">
                                 Select a link
                             </p>
-
                             <p className="mt-1 max-w-xs text-xs leading-5 text-gray-400">
                                 Choose a link from the list to generate
                                 its QR code.
                             </p>
-
                         </div>
-
                     )}
-
                 </div>
-
             </div>
 
             {/* ================= FOOTNOTE ================= */}
-
             <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
-
                 <div className="flex gap-3">
-
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-gray-600 shadow-sm">
-
                         <svg
                             viewBox="0 0 24 24"
                             fill="none"
@@ -585,15 +715,11 @@ const QRCodes = () => {
                                 d="M12 3v18M3 12h18"
                             />
                         </svg>
-
                     </div>
-
                     <div>
-
                         <p className="text-sm font-semibold text-gray-900">
                             One QR code, one short link
                         </p>
-
                         <p className="mt-1 text-xs leading-5 text-gray-500">
                             Your QR codes point to your Shortify URLs rather
                             than directly to the destination. This means the

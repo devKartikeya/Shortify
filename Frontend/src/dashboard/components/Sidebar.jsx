@@ -65,6 +65,33 @@ const secondaryNavigation = [
                 />
             </svg>
         )
+    }, {
+        label: "About Shortify",
+        path: "/about",
+        icon: (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <circle cx="12" cy="12" r="9" />
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 16v-4m0-4h.01"
+                />
+            </svg>
+        )
+    },
+    {
+        label: "Contact Us",
+        path: "/contact",
+        icon: (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                />
+                <circle cx="12" cy="10" r="3" />
+            </svg>
+        )
     }
 ];
 
@@ -170,7 +197,7 @@ const Sidebar = ({ isOpen, onClose, user }) => {
                     </nav>
                     <div className="my-7 border-t border-gray-100" />
                     <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                        Account
+                        Settings
                     </p>
                     <nav className="space-y-1">
                         {secondaryNavigation.map(renderLink)}
