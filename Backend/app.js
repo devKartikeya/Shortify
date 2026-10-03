@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const morgan = require('morgan');
 const express = require('express');
+const rfs = require('rotating-file-stream');
 const cookieParser = require("cookie-parser");
 const urlRouter = require("./urls/urls.route");
 const userRouter = require("./users/users.route");
@@ -18,13 +19,36 @@ app.use(express.urlencoded({ extended: true })); /* Parse incoming URL-encoded r
 app.use(express.json()); /* Parse incoming JSON requests */
 app.use(cookieParser()); /* Parse cookies from incoming requests */
 
-// 1. Create a write stream in append mode ('a' flag)
-const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, 'logs', 'access.log'),
-  { flags: 'a' }
-);
+// Create a rotating write stream
+const pad = (num) => (num > 9 ? "" : "0") + num;
 
-// 2. Setup morgan to write to the log stream
+const generator = (time, index) => {
+  if (!time) return "access.log";
+
+  const month =
+    time.getFullYear() + "" + pad(time.getMonth() + 1);
+
+  const day = pad(time.getDate());
+  const logDirectory = path.join(
+    __dirname,
+    "logs",
+    month
+  );
+  // Create monthly directory if it doesn't exist
+  fs.mkdirSync(logDirectory, {
+    recursive: true
+  });
+  return `${month}/${month}${day}-${index}-access.log`;
+};
+
+const accessLogStream = rfs.createStream(generator, {
+  interval: '1d', // Rotate daily
+  path: path.join(__dirname, 'logs'), // Directory to store log files
+  maxFiles: 30, // Keep logs for the last 30 days
+  compress: 'gzip', // Compress rotated files
+  size: '1K', // Rotate when the file size exceeds 1KB
+});
+
 app.use(morgan('combined', { stream: accessLogStream }));
 
 /* Health Check Endpoint */
