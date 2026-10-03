@@ -1,5 +1,7 @@
-const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const morgan = require('morgan');
+const express = require('express');
 const cookieParser = require("cookie-parser");
 const urlRouter = require("./urls/urls.route");
 const userRouter = require("./users/users.route");
@@ -16,9 +18,14 @@ app.use(express.urlencoded({ extended: true })); /* Parse incoming URL-encoded r
 app.use(express.json()); /* Parse incoming JSON requests */
 app.use(cookieParser()); /* Parse cookies from incoming requests */
 
-/* Now bro , how to move these logs into a proper file - Answer -  */
+// 1. Create a write stream in append mode ('a' flag)
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'logs', 'access.log'),
+  { flags: 'a' }
+);
 
-app.use(morgan('combined')); /* Log HTTP requests */
+// 2. Setup morgan to write to the log stream
+app.use(morgan('combined', { stream: accessLogStream }));
 
 /* Health Check Endpoint */
 app.get("/health", (req, res) => {
