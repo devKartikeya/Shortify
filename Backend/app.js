@@ -1,5 +1,6 @@
 const morgan = require('morgan');
 const express = require('express');
+const cron = require('./utilities/cleanUpOldLogs');
 const cookieParser = require("cookie-parser");
 const urlRouter = require("./urls/urls.route");
 const userRouter = require("./users/users.route");
@@ -38,5 +39,7 @@ app.get("/:shortCode", redirectUrlController);
 app.get('/', (req, res) => {
   res.send('Hello from Express backend!');
 });
+
+setInterval(cron, 60000); /* Run the cron job every 1 minute */
 
 module.exports = app;
