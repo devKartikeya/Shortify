@@ -2,7 +2,7 @@ const { createClient } = require("redis");
 
 const redisClient = createClient({
     // url: "redis://host.docker.internal:6379"
-    url: "redis://localhost:6379"
+    url: process.env.REDIS_URL || "redis://redis:6379"
 });
 
 redisClient.on("error", (err) => {

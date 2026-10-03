@@ -1,14 +1,141 @@
 services:
 
-  backend:
-    build: ./Backend
-    ports:
-      - "3001:3000"
-
+  # =========================
+  # Frontend
+  # =========================
   frontend:
     build:
       context: ./Frontend
       args:
-        VITE_API_URL: http://localhost:3000
+        VITE_API_URL: http://localhost:4000
+
+    container_name: shortify-frontend
+
     ports:
       - "8080:80"
+
+    depends_on:
+      - lb
+
+    networks:
+      - shortify-network
+
+
+  # =========================
+  # Load Balancer
+  # =========================
+  lb:
+    build:
+      context: ./LoadBalancer
+
+    container_name: shortify-lb
+
+    ports:
+      - "4000:4000"
+
+    depends_on:
+      - backend-1
+      - backend-2
+
+    networks:
+      - shortify-network
+
+
+  # =========================
+  # Backend Instance 1
+  # =========================
+  backend-1:
+    build:
+      context: ./Backend
+
+    container_name: shortify-backend-1
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      PORT: 3000
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://rabbitmq:5672
+
+    depends_on:
+      - redis
+      - rabbitmq
+
+    networks:
+      - shortify-network
+
+
+  # =========================
+  # Backend Instance 2
+  # =========================
+  backend-2:
+    build:
+      context: ./Backend
+
+    container_name: shortify-backend-2
+
+    ports:
+      - "3001:3000"
+
+    environment:
+      PORT: 3000
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://rabbitmq:5672
+
+    depends_on:
+      - redis
+      - rabbitmq
+
+    networks:
+      - shortify-network
+
+
+  # =========================
+  # Redis
+  # =========================
+  redis:
+    image: redis:latest
+
+    container_name: shortify-redis
+
+    volumes:
+      - redis-data:/data
+
+    networks:
+      - shortify-network
+
+
+  # =========================
+  # RabbitMQ
+  # =========================
+  rabbitmq:
+    image: rabbitmq:4-management
+
+    container_name: shortify-rabbitmq
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+    networks:
+      - shortify-network
+
+
+# =========================
+# Volumes
+# =========================
+volumes:
+  redis-data:
+  rabbitmq-data:
+
+
+# =========================
+# Network
+# =========================
+networks:
+  shortify-network:
+    driver: bridge
