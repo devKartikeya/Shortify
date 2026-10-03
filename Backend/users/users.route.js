@@ -13,25 +13,26 @@ const {
 } = require("./users.controller");
 
 const authMiddleware = require("../middleware/authentication.middleware");
+const lintMiddleware = require("../middleware/lint.middleware");
 
 const router = express.Router();
 
-router.post("/register", userRegisterController);
+router.post("/register", lintMiddleware, userRegisterController);
 
-router.post("/login", userLoginController);
+router.post("/login", lintMiddleware, userLoginController);
 
 router.get("/me", authMiddleware, getCurrentUserController);
 
-router.delete("/delete", authMiddleware, deleteUserController);
+router.delete("/delete", lintMiddleware, authMiddleware, deleteUserController);
 
-router.patch("/change-password", authMiddleware, changePasswordController);
+router.patch("/change-password", lintMiddleware, authMiddleware, changePasswordController);
 
-router.post("/logout", authMiddleware, logoutUserController);
+router.post("/logout", lintMiddleware, authMiddleware, logoutUserController);
 
-router.patch("/profile", authMiddleware, updateProfileController);
+router.patch("/profile", lintMiddleware, authMiddleware, updateProfileController);
 
-router.post("/forgot-password", forgotPasswordController);
+router.post("/forgot-password", lintMiddleware, forgotPasswordController);
 
-router.patch("/reset-password", resetPasswordController);
+router.patch("/reset-password", lintMiddleware, resetPasswordController);
 
 module.exports = router;

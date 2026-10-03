@@ -8,18 +8,19 @@ const {
 } = require("./urls.controller");
 
 const authMiddleware = require("../middleware/authentication.middleware");
+const lintMiddleware = require("../middleware/lint.middleware");
 
 // Public URL shortening
-router.post("/shorten", createShortUrlController);
+router.post("/shorten", lintMiddleware, createShortUrlController);
 
 // Authenticated URL shortening
-router.post("/shorten/authenticated", authMiddleware, createShortUrlController);
+router.post("/shorten/authenticated", lintMiddleware, authMiddleware, createShortUrlController);
 
 // Get logged-in user's URLs
 router.get("/my-links", authMiddleware, getMyLinksController);
 
-router.get("/delete/:shortCode", deleteUrlController);
+router.get("/delete/:shortCode", lintMiddleware, authMiddleware, deleteUrlController);
 
-router.get("/clear-redis", clearRedisController)
+router.get("/clear-redis", lintMiddleware, clearRedisController)
 
 module.exports = router;
