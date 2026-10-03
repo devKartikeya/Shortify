@@ -1,6 +1,5 @@
 const morgan = require('morgan');
 const express = require('express');
-const cron = require('./utilities/cleanUpOldLogs');
 const cookieParser = require("cookie-parser");
 const urlRouter = require("./urls/urls.route");
 const userRouter = require("./users/users.route");
@@ -8,7 +7,7 @@ const emailRouter = require("./email/email.route");
 const corsOptions = require("./configurations/cors");
 const helmetConfig = require("./configurations/helmet");
 const accessLogStream = require("./configurations/logs");
-const rateLimiter = require("./configurations/rate-limiter");
+// const rateLimiter = require("./configurations/rate-limiter");
 const { redirectUrlController } = require("./urls/urls.controller");
 
 const app = express();
@@ -40,6 +39,6 @@ app.get('/', (req, res) => {
   res.send('Hello from Express backend!');
 });
 
-setInterval(cron, 60000); /* Run the cron job every 1 minute */
+// setInterval(cron, 1800000); /* Run the cron job every 30 minutes */
 
 module.exports = app;

@@ -3,7 +3,7 @@ const path = require("path");
 
 function cleanUpOldLogs() {
     const logDirectory = path.join(__dirname, "..", "logs");
-    const maxAge = 1 * 60 * 1000;
+    const maxAge = 30 * 60 * 1000; /* 30 minute older */
 
     function scanDirectory(directory) {
         fs.readdir(directory, { withFileTypes: true }, (err, entries) => {
