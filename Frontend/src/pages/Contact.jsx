@@ -7,7 +7,6 @@ import React, { useState } from "react"; import {
     MapPin
 } from "lucide-react";
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
-import Footer from "../components/Footer";
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -435,7 +434,6 @@ const Contact = () => {
                     </button>
                 </div>
             </section>
-            <Footer />
         </main>
     );
 };

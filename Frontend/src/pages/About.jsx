@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
 
 const About = () => {
     const navigate = useNavigate();
@@ -612,7 +611,6 @@ const About = () => {
                     <p>Built by Kartikeya Mishra.</p>
                 </div>
             </section>
-            <Footer />
         </main>
     );
 };
