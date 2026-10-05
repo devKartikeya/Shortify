@@ -1,4 +1,5 @@
 import { FiArrowRight, FiCheck, FiDownload, FiGrid } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const QRCodePromo = () => {
     return (
@@ -175,13 +176,13 @@ const QRCodePromo = () => {
 
                             {/* CTA */}
                             <div className="mt-10">
-                                <a
+                                <Link
                                     href="/dashboard/qr-codes"
                                     className="inline-flex items-center gap-2 rounded-xl bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
                                 >
                                     Create a QR Code
                                     <FiArrowRight className="h-4 w-4" />
-                                </a>
+                                </Link>
                             </div>
 
                         </div>

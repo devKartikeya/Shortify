@@ -7,6 +7,7 @@ import React, { useState } from "react"; import {
     MapPin
 } from "lucide-react";
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import Footer from "../components/Footer";
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -374,8 +375,8 @@ const Contact = () => {
                                 {status.message && (
                                     <div
                                         className={`rounded-xl px-4 py-3 text-sm ${status.type === "success"
-                                                ? "border border-green-200 bg-green-50 text-green-700"
-                                                : "border border-red-200 bg-red-50 text-red-700"
+                                            ? "border border-green-200 bg-green-50 text-green-700"
+                                            : "border border-red-200 bg-red-50 text-red-700"
                                             }`}
                                     >
                                         {status.message}
@@ -434,6 +435,7 @@ const Contact = () => {
                     </button>
                 </div>
             </section>
+            <Footer />
         </main>
     );
 };

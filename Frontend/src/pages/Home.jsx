@@ -6,6 +6,7 @@ import About from "../components/Home/About";
 import Features from "../components/Home/Features";
 import HowItWorks from "../components/Home/HowItWorks";
 import QRCodePromo from "../components/Home/QRCodePromo";
+import MoreThanShortener from "../components/Home/MoreThanShortener";
 
 const Home = () => {
     return (
@@ -16,6 +17,7 @@ const Home = () => {
                 <Stats />
                 <About />
                 <Features />
+                <MoreThanShortener />
                 <QRCodePromo />
                 <HowItWorks />
             </main>
