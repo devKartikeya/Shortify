@@ -121,15 +121,15 @@ const Footer = () => {
     const legalLinks = [
         {
             name: "Privacy Policy",
-            href: "#"
+            href: "/legal/privacy-policy"
         },
         {
             name: "Terms of Service",
-            href: "#"
+            href: "/legal/terms-of-service"
         },
         {
             name: "Cookie Policy",
-            href: "#"
+            href: "/legal/cookie-policy"
         }
     ];
 

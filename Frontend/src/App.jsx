@@ -9,6 +9,7 @@ import Overview from "./dashboard/pages/Overview";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import CookiePolicy from "./pages/legal/CookiePolicy";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import DashboardLayout from "./dashboard/DashboardLayout";
 import PublicPagesLayout from "./routes/PublicPagesLayout";
@@ -29,8 +30,8 @@ const App = () => {
                     <Route path="/help" element={<HelpSupport />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
-                    {/* <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
-                    <Route path="/legal/terms" element={<Terms />} /> */}
+                    <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
+                    {/* <Route path="/legal/terms" element={<Terms />} /> */}
                 </Route>
 
                 <Route path="/forgot-password" element={<ForgotPassword />} />
