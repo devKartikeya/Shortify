@@ -125,7 +125,7 @@ const Footer = () => {
         },
         {
             name: "Terms of Service",
-            href: "/legal/terms-of-service"
+            href: "/legal/terms-and-conditions"
         },
         {
             name: "Cookie Policy",

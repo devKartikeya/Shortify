@@ -14,6 +14,7 @@ import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import DashboardLayout from "./dashboard/DashboardLayout";
 import PublicPagesLayout from "./routes/PublicPagesLayout";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import TermsAndConditions from "./pages/legal/TermsAndConditions";
 
 const App = () => {
     return (
@@ -31,7 +32,7 @@ const App = () => {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
                     <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
-                    {/* <Route path="/legal/terms" element={<Terms />} /> */}
+                    <Route path="/legal/terms-and-conditions" element={<TermsAndConditions />} />
                 </Route>
 
                 <Route path="/forgot-password" element={<ForgotPassword />} />
