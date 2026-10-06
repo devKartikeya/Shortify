@@ -171,20 +171,7 @@ const QRCodePromo = () => {
                                         </p>
                                     </div>
                                 </div>
-
                             </div>
-
-                            {/* CTA */}
-                            <div className="mt-10">
-                                <Link
-                                    href="/dashboard/qr-codes"
-                                    className="inline-flex items-center gap-2 rounded-xl bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
-                                >
-                                    Create a QR Code
-                                    <FiArrowRight className="h-4 w-4" />
-                                </Link>
-                            </div>
-
                         </div>
                     </div>
                 </div>

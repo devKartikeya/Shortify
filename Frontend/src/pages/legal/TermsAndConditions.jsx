@@ -76,7 +76,7 @@ const TermsAndConditions = () => {
                             <span>
                                 Effective Date:{" "}
                                 <strong className="font-semibold text-gray-800">
-                                    [Effective Date]
+                                    October 6, 2026
                                 </strong>
                             </span>
 
@@ -87,7 +87,7 @@ const TermsAndConditions = () => {
                             <span>
                                 Last Updated:{" "}
                                 <strong className="font-semibold text-gray-800">
-                                    [Last Updated Date]
+                                    October 6, 2026
                                 </strong>
                             </span>
                         </div>
@@ -741,19 +741,15 @@ const TermsAndConditions = () => {
                                 <div className="space-y-4">
                                     <ContactRow
                                         label="Company"
-                                        value="[Legal Company / Business Name]"
+                                        value="Shortify"
                                     />
 
                                     <ContactRow
                                         label="Email"
-                                        value="[legal@yourdomain.com]"
+                                        value="devkartikeya2122002@gmail.com"
                                         isEmail
                                     />
 
-                                    <ContactRow
-                                        label="Address"
-                                        value="[Company Address]"
-                                    />
                                 </div>
                             </div>
                         </PolicySection>
@@ -762,7 +758,7 @@ const TermsAndConditions = () => {
                         <div className="border-t border-gray-200 pt-10">
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <Link
-                                    to="/privacy-policy"
+                                    to="/legal/privacy-policy"
                                     className="group rounded-2xl border border-gray-200 p-6 transition-all hover:border-gray-300 hover:shadow-sm"
                                 >
                                     <div className="flex items-center gap-3">
@@ -793,7 +789,7 @@ const TermsAndConditions = () => {
                                 </Link>
 
                                 <Link
-                                    to="/cookie-policy"
+                                    to="/legal/cookie-policy"
                                     className="group rounded-2xl border border-gray-200 p-6 transition-all hover:border-gray-300 hover:shadow-sm"
                                 >
                                     <div className="flex items-center gap-3">

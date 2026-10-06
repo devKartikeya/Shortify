@@ -22,7 +22,7 @@ async function startServer() {
     syncAllClickCounts();
   }, 60 * 1000);
 
-  setInterval(cron, 1800000); /* Run the cron job every 30 minutes */
+  setInterval(cron, 300000); /* Run the cron job every 5 minutes */
 }
 
 startServer();

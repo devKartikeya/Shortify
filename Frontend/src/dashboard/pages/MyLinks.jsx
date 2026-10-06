@@ -15,6 +15,8 @@ const MyLinks = () => {
 
     const [copiedCode, setCopiedCode] = useState(null);
 
+    const [successMessage, setSuccessMessage] = useState("");
+
     // FETCH USER LINKS
     const fetchLinks = async (isRefresh = false) => {
         try {
@@ -210,6 +212,26 @@ const MyLinks = () => {
             </div>
         );
     }
+
+    const handleDelete = async (shortCode) => {
+        try {
+            const response = await fetch(`${API_URL}/urls/delete/${shortCode}`, {
+                method: "GET",
+                credentials: "include",
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to delete the link");
+            }
+            // Remove the deleted link from the state
+            setLinks((prevLinks) => prevLinks.filter((link) => link.shortCode !== shortCode));
+            // I want to show a success message to the user after deletion, so please make it.
+            setSuccessMessage("URL deleted successfully.");
+        } catch (err) {
+            console.error("Failed to delete link:", err);
+            setError(err.message || "Something went wrong while deleting the link.");
+        }
+    };
 
     // MAIN UI
     return (
@@ -510,6 +532,12 @@ const MyLinks = () => {
                                                                 </svg>
                                                             )}
                                                         </button>
+                                                        {/* Delete button */}
+                                                        <button onClick={() => handleDelete(link.shortCode)} className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-all hover:border-red-300 hover:bg-red-50 hover:text-red-600">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16" />
+                                                            </svg>
+                                                        </button>
                                                         <a
                                                             href={shortUrl}
                                                             target="_blank"
@@ -596,6 +624,35 @@ const MyLinks = () => {
                     </>
                 )}
             </div>
+            {successMessage && (
+                <div className="fixed right-6 top-24 z-[100] flex items-center gap-3 rounded-xl border border-green-200 bg-white px-4 py-3 shadow-lg">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            className="h-4 w-4 text-green-600"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                            />
+                        </svg>
+                    </div>
+
+                    <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                            Success
+                        </p>
+                        <p className="text-xs text-gray-500">
+                            {successMessage}
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
