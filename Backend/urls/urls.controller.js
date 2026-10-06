@@ -37,7 +37,7 @@ async function createShortUrlController(req, res) {
                 originalUrl: url.originalUrl,
                 shortCode: url.shortCode,
                 shortUrl:
-                    `http://localhost:3000/${url.shortCode}`,
+                    `http://localhost:${process.env.PORT || 3000}/${url.shortCode}`,
                 clicks: url.clicks,
                 createdAt: url.createdAt
             }

@@ -62,7 +62,7 @@ async function createShortUrl(
         shortCode,
         user: userId,
         isActive: true,
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) 
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
     });
 
     return url;
@@ -94,6 +94,16 @@ async function redirectToOriginalUrl(shortCode) {
     if (!url) {
         throw new Error(
             "Short URL not found"
+        );
+    }
+    if (!url.isActive) {
+        throw new Error(
+            "This short URL is inactive"
+        );
+    }
+    if (url.expiresAt && url.expiresAt < new Date()) {
+        throw new Error(
+            "This short URL has expired"    
         );
     }
     await redisClient.set(
