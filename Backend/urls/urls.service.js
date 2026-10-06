@@ -60,7 +60,9 @@ async function createShortUrl(
     const url = await URLModel.create({
         originalUrl: normalizedUrl,
         shortCode,
-        user: userId
+        user: userId,
+        isActive: true,
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) 
     });
 
     return url;

@@ -2,11 +2,11 @@
 function serverConfigurations() {
     return [
         {
-            url: "http://backend-1:3000",
+            url: "http://localhost:3000",
             healthy: true
         },
         {
-            url: "http://backend-2:3000",
+            url: "http://localhost:3001",
             healthy: true
         }
     ];
