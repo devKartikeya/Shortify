@@ -31,6 +31,11 @@ const userSchema = new Schema(
         passwordResetExpires: {
             type: Date,
             default: null
+        },
+        
+        isActive: {
+            type: Boolean,
+            default: true
         }
     },
     {

@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const URLModel = require("./urls.model");
+const User = require("../users/users.model");
 const redisClient = require("../configurations/redis");
 
 // Generate short code
@@ -56,6 +57,16 @@ async function createShortUrl(
             shortCode
         });
     } while (existingShortCode);
+
+    const isUserActive = await User.findOne({ _id: userId }); 
+
+    console.log("isUserActive:", isUserActive);
+
+    if (isUserActive.isActive == false) {
+        throw new Error(
+            "Your account is inactive. Cannot create short URL."
+        );
+    }
 
     const url = await URLModel.create({
         originalUrl: normalizedUrl,

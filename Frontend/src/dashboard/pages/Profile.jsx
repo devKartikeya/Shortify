@@ -393,7 +393,7 @@ const Profile = () => {
                                     </h2>
 
                                     <span className="rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-600">
-                                        Active
+                                        {user?.isActive ? "Active" : "Inactive"}
                                     </span>
                                 </div>
 
@@ -473,7 +473,7 @@ const Profile = () => {
 
                         <InfoItem
                             label="Account Status"
-                            value="Active"
+                            value={user?.isActive ? "Active" : "Inactive"}
                             status
                         />
                     </div>
