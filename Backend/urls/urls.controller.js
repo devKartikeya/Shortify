@@ -76,7 +76,7 @@ async function getMyLinksController(req, res) {
 async function redirectUrlController(req, res) {
     try {
         const { shortCode } = req.params;
-        const originalUrl = await redirectToOriginalUrl(shortCode);
+        const originalUrl = await redirectToOriginalUrl(shortCode, req);
         return res.redirect(originalUrl);
     } catch (error) {
         return res.status(404).send(`

@@ -24,7 +24,8 @@
     "mongoose": "^9.9.4",
     "morgan": "^1.12.1",
     "redis": "^6.2.1",
-    "rotating-file-stream": "^3.2.10"
+    "rotating-file-stream": "^3.2.10",
+    "ua-parser-js": "^2.0.10"
   },
   "devDependencies": {
     "supertest": "^7.2.2"

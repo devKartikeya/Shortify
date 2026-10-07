@@ -1,7 +1,9 @@
 const crypto = require("crypto");
 const URLModel = require("./urls.model");
 const User = require("../users/users.model");
+const Clicks = require("../clicks/clicks.model");
 const redisClient = require("../configurations/redis");
+const parseUserAgent = require("../configurations/user-agent");
 
 // Generate short code
 function generateShortCode(length = 6) {
@@ -90,7 +92,7 @@ async function getMyLinks(userId) {
 }
 
 // Redirect short URL
-async function redirectToOriginalUrl(shortCode) {
+async function redirectToOriginalUrl(shortCode, req) {
     const cacheKey = `shortify:url:${shortCode}`;
     const clickKey = `shortify:clicks:${shortCode}`;
     const cachedUrl = await redisClient.get(cacheKey);
@@ -123,6 +125,27 @@ async function redirectToOriginalUrl(shortCode) {
     );
 
     await redisClient.incr(clickKey);
+
+    const userAgent = req.get("User-Agent") || "";
+    const parsedUserAgent = parseUserAgent(userAgent);
+
+    // Log the click in the database
+    await Clicks.create({
+        urlId: url._id,
+        shortCode: url.shortCode,
+        clickedAt: new Date(),
+
+        ip: req.ip,
+        userAgent,
+
+        device: {
+            type: parsedUserAgent.deviceType,
+            os: parsedUserAgent.os,
+            browser: parsedUserAgent.browser,
+        },
+
+        referrer: req.get("Referer") || null,
+    });
 
     return url.originalUrl;
 }
