@@ -18,6 +18,16 @@ async function createShortUrl(
 ) {
     let parsedUrl;
 
+    const isUserActive = await User.findOne({ _id: userId });
+
+    console.log("isUserActive:", isUserActive);
+
+    if (isUserActive.isActive == false) {
+        throw new Error(
+            "Your account is inactive. Cannot create short URL."
+        );
+    }
+
     try {
         parsedUrl =
             new globalThis.URL(originalUrl);
@@ -57,16 +67,6 @@ async function createShortUrl(
             shortCode
         });
     } while (existingShortCode);
-
-    const isUserActive = await User.findOne({ _id: userId }); 
-
-    console.log("isUserActive:", isUserActive);
-
-    if (isUserActive.isActive == false) {
-        throw new Error(
-            "Your account is inactive. Cannot create short URL."
-        );
-    }
 
     const url = await URLModel.create({
         originalUrl: normalizedUrl,
@@ -114,7 +114,7 @@ async function redirectToOriginalUrl(shortCode) {
     }
     if (url.expiresAt && url.expiresAt < new Date()) {
         throw new Error(
-            "This short URL has expired"    
+            "This short URL has expired"
         );
     }
     await redisClient.set(
