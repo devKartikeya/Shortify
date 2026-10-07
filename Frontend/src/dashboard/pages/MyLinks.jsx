@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Toast from "../../components/Toast";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,8 +16,7 @@ const MyLinks = () => {
 
     const [copiedCode, setCopiedCode] = useState(null);
 
-    const [successMessage, setSuccessMessage] = useState("");
-
+    const [toast, setToast] = useState(null);
     // FETCH USER LINKS
     const fetchLinks = async (isRefresh = false) => {
         try {
@@ -86,11 +86,20 @@ const MyLinks = () => {
         try {
             await navigator.clipboard.writeText(getShortUrl(link));
             setCopiedCode(link.shortCode);
+            setToast({
+                type: "success",
+                message: "Short URL copied to clipboard.",
+            });
             setTimeout(() => {
                 setCopiedCode(null);
             }, 1800);
         } catch (error) {
             console.error("Copy failed:", error);
+
+            setToast({
+                type: "error",
+                message: "Failed to copy the short URL.",
+            });
         }
     };
 
@@ -215,24 +224,43 @@ const MyLinks = () => {
 
     const handleDelete = async (shortCode) => {
         try {
-            const response = await fetch(`${API_URL}/urls/delete/${shortCode}`, {
-                method: "GET",
-                credentials: "include",
-            });
+            const response = await fetch(
+                `${API_URL}/urls/delete/${shortCode}`,
+                {
+                    method: "GET",
+                    credentials: "include",
+                }
+            );
             const result = await response.json();
             if (!response.ok) {
-                throw new Error(result.message || "Failed to delete the link");
+                throw new Error(
+                    result.message || "Failed to delete the link"
+                );
             }
-            // Remove the deleted link from the state
-            setLinks((prevLinks) => prevLinks.filter((link) => link.shortCode !== shortCode));
-            // I want to show a success message to the user after deletion, so please make it.
-            setSuccessMessage("URL deleted successfully.");
+            setLinks((prevLinks) =>
+                prevLinks.filter(
+                    (link) => link.shortCode !== shortCode
+                )
+            );
+            setToast({
+                type: "success",
+                message: "URL deleted successfully.",
+            });
         } catch (err) {
             console.error("Failed to delete link:", err);
-            setError(err.message || "Something went wrong while deleting the link.");
+
+            setError(
+                err.message ||
+                "Something went wrong while deleting the link."
+            );
+            setToast({
+                type: "error",
+                message:
+                    err.message ||
+                    "Something went wrong while deleting the link.",
+            });
         }
     };
-
     // MAIN UI
     return (
         <div className="mx-auto max-w-[1600px] space-y-6">
@@ -485,7 +513,15 @@ const MyLinks = () => {
                                                             >
                                                                 {shortUrl}
                                                             </button>
-                                                            <p className="mt-0.5 text-xs text-gray-400">/{link.shortCode}</p>
+                                                            <div className="flex gap-3 items-center">
+                                                                <p className="mt-1 text-xs text-gray-400">/{link.shortCode}</p>
+                                                                <div className={` ${link.isActive == true ? "bg-green-500" : "bg-red-500"} inline-flex items-center gap-2 rounded-full px-2 py-1 text-[10px] font-medium text-white`}>
+                                                                    <span className="h-1 w-1 rounded-full bg-white" />
+                                                                    <span className={`text-xs font-bold uppercase tracking-widest text-white `}>
+                                                                        {link.isActive === true ? "Active" : "Inactive"}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -624,34 +660,12 @@ const MyLinks = () => {
                     </>
                 )}
             </div>
-            {successMessage && (
-                <div className="fixed right-6 top-24 z-[100] flex items-center gap-3 rounded-xl border border-green-200 bg-white px-4 py-3 shadow-lg">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            className="h-4 w-4 text-green-600"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M5 13l4 4L19 7"
-                            />
-                        </svg>
-                    </div>
-
-                    <div>
-                        <p className="text-sm font-semibold text-gray-900">
-                            Success
-                        </p>
-                        <p className="text-xs text-gray-500">
-                            {successMessage}
-                        </p>
-                    </div>
-                </div>
+            {toast && (
+                <Toast
+                    type={toast.type}
+                    message={toast.message}
+                    onClose={() => setToast(null)}
+                />
             )}
         </div>
     );

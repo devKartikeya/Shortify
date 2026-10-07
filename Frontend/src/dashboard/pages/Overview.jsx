@@ -56,7 +56,10 @@ const Overview = () => {
             total + (link.clicks || 0),
         0
     );
-    const activeLinks = links.length;
+    const activeLinks = links.filter(
+        (link) => link.isActive === true
+    ).length;
+
     const clickRate =
         totalLinks > 0
             ? Math.round(

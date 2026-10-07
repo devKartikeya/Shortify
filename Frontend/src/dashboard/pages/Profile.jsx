@@ -126,8 +126,8 @@ const Profile = () => {
         ? user.username.slice(0, 2).toUpperCase()
         : "US";
 
-    const joinedDate = user?.joinedAt
-        ? new Date(user.joinedAt).toLocaleDateString("en-IN", {
+    const joinedDate = user?.memberSince
+        ? new Date(user.memberSince).toLocaleDateString("en-IN", {
             day: "numeric",
             month: "long",
             year: "numeric",

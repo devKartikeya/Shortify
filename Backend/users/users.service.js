@@ -32,7 +32,8 @@ async function userRegisterService(username, email, password) {
             id: user._id,
             username: user.username,
             email: user.email,
-            isActive: user.isActive
+            isActive: user.isActive,
+            memberSince: user.createdAt
         },
         process.env.JWT_SECRET,
         {
@@ -45,7 +46,8 @@ async function userRegisterService(username, email, password) {
             id: user._id,
             username: user.username,
             email: user.email,
-            isActive: user.isActive
+            isActive: user.isActive,
+            memberSince: user.createdAt
         }
     };
 }
@@ -72,7 +74,8 @@ async function userLoginService(email, password) {
             id: user._id,
             username: user.username,
             email: user.email,
-            isActive: user.isActive
+            isActive: user.isActive,
+            memberSince: user.createdAt
         },
         process.env.JWT_SECRET,
         {
@@ -86,7 +89,8 @@ async function userLoginService(email, password) {
             id: user._id,
             username: user.username,
             email: user.email,
-            isActive: user.isActive
+            isActive: user.isActive,
+            memberSince: user.createdAt
         }
     };
 }

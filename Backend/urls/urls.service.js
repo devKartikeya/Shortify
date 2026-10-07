@@ -122,6 +122,8 @@ async function redirectToOriginalUrl(shortCode) {
         url.originalUrl
     );
 
+    await redisClient.incr(clickKey);
+
     return url.originalUrl;
 }
 
