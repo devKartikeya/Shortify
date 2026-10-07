@@ -3,7 +3,7 @@ const cron = require('./utilities/cleanUpOldLogs');
 const redisClient = require("./configurations/redis");
 const connectDB = require("./configurations/database");
 const { connectRabbitMQ } = require("./configurations/rabbitmq");
-const { syncAllClickCounts } = require("./clicks-counters/syncAllClickCounts");
+const { syncAllClickCounts } = require("./clicks/syncAllClickCounts");
 
 const PORT = process.env.PORT || 3000;
 
@@ -22,7 +22,7 @@ async function startServer() {
     syncAllClickCounts();
   }, 60 * 1000);
 
-  setInterval(cron, 300000); /* Run the cron job every 5 minutes */
+  setInterval(cron, 2 * 60 * 1000); /* Run the cron job every 2 minutes */
 }
 
 startServer();
