@@ -530,6 +530,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 <button
                                     type="button"
                                     className="font-medium text-gray-600 hover:text-gray-950"
+                                    onClick={() => { navigate("/legal/terms-and-conditions"); onClose(); }}
                                 >
                                     Terms
                                 </button>
@@ -538,6 +539,7 @@ const AuthPanel = ({ isOpen, onClose }) => {
                                 <button
                                     type="button"
                                     className="font-medium text-gray-600 hover:text-gray-950"
+                                    onClick={() => { navigate("/legal/privacy-policy"); onClose(); }}
                                 >
                                     Privacy Policy
                                 </button>

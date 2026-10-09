@@ -3,6 +3,7 @@ import {
     FiArrowUpRight,
     FiLayers,
     FiShield,
+    FiBarChart2,
     FiTrendingUp,
 } from "react-icons/fi";
 
@@ -34,17 +35,18 @@ const pillars = [
         ],
     },
     {
+
         number: "03",
-        icon: FiShield,
-        title: "Designed with",
-        highlight: "security in mind.",
+        icon: FiBarChart2,
+        title: "Know your audience.",
+        highlight: "Beyond the click.",
         description:
-            "From authentication and protected resources to rate limiting and secure account flows, Shortify treats security as part of the product rather than an afterthought.",
+            "Go beyond total click counts with detailed link analytics. Understand when your links are clicked, which devices and browsers your audience uses, and where your traffic comes from.",
         points: [
-            "Secure authentication",
-            "Protected user resources",
-            "Rate limiting & security headers",
-        ],
+            "Timestamped click tracking",
+            "Device, OS & browser insights",
+            "Geographic & referrer analytics",
+        ]
     },
 ];
 

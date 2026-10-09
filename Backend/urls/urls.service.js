@@ -88,7 +88,10 @@ async function getMyLinks(userId) {
     }).sort({
         createdAt: -1
     });
-    return urls;
+    /* Also return all clicks analytics through Clicks model */
+    const clickAnalytics = await Clicks.find({ shortCode: { $in: urls.map(url => url.shortCode) } });
+    console.log("clickAnalytics:", clickAnalytics);
+    return { urls, clickAnalytics };
 }
 
 // Redirect short URL

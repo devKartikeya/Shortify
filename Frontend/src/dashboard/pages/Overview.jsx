@@ -8,6 +8,7 @@ const Overview = () => {
     const navigate = useNavigate();
 
     const [links, setLinks] = useState([]);
+    const [clickAnalytics, setClickAnalytics] = useState([]);
     const [loading, setLoading] = useState(true);
     const [fetchError, setFetchError] = useState("");
 
@@ -34,6 +35,13 @@ const Overview = () => {
                     );
                 }
                 setLinks(result.data || []);
+                setClickAnalytics(result.clickAnalytics || []);
+
+                // Debug: verify analytics received from backend
+                console.log("Overview API response:", result);
+                console.log("URLs received:", result.data);
+                console.log("Click analytics received:", result.clickAnalytics);
+
             } catch (error) {
                 console.error(
                     "Failed to fetch user links:",

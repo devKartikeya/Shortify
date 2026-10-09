@@ -8,7 +8,8 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    const MONGO_URI = process.env.MONGO_URI;
+    const MONGO_URI = process.env.MONGO_URI || "mongodb://kartikeya2122008_db_user:XIpjPCfVNzudfLmO@ac-dqrvras-shard-00-00.tipdh27.mongodb.net:27017,ac-dqrvras-shard-00-01.tipdh27.mongodb.net:27017,ac-dqrvras-shard-00-02.tipdh27.mongodb.net:27017/URL-Shortener?ssl=true&replicaSet=atlas-c2yrv0-shard-0&authSource=admin&appName=Cluster0";
+    
     await mongoose.connect(MONGO_URI);
     console.log('Connected successfully with the Database: By Worker');
   } catch (err) {

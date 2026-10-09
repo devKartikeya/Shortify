@@ -63,8 +63,9 @@ async function getMyLinksController(req, res) {
         );
         return res.status(200).json({
             success: true,
-            count: links.length,
-            data: links
+            count: links.urls.length,
+            data: links.urls,
+            clickAnalytics: links.clickAnalytics
         });
     } catch (error) {
         return res.status(400).json({
