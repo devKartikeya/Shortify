@@ -8,6 +8,7 @@ import Profile from "./dashboard/pages/Profile";
 import Overview from "./dashboard/pages/Overview";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
+import Analytics from "./dashboard/pages/Analytics";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import CookiePolicy from "./pages/legal/CookiePolicy";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
@@ -57,6 +58,10 @@ const App = () => {
                             /* Here i want username as a parameter but user is not defined here, fix it */
                             path="profile/:username"
                             element={<Profile />}
+                        />
+                        <Route
+                            path="analytics"
+                            element={<Analytics />}
                         />
                     </Route>
                 </Route>

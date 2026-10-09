@@ -44,6 +44,15 @@ const navigation = [
                 <path d="M14 18h4" />
             </svg>
         )
+    }, {
+        label: "Analytics",
+        path: "/dashboard/analytics",
+        icon: (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M3 3v18h18" />
+                <path d="M7 14l3-3 2 2 4-4" />
+            </svg>
+        )
     }
 ];
 
@@ -62,19 +71,6 @@ const secondaryNavigation = [
                 <path
                     strokeLinecap="round"
                     d="M12 16.5h.01"
-                />
-            </svg>
-        )
-    }, {
-        label: "About Shortify",
-        path: "/about",
-        icon: (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <circle cx="12" cy="12" r="9" />
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 16v-4m0-4h.01"
                 />
             </svg>
         )
