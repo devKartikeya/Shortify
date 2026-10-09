@@ -6,6 +6,7 @@ const {
 } = require("./urls.service");
 const redisClient = require("../configurations/redis");
 const verifyToken = require("../utilities/jwt");
+const { getRabbitMQChannel } = require("../configurations/rabbitmq");
 
 // Create short URL
 async function createShortUrlController(req, res) {
@@ -30,6 +31,7 @@ async function createShortUrlController(req, res) {
             originalUrl,
             userId
         );
+
         return res.status(201).json({
             success: true,
             message: "URL shortened successfully",
@@ -77,6 +79,17 @@ async function redirectUrlController(req, res) {
     try {
         const { shortCode } = req.params;
         const originalUrl = await redirectToOriginalUrl(shortCode, req);
+        const channel = getRabbitMQChannel();
+
+        channel.publish(
+            "shortify_exchange",
+            "url.clicked",
+            Buffer.from(
+                JSON.stringify({
+                    originalUrl: originalUrl
+                })
+            )
+        );
         return res.redirect(originalUrl);
     } catch (error) {
         return res.status(404).send(`

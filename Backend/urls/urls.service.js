@@ -126,27 +126,7 @@ async function redirectToOriginalUrl(shortCode, req) {
 
     await redisClient.incr(clickKey);
 
-    const userAgent = req.get("User-Agent") || "";
-    const parsedUserAgent = parseUserAgent(userAgent);
-
     // Log the click in the database
-    await Clicks.create({
-        urlId: url._id,
-        shortCode: url.shortCode,
-        clickedAt: new Date(),
-
-        ip: req.ip,
-        userAgent,
-
-        device: {
-            type: parsedUserAgent.deviceType,
-            os: parsedUserAgent.os,
-            browser: parsedUserAgent.browser,
-        },
-
-        referrer: req.get("Referer") || null,
-    });
-
     return url.originalUrl;
 }
 

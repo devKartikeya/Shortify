@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true })); /* Parse incoming URL-encoded r
 app.use(express.json()); /* Parse incoming JSON requests */
 app.use(cookieParser()); /* Parse cookies from incoming requests */
 app.use(helmetConfig); /* Apply Helmet security headers */
-app.use(morgan('combined', { stream: accessLogStream })); /* Log HTTP requests using Morgan and write to rotating log files */
+// app.use(morgan('combined', { stream: accessLogStream })); /* Log HTTP requests using Morgan and write to rotating log files */
 
 /* Health Check Endpoint */
 app.get("/health", (req, res) => {

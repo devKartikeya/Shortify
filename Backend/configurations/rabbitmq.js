@@ -16,11 +16,14 @@ async function connectRabbitMQ() {
         });
 
         await channel.assertQueue("welcome_email_queue", { durable: true });
+        await channel.assertQueue("click_analytics_queue", { durable: true });
 
         await channel.bindQueue("welcome_email_queue", "shortify_exchange", "user.registered");
+        await channel.bindQueue("click_analytics_queue", "shortify_exchange", "url.clicked");
 
         console.log("RabbitMQ connected successfully");
         console.log("Queue ready: welcome_email_queue");
+        console.log("Queue ready: click_analytics_queue");
 
         return channel;
     } catch (error) {
