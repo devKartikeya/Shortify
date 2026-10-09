@@ -4,7 +4,20 @@ const {
 } = require("../configurations/rabbitmq");
 const Clicks = require("../clicks/clicks.model");
 const URLModel = require("../urls/urls.model");
-const parseUserAgent = require("../configurations/user-agent");
+const mongoose = require("mongoose");
+
+const connectDB = async () => {
+  try {
+    const MONGO_URI = process.env.MONGO_URI;
+    await mongoose.connect(MONGO_URI);
+    console.log('Connected successfully with the Database: By Worker');
+  } catch (err) {
+    console.error('Failed to connect with the Database:', err);
+    process.exit(1);
+  }
+};
+
+connectDB();
 
 async function start() {
     await connectRabbitMQ();
@@ -23,10 +36,12 @@ async function start() {
                 message.content.toString()
             );
 
+            /* The Payload is simply the originalUrl, for example- "kartikeyamishra.vercel.app" */
+
             console.log("Processing click analytics:", payload);
 
             // Log the analytics data
-            // await logAnalyticsData();
+            logAnalyticsData(payload);
         } catch (error) {
             console.error("Error processing click analytics:", error);
         } finally {
@@ -37,8 +52,25 @@ async function start() {
     console.log("Click analytics worker started");
 }
 
-async function logAnalyticsData(req, url) {
-   
+async function logAnalyticsData(payload) {
+    const url = await URLModel.findOne({ originalUrl: payload.originalUrl });
+    const click = await Clicks.create({
+        urlId: url._id,
+        shortCode: url.shortCode,
+        clickedAt: new Date(),
+
+        ip: payload.ip || null,
+        userAgent: payload.userAgent || null,
+
+        device: {
+            type: payload.parser.deviceType,
+            os: payload.parser.os,
+            browser: payload.parser.browser,
+        },
+
+        referrer: payload.referrer || null,
+    });
+    console.log("Click logged:", click);
 }
 
 start();

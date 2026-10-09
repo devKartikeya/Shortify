@@ -7,6 +7,7 @@ const {
 const redisClient = require("../configurations/redis");
 const verifyToken = require("../utilities/jwt");
 const { getRabbitMQChannel } = require("../configurations/rabbitmq");
+const parseUserAgent = require("../configurations/user-agent");
 
 // Create short URL
 async function createShortUrlController(req, res) {
@@ -79,6 +80,9 @@ async function redirectUrlController(req, res) {
     try {
         const { shortCode } = req.params;
         const originalUrl = await redirectToOriginalUrl(shortCode, req);
+
+        const userAgent = req.get("User-Agent") || "";
+        const parsedUserAgent = parseUserAgent(userAgent);
         const channel = getRabbitMQChannel();
 
         channel.publish(
@@ -86,7 +90,11 @@ async function redirectUrlController(req, res) {
             "url.clicked",
             Buffer.from(
                 JSON.stringify({
-                    originalUrl: originalUrl
+                    originalUrl: originalUrl,
+                    userAgent: userAgent,
+                    parser: parsedUserAgent,
+                    ip: req.ip,
+                    referrer: req.get("Referer") || null
                 })
             )
         );
