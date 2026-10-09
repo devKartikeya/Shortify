@@ -1,8 +1,10 @@
+import LinkCard from "../components/LinkCard";
+import EmptyLinks from "../components/EmptyLinks";
 import React, { useState, useEffect } from "react";
 import CreateLinkModal from "../components/CreateLinkModal";
-import EmptyLinks from "../components/EmptyLinks";
-import LinkCard from "../components/LinkCard";
 import { useOutletContext, useNavigate } from "react-router-dom";
+import ClicksOverTimeChart from "../components/ClicksOverTimeChart";
+
 const Overview = () => {
     const { user } = useOutletContext();
     const navigate = useNavigate();
@@ -304,7 +306,7 @@ const Overview = () => {
                         </div>
                     ))}
                 </div>
-
+                <ClicksOverTimeChart clickAnalytics={clickAnalytics} />
                 {/* ================= ANALYTICS + TOP LINKS ================= */}
                 <div className="grid gap-2 xl:grid-cols-[minmax(0,1fr)_380px]">
 
