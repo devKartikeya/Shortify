@@ -7,6 +7,7 @@ import React, { useState } from "react"; import {
     MapPin
 } from "lucide-react";
 import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
+import { Helmet } from "react-helmet-async";
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -85,6 +86,10 @@ const Contact = () => {
     };
     return (
         <main className="min-h-screen bg-white text-slate-900">
+            <Helmet>
+                <title>Contact Us | Shortify</title>
+                <meta name="description" content="Contact with Shortify team. We will help you to solve your queries and improve your experience with us." />
+            </Helmet>
             {/* ================= HERO ================= */}
             <section className="relative overflow-hidden pt-28 pb-16">
                 {/* Background decoration */}

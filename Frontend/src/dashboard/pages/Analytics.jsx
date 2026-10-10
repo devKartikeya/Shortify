@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import {
     Area,
     AreaChart,
@@ -328,6 +329,12 @@ const Analytics = () => {
 
     return (
         <div className="space-y-6 text-gray-900">
+            <Helmet>
+                <title>
+                    Analytics | Shortify
+                </title>
+                <meta name="description" content="Experience deep analysis of your links and QRs. Analyze devices, location, CTR, and timestamps." />
+            </Helmet>
             {/* Page heading */}
             <div>
                 <p className="text-sm font-medium text-amber-600">

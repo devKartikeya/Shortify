@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const Profile = () => {
     const { user } = useOutletContext();

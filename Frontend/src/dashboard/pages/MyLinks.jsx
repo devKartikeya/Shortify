@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import Toast from "../../components/Toast";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -264,6 +265,10 @@ const MyLinks = () => {
     // MAIN UI
     return (
         <div className="mx-auto max-w-[1600px] space-y-6">
+            <Helmet>
+                <title>My Links | Shortify</title>
+                <meta name="description" content="Managing Links of the User." />
+            </Helmet>
             {/* HEADER */}
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                 <div>

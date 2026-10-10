@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import LinkCard from "../components/LinkCard";
 import EmptyLinks from "../components/EmptyLinks";
 import React, { useState, useEffect } from "react";
@@ -225,6 +226,11 @@ const Overview = () => {
     return (
         <>
             <div className="mx-auto max-w-[1600px] space-y-8">
+
+                <Helmet>
+                    <title>Dashboard | Shortify</title>
+                    <meta name="description" content="User's dashboard to access the overview and analytics of the links and QRs." />
+                </Helmet>
 
                 {/* ================= HEADER ================= */}
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">

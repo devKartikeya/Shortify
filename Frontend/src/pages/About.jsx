@@ -1,10 +1,17 @@
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const About = () => {
     const navigate = useNavigate();
 
     return (
         <main className="min-h-screen bg-white text-gray-950">
+            <Helmet>
+
+                <title>About Us | Shortify</title>
+                <meta name="description" content="Learn more about Shortify and our approach to Link Management and analytics." />
+
+            </Helmet>
             {/* HERO */}
             <section className="relative overflow-hidden border-b border-gray-100">
                 {/* Background decoration */}

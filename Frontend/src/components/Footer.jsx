@@ -283,12 +283,12 @@ const Footer = () => {
                             <ul className="mt-6 space-y-4">
                                 {companyLinks.map((link) => (
                                     <li key={link.name}>
-                                        <a
-                                            href={link.href}
+                                        <Link
+                                            to={link.href}
                                             className="text-sm text-gray-400 transition-colors hover:text-yellow-400"
                                         >
                                             {link.name}
-                                        </a>
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import QRCode from "qrcode";
 
 const DEFAULT_SETTINGS = {
@@ -433,6 +434,12 @@ const QRCodes = () => {
 
     return (
         <div className="mx-auto max-w-[1600px] space-y-8">
+            <Helmet>
+                <title>
+                    QR-Codes | Shortify
+                </title>
+                <meta name="description" content="Manage and customize your QR-Codes." />
+            </Helmet>
             {/* HEADER */}
             <div>
                 <p className="mb-1 text-sm font-medium text-gray-400">QR codes</p>

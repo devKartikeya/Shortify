@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import {
     Search,
@@ -182,6 +183,11 @@ const HelpSupport = () => {
 
     return (
         <main className="min-h-screen bg-white text-slate-900">
+
+            <Helmet>
+                <title>Help & Support | Shortify</title>
+                <meta name="description" content="Help desk of Shortify. Here are the most frequently asked questions regarding Shortify." />
+            </Helmet>
 
             {/* =====================================================
                 HERO
