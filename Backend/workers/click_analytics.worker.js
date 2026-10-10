@@ -5,6 +5,7 @@ const {
 const Clicks = require("../clicks/clicks.model");
 const URLModel = require("../urls/urls.model");
 const mongoose = require("mongoose");
+const getGeoLocation = require("../utilities/geo-location");
 
 const connectDB = async () => {
   try {
@@ -55,6 +56,7 @@ async function start() {
 
 async function logAnalyticsData(payload) {
     const url = await URLModel.findOne({ originalUrl: payload.originalUrl });
+    const geo = await getGeoLocation(payload.ip);
     const click = await Clicks.create({
         urlId: url._id,
         shortCode: url.shortCode,
@@ -68,7 +70,11 @@ async function logAnalyticsData(payload) {
             os: payload.parser.os,
             browser: payload.parser.browser,
         },
-
+        geo: {
+            country: geo.country,
+            region: geo.region,
+            city: geo.city,
+        },
         referrer: payload.referrer || null,
     });
     console.log("Click logged:", click);
