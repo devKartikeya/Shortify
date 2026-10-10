@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import {
     FiArrowUpRight,
     FiCheckCircle,
@@ -45,6 +46,12 @@ const PrivacyPolicy = () => {
 
     return (
         <div className="min-h-screen bg-white text-gray-900">
+            <Helmet>
+                <title>
+                    Privacy Policy | Shortify
+                </title>
+                <meta name="description" content="Privacy Policy of Shortify. It lists all details that Shortify follows to maintain user's privacy and security." />
+            </Helmet>
             {/* =========================
                 HERO
             ========================== */}

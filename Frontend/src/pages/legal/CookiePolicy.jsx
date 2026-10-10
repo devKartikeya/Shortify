@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import {
     FiArrowLeft,
@@ -34,6 +35,10 @@ const sections = [
 const CookiePolicy = () => {
     return (
         <main className="min-h-screen bg-white text-gray-900">
+            <Helmet>
+                <title>Cookie Policy | Shortify</title>
+                <meta name="description" content="Cookie Policy of Shortify. It explains how Shortify uses cookies and similar technologies." />
+            </Helmet>
             {/* Hero */}
             <section className="border-b border-gray-100 bg-gray-50/70 pt-32">
                 <div className="mx-auto max-w-7xl px-6 pb-16 lg:px-8">

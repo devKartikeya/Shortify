@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import {
     FiAlertTriangle,
@@ -40,6 +41,12 @@ const sections = [
 const TermsAndConditions = () => {
     return (
         <main className="min-h-screen bg-white text-gray-900">
+            <Helmet>
+                <title>
+                    Terms and Conditions | Shortify
+                </title>
+                <meta name="description" content="Terms and Conditions of Shortify. It encompasses all the terms that governs Shortify's services." />
+            </Helmet>
             {/* Hero */}
             <section className="border-b border-gray-100 bg-gray-50/70 pt-32">
                 <div className="mx-auto max-w-7xl px-6 pb-16 lg:px-8">

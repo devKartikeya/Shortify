@@ -363,6 +363,11 @@ const Profile = () => {
     return (
         <div className="space-y-6 pb-8">
 
+            <Helmet>
+                <title>Profile | Shortify</title>
+                <meta name="description" content="Access your shortify account. Edit your account details like email and username. Change password and control your account deletion." />
+            </Helmet>
+
             {/* Header */}
             <div>
                 <h1 className="text-2xl font-semibold text-gray-900">
